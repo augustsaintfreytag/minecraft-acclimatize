@@ -1,10 +1,10 @@
 package thermite.therm;
 
-import java.io.ObjectInputFilter.Config;
 import java.util.HashMap;
 import java.util.Map;
 
 import me.lortseam.completeconfig.api.ConfigEntry;
+import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.ConfigOptions;
 
 public class ThermConfig extends Config {
@@ -65,14 +65,20 @@ public class ThermConfig extends Config {
 
 	// Game
 
-	@ConfigEntry(comment = "Multiplier for how much each level of fire protection cools you (Default: 1f)")
-	public float fireProtectionCoolingMultiplier = 1f;
+	@ConfigEntry(comment = "How quick your body temperature loses heat to the environment. (Default: 1.0)")
+	public float coolingAcclimatizationRate = 1.0f;
+
+	@ConfigEntry(comment = "How quick your body temperature takes up heat from the environment. (Default: 1.0)")
+	public float heatingAcclimatizationRate = 1.0f;
 
 	@ConfigEntry(comment = "Hyperthermia damage per 5 seconds. (Default: 1.0)")
 	public float hyperthermiaDamage = 1.5f;
 
 	@ConfigEntry(comment = "Hypothermia damage per 5 seconds. (Default: 1.0)")
 	public float hypothermiaDamage = 1.5f;
+
+	@ConfigEntry(comment = "Multiplier for how much each level of fire protection cools you (Default: 1f)")
+	public float fireProtectionCoolingMultiplier = 1f;
 
 	@ConfigEntry(comment = "Helmets that will change your temperature.")
 	public Map<String, Integer> helmetTempItems = new HashMap(Map.of("leather_helmet", 1));

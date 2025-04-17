@@ -1,7 +1,6 @@
 package thermite.therm.block;
 
 import java.util.Objects;
-import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -13,6 +12,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import thermite.therm.ThermUtil;
 
@@ -27,7 +27,6 @@ public class IceBoxFrozenBlock extends Block {
 			BlockHitResult hit) {
 
 		if (!world.isClient) {
-			ItemStack stack = player.getStackInHand(hand);
 			world.setBlockState(pos, ThermBlocks.ICE_BOX_EMPTY_BLOCK.getDefaultState());
 			IceBoxFrozenBlock.dropStack(world, pos, new ItemStack(Items.ICE, 3));
 		}

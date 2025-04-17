@@ -11,6 +11,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.entity.Entity;
 import thermite.therm.ThermClient;
 import thermite.therm.ThermMod;
 import thermite.therm.client.TemperatureHudOverlay;

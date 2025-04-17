@@ -3,13 +3,10 @@ package thermite.therm;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-import java.lang.System.Logger;
-import java.rmi.registry.Registry;
 import java.util.Objects;
-import java.util.Random;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Text;
 
 import me.lortseam.completeconfig.data.ConfigOptions;
 import net.fabricmc.api.ModInitializer;
@@ -28,8 +25,11 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.SpecialRecipeSerializer;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import thermite.therm.block.ThermBlocks;
 import thermite.therm.block.entity.FireplaceBlockEntity;
 import thermite.therm.effect.ThermStatusEffects;
@@ -145,8 +145,8 @@ public class ThermMod implements ModInitializer {
 			ThermPlayerState playerState = ServerState.getPlayerState(handler.player);
 
 			if (!Objects.equals(serverState.worldVersion, modVersion)) {
-				serverState.windTempModifierRange = 8;
 				serverState.windRandomizeTick = 24000;
+				serverState.windTempModifierRange = 8;
 				serverState.worldVersion = modVersion;
 
 				serverState.players.forEach((uuid, state) -> {
@@ -208,27 +208,12 @@ public class ThermMod implements ModInitializer {
 								}))));
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("thermite_test").requires(source -> source.hasPermissionLevel(4))
-						.then(argument("player", EntityArgumentType.player())
-								.executes(context -> {
-
-									ServerState serverState = ServerState.getServerState(
-											EntityArgumentType.getPlayer(context, "player").getWorld().getServer());
-									PlayerEntity player = EntityArgumentType.getPlayer(context, "player");
-									ThermPlayerState playerState = ServerState.getPlayerState(player);
-
-									return 1;
-								}))));
-
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
 				.register(literal("windRandomize").requires(source -> source.hasPermissionLevel(4))
 						.then(argument("player", EntityArgumentType.player())
 								.executes(context -> {
 
 									ServerState serverState = ServerState.getServerState(
 											EntityArgumentType.getPlayer(context, "player").getWorld().getServer());
-									PlayerEntity player = EntityArgumentType.getPlayer(context, "player");
-									ThermPlayerState playerState = ServerState.getPlayerState(player);
 
 									Random rand = new Random();
 									serverState.windYaw = rand.nextDouble(0, 360) * Math.PI / 180;
@@ -255,7 +240,6 @@ public class ThermMod implements ModInitializer {
 
 							ServerState serverState = ServerState.getServerState(context.getSource().getServer());
 							PlayerEntity player = context.getSource().getPlayer();
-							ThermPlayerState playerState = ServerState.getPlayerState(player);
 
 							Vec3d dir = new Vec3d((Math.cos(serverState.windPitch) * Math.cos(serverState.windYaw)),
 									(Math.sin(serverState.windPitch) * Math.cos(serverState.windYaw)),
@@ -272,8 +256,6 @@ public class ThermMod implements ModInitializer {
 						.executes(context -> {
 
 							ServerState serverState = ServerState.getServerState(context.getSource().getServer());
-							PlayerEntity player = context.getSource().getPlayer();
-							ThermPlayerState playerState = ServerState.getPlayerState(player);
 
 							context.getSource().sendMessage(Text.literal("§e=====Wind Info====="));
 							context.getSource()

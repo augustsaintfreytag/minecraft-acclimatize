@@ -2,10 +2,7 @@ package thermite.therm;
 
 import java.util.Random;
 
-import javax.swing.text.JTextComponent.KeyBinding;
-
 import org.lwjgl.glfw.GLFW;
-import org.w3c.dom.Text;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -14,10 +11,12 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import thermite.therm.client.TemperatureHudOverlay;
 import thermite.therm.networking.ThermNetworkingPackets;
