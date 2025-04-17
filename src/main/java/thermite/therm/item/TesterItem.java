@@ -7,16 +7,16 @@ import thermite.therm.ThermMod;
 
 public class TesterItem extends Item {
 
-    public TesterItem(Settings settings) {
-        super(settings);
-    }
+	public TesterItem(Settings settings) {
+		super(settings);
+	}
 
-    @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
+	@Override
+	public ActionResult useOnBlock(ItemUsageContext context) {
 
-        ThermMod.LOGGER.info("STATE: " + context.getWorld().getBlockState(context.getBlockPos()).toString());
-        ThermMod.LOGGER.info("BLOCK: " + context.getWorld().getBlockState(context.getBlockPos()).getBlock().toString());
+		ThermMod.LOGGER.info("STATE: " + context.getWorld().getBlockState(context.getBlockPos()).toString());
+		ThermMod.LOGGER.info("BLOCK: " + context.getWorld().getBlockState(context.getBlockPos()).getBlock().toString());
 
-        return super.useOnBlock(context);
-    }
+		return super.useOnBlock(context);
+	}
 }
