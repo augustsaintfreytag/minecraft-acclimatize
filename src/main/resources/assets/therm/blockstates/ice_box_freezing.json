@@ -1,5 +1,7 @@
 {
-  "variants": {
-    "": { "model": "therm:block/ice_box_freezing" }
-  }
+	"variants": {
+		"": {
+			"model": "therm:block/ice_box_freezing"
+		}
+	}
 }

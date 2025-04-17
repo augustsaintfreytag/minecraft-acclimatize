@@ -4,6 +4,6 @@ import net.minecraft.entity.effect.StatusEffect;
 
 public class ThermStatusEffects {
 
-    public static final StatusEffect COOLING = new CoolingStatusEffect();
+	public static final StatusEffect COOLING = new CoolingStatusEffect();
 
 }
