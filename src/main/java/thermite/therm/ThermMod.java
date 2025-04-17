@@ -44,7 +44,7 @@ import thermite.therm.recipe.LeatherArmorWoolRecipe;
 public class ThermMod implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("therm");
 	public static final String modid = "therm";
-	public static final String modVersion = "5.0.0.2";
+	public static final String modVersion = "6.0.0";
 
 	// Items
 
