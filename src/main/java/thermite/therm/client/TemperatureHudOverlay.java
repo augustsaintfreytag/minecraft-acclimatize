@@ -72,8 +72,10 @@ public class TemperatureHudOverlay implements HudRenderCallback {
 					offHand = client.player.getOffHandStack();
 				}
 				// TODO fix this monstrosity
+
 				float pixelMultiplier = 1.5f;
 				float tempFract = ((ThermClient.clientStoredTemperature / 100f) * Math.round(40 * pixelMultiplier));
+
 				if (((ThermClient.clientStoredTemperature / 100f) * Math.round(40 * pixelMultiplier)) > 59.0f) {
 					tempFract = ((97 / 100f) * Math.round(40 * pixelMultiplier));
 				} else if ((ThermClient.clientStoredTemperature / 100f) < 0) {
@@ -84,10 +86,12 @@ public class TemperatureHudOverlay implements HudRenderCallback {
 						y - (Math.round(8 * pixelMultiplier) + Math.round(3 * pixelMultiplier) + 1), 0, 0,
 						Math.round(40 * pixelMultiplier), Math.round(9 * pixelMultiplier),
 						Math.round(40 * pixelMultiplier), Math.round(9 * pixelMultiplier));
+
 				drawContext.drawTexture(THERMOMETER_HAND,
 						x - (int) (((44 + 149) - Math.round(2 * pixelMultiplier)) - tempFract),
 						y - (Math.round(8 * pixelMultiplier) + Math.round(3 * pixelMultiplier) + 1), 0, 0,
 						Math.round(1), Math.round(9 * pixelMultiplier), Math.round(1), Math.round(9 * pixelMultiplier));
+
 				int frameY = y - (Math.round(13 * pixelMultiplier) + 1);
 				drawContext.drawTexture(THERMOMETER_FRAME, x - (44 + 149), frameY, 0, 0,
 						Math.round(44 * pixelMultiplier), Math.round(13 * pixelMultiplier),
@@ -119,7 +123,6 @@ public class TemperatureHudOverlay implements HudRenderCallback {
 							(frameY + 7) + ThermMod.config.thermometerYPos, 16777215, true);
 				}
 			} else if (Objects.equals(ThermMod.config.temperatureDisplayType, "glass_thermometer")) {
-
 				int tx = 0;
 				int ty = 0;
 				float pixelMultiplier = 1.5f;
@@ -130,6 +133,7 @@ public class TemperatureHudOverlay implements HudRenderCallback {
 				int width = 0;
 				int height = 0;
 				boolean creative = false;
+
 				if (client != null) {
 					tx = (client.getWindow().getScaledWidth() / 2) + ThermMod.config.temperatureXPos;
 					ty = client.getWindow().getScaledHeight() + ThermMod.config.temperatureYPos;
@@ -143,10 +147,12 @@ public class TemperatureHudOverlay implements HudRenderCallback {
 					assert client.player != null;
 					offHand = client.player.getOffHandStack();
 				}
+
 				int tFrameY = ty - (Math.round(13 * pixelMultiplier) + 1);
 				int temp = (int) ThermClient.clientStoredTemperature;
 
 				assert client != null;
+
 				if (!client.player.isSpectator() && !client.player.isCreative()) {
 					if (temp < ThermMod.config.freezeThreshold1 + 1 && temp > ThermMod.config.freezeThreshold2) {
 						ThermClient.glassShakeTickMax = 4;
@@ -163,6 +169,7 @@ public class TemperatureHudOverlay implements HudRenderCallback {
 					} else {
 						ThermClient.glassShakeTickMax = 0;
 					}
+
 					if (ThermClient.glassShakeTickMax != 0) {
 						ThermClient.glassShakeTick += 1;
 						if (ThermClient.glassShakeTick >= ThermClient.glassShakeTickMax) {
@@ -203,7 +210,6 @@ public class TemperatureHudOverlay implements HudRenderCallback {
 					} else if (ThermClient.clientStoredTempDir > 9) {
 						drawContext.drawTexture(HEATING_OUTLINE, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
 					}
-
 				}
 
 				if (offHand.isOf(ThermMod.THERMOMETER_ITEM)) {
@@ -216,9 +222,7 @@ public class TemperatureHudOverlay implements HudRenderCallback {
 							((tx - (tx - 16)) + 6) + ThermMod.config.thermometerXPos,
 							(tFrameY + 7) + ThermMod.config.thermometerYPos, 16777215, true);
 				}
-
 			}
-
 		}
 	}
 

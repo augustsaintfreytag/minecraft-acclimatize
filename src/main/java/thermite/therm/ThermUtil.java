@@ -9,7 +9,6 @@ import thermite.therm.util.BlockStatePosPair;
 public class ThermUtil {
 
 	public static String getClimate(float temp) {
-
 		String climate = "n";
 
 		if (temp < 0.0) {
@@ -25,7 +24,6 @@ public class ThermUtil {
 		}
 
 		return climate;
-
 	}
 
 	public static ArrayList<BlockStatePosPair> getBlockBox(World world, int x1, int y1, int z1, int x2, int y2,
@@ -41,28 +39,20 @@ public class ThermUtil {
 		int depth = Math.abs((z2 - z1));
 
 		for (int x = 0; x < width;) {
-
 			for (y = 0; y < height;) {
-
 				for (z = 0; z < depth;) {
-
 					arr.add(new BlockStatePosPair(world.getBlockState(new BlockPos(x1 + x, y1 + y, z1 + z)),
 							new BlockPos(x1 + x, y1 + y, z1 + z)));
-
 					z++;
-
 				}
 
 				y++;
-
 			}
 
 			x++;
-
 		}
 
 		return arr;
-
 	}
 
 	public static int randInt(int min, int max) {

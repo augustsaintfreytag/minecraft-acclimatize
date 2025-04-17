@@ -54,10 +54,12 @@ public class ThermClient implements ClientModInitializer {
 
 		ThermNetworkingPackets.registerS2CPackets();
 
-		// hud
+		// HUD
+
 		HudRenderCallback.EVENT.register(new TemperatureHudOverlay());
 
-		// tick
+		// Tick
+
 		ClientTickEvents.START_CLIENT_TICK.register((client) -> {
 			if (client.world != null) {
 				if (client.world.isClient()) {
@@ -110,7 +112,8 @@ public class ThermClient implements ClientModInitializer {
 				}
 			}
 
-			// keybinds
+			// Keybinds
+
 			while (showGuiKey.wasPressed()) {
 				if (showGui) {
 					showGui = false;

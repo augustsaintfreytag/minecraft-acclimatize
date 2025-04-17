@@ -41,13 +41,8 @@ public class PlayerTempTickC2SPacket {
 		ServerState serverState = ServerState.getServerState(server);
 		ThermPlayerState playerState = ServerState.getPlayerState(player);
 
-		// playerState.testplayerint -= 1;
-		// serverState.markDirty();
-		// ThermMod.LOGGER.info("value: " + playerState.testplayerint);
-
 		float temp = player.getWorld().getBiome(player.getBlockPos()).value().getTemperature();
 		String climate = ThermUtil.getClimate(temp);
-		// long time = (player.getWorld().getTimeOfDay()) - (0);
 
 		float nightRTemp = 0;
 

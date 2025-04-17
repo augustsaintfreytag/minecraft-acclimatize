@@ -13,7 +13,6 @@ import net.minecraft.world.World;
 public class ServerState extends PersistentState {
 
 	String worldVersion = "4.1.0.8";
-	int testInt = 0;
 	public int season = 0;
 	public int seasonTick = 0;
 	public long currentSeasonTick = 0;
@@ -35,7 +34,6 @@ public class ServerState extends PersistentState {
 		players.forEach((UUID, playerSate) -> {
 			NbtCompound playerStateNbt = new NbtCompound();
 
-			playerStateNbt.putInt("testplayerint", playerSate.testplayerint);
 			playerStateNbt.putDouble("temp", playerSate.temp);
 			playerStateNbt.putDouble("tempRate", playerSate.tempRate);
 			playerStateNbt.putDouble("restingTemp", playerSate.restingTemp);
@@ -51,10 +49,9 @@ public class ServerState extends PersistentState {
 
 			playersNbtCompound.put(String.valueOf(UUID), playerStateNbt);
 		});
-		nbt.put("players", playersNbtCompound);
 
+		nbt.put("players", playersNbtCompound);
 		nbt.putString("worldVersion", worldVersion);
-		nbt.putInt("testInt", testInt);
 		nbt.putInt("season", season);
 		nbt.putInt("seasonTick", seasonTick);
 		nbt.putLong("currentSeasonTick", currentSeasonTick);
@@ -77,7 +74,6 @@ public class ServerState extends PersistentState {
 		playersTag.getKeys().forEach(key -> {
 			ThermPlayerState playerState = new ThermPlayerState();
 
-			playerState.testplayerint = playersTag.getCompound(key).getInt("testplayerint");
 			playerState.temp = playersTag.getCompound(key).getDouble("temp");
 			playerState.tempRate = playersTag.getCompound(key).getDouble("tempRate");
 			playerState.restingTemp = playersTag.getCompound(key).getDouble("restingTemp");
@@ -96,7 +92,6 @@ public class ServerState extends PersistentState {
 		});
 
 		serverState.worldVersion = tag.getString("worldVersion");
-		serverState.testInt = tag.getInt("testInt");
 		serverState.season = tag.getInt("season");
 		serverState.seasonTick = tag.getInt("seasonTick");
 		serverState.currentSeasonTick = tag.getLong("currentSeasonTick");

@@ -9,7 +9,8 @@ import me.lortseam.completeconfig.data.ConfigOptions;
 
 public class ThermConfig extends Config {
 
-	// seasons
+	// Seasons
+
 	@ConfigEntry(comment = "(Experimental) A small built in season system that affects your temperature depending on the season. You can configure the length of each season in half seconds, (one minecraft day = 2400 half seconds).")
 	public boolean enableSeasonSystem = false;
 
@@ -31,11 +32,13 @@ public class ThermConfig extends Config {
 	@ConfigEntry(comment = "Multiplier for how much seasons affect your temperature.")
 	public float seasonTemperatureExtremenessMultiplier = 1.0f;
 
-	// weather
+	// Weather
+
 	@ConfigEntry(comment = "(Experimental) Makes weather reflect the current season. If you enable this make sure to run (/gamerule doWeatherCycle false) to disable the vanilla weather cycle.")
 	public boolean seasonalWeather = false;
 
-	// gui
+	// HUD
+
 	@ConfigEntry(comment = "X coordinate of temperature UI relative to its default position. (Default: 0)")
 	public int temperatureXPos = 0;
 
@@ -60,7 +63,8 @@ public class ThermConfig extends Config {
 	@ConfigEntry(comment = "When enabled, particles will spawn showing the direction that the wind is flowing. More wind = more particles. (Default: true)")
 	public boolean enableWindParticles = true;
 
-	// game
+	// Game
+
 	@ConfigEntry(comment = "Multiplier for how much each level of fire protection cools you (Default: 1f)")
 	public float fireProtectionCoolingMultiplier = 1f;
 
@@ -84,17 +88,6 @@ public class ThermConfig extends Config {
 
 	@ConfigEntry(comment = "Items that when held will change your temperature.")
 	public Map<String, Integer> heldTempItems = new HashMap(Map.of("torch", 3, "lava_bucket", 3));
-
-	// public Map<String, Integer> heatingBlocks = new
-	// HashMap(Map.of("Block{minecraft:torch}", 3, "Block{minecraft:fire}", 3,
-	// "Block{minecraft:lava}", 8, "Block{minecraft:campfire}", 15,
-	// "Block{minecraft:wall_torch}", 3, "Block{minecraft:soul_torch}", 3,
-	// "Block{minecraft:soul_wall_torch}", 3, "Block{minecraft:soul_campfire}", 15,
-	// "Block{minecraft:lava_cauldron}", 8,
-	// "Block{minecraft:furnace}[facing=north,lit=true]", 3,
-	// "Block{minecraft:furnace}[facing=east,lit=true]", 3,
-	// "Block{minecraft:furnace}[facing=south,lit=true]", 3,
-	// "Block{minecraft:furnace}[facing=west,lit=true]", 3));
 
 	@ConfigEntry(comment = "Blocks that will heat you up when near.")
 	public Map<String, Integer> heatingBlocks = new HashMap(Map.ofEntries(

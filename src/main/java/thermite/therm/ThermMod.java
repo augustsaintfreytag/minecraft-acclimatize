@@ -3,6 +3,7 @@ package thermite.therm;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
+import java.lang.System.Logger;
 import java.rmi.registry.Registry;
 import java.util.Objects;
 import java.util.Random;
@@ -45,7 +46,8 @@ public class ThermMod implements ModInitializer {
 	public static final String modid = "therm";
 	public static final String modVersion = "5.0.0.2";
 
-	// items
+	// Items
+
 	public static final GoldSweetBerriesItem GOLD_SWEET_BERRIES_ITEM = new GoldSweetBerriesItem(
 			new FabricItemSettings().maxCount(64));
 	public static final IceJuiceItem ICE_JUICE_ITEM = new IceJuiceItem(new FabricItemSettings().maxCount(16));
@@ -53,7 +55,8 @@ public class ThermMod implements ModInitializer {
 	public static final WoolClothItem WOOL_CLOTH_ITEM = new WoolClothItem(new FabricItemSettings().maxCount(64));
 	public static final TesterItem TESTER_ITEM = new TesterItem(new FabricItemSettings().maxCount(1));
 
-	// block items
+	// Block Items
+
 	public static final BlockItem ICE_BOX_EMPTY_ITEM = new BlockItem(ThermBlocks.ICE_BOX_EMPTY_BLOCK,
 			new FabricItemSettings());
 	public static final BlockItem ICE_BOX_FREEZING_ITEM = new BlockItem(ThermBlocks.ICE_BOX_FREEZING_BLOCK,
@@ -62,21 +65,24 @@ public class ThermMod implements ModInitializer {
 			new FabricItemSettings());
 	public static final BlockItem FIREPLACE_ITEM = new BlockItem(ThermBlocks.FIREPLACE_BLOCK, new FabricItemSettings());
 
-	// block entities
-	// public static final BlockEntityType<FireplaceBlockEntity>
-	// FIREPLACE_BLOCK_ENTITY = null;
+	// Block Entities
+
 	public static final BlockEntityType<FireplaceBlockEntity> FIREPLACE_BLOCK_ENTITY = Registry.register(
 			Registries.BLOCK_ENTITY_TYPE,
 			new Identifier(modid, "fireplace_block_entity"),
 			FabricBlockEntityTypeBuilder.create(FireplaceBlockEntity::new, ThermBlocks.FIREPLACE_BLOCK).build());
 
-	// special recipes
+	// Special Recipes
+
 	public static final RecipeSerializer<LeatherArmorWoolRecipe> LEATHER_ARMOR_WOOL_RECIPE_SERIALIZER = RecipeSerializer
 			.register("crafting_special_leather_armor_wool",
 					new SpecialRecipeSerializer<LeatherArmorWoolRecipe>(LeatherArmorWoolRecipe::new));
 
-	// config
+	// Config
+
 	public static final ThermConfig config = new ThermConfig();
+
+	// Init
 
 	@Override
 	public void onInitialize() {
@@ -84,17 +90,20 @@ public class ThermMod implements ModInitializer {
 		config.load();
 		ConfigOptions.mod(modid).branch(new String[] { "branch", "config" });
 
-		// status effects
+		// Status Effects
+
 		Registry.register(Registries.STATUS_EFFECT, new Identifier(modid, "cooling"), ThermStatusEffects.COOLING);
 
-		// items
+		// Items
+
 		Registry.register(Registries.ITEM, new Identifier(modid, "gold_sweet_berries"), GOLD_SWEET_BERRIES_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modid, "ice_juice"), ICE_JUICE_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modid, "thermometer"), THERMOMETER_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modid, "wool_cloth"), WOOL_CLOTH_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modid, "tester_item"), TESTER_ITEM);
 
-		// blocks
+		// Blocks
+
 		Registry.register(Registries.BLOCK, new Identifier(modid, "ice_box_empty"), ThermBlocks.ICE_BOX_EMPTY_BLOCK);
 		Registry.register(Registries.BLOCK, new Identifier(modid, "ice_box_freezing"),
 				ThermBlocks.ICE_BOX_FREEZING_BLOCK);
@@ -102,13 +111,15 @@ public class ThermMod implements ModInitializer {
 		Registry.register(Registries.BLOCK, new Identifier(modid, "fireplace"), ThermBlocks.FIREPLACE_BLOCK);
 		Registry.register(Registries.BLOCK, new Identifier(modid, "smoke"), ThermBlocks.SMOKE_BLOCK);
 
-		// block item registry
+		// Block Item Registry
+
 		Registry.register(Registries.ITEM, new Identifier(modid, "ice_box_empty_item"), ICE_BOX_EMPTY_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modid, "ice_box_freezing_item"), ICE_BOX_FREEZING_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modid, "ice_box_frozen_item"), ICE_BOX_FROZEN_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modid, "fireplace_item"), FIREPLACE_ITEM);
 
-		// item groups
+		// Item Groups
+
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK).register(content -> {
 			content.add(GOLD_SWEET_BERRIES_ITEM);
 			content.add(ICE_JUICE_ITEM);
@@ -126,14 +137,14 @@ public class ThermMod implements ModInitializer {
 
 		ThermNetworkingPackets.registerC2SPackets();
 
-		// events
+		// Events
+
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 
 			ServerState serverState = ServerState.getServerState(handler.player.getWorld().getServer());
 			ThermPlayerState playerState = ServerState.getPlayerState(handler.player);
 
 			if (!Objects.equals(serverState.worldVersion, modVersion)) {
-
 				serverState.windTempModifierRange = 8;
 				serverState.windRandomizeTick = 24000;
 				serverState.worldVersion = modVersion;
@@ -143,8 +154,6 @@ public class ThermMod implements ModInitializer {
 				});
 
 				serverState.markDirty();
-				LOGGER.info("Updated Thermite ServerState.");
-
 			}
 
 		});
@@ -161,17 +170,15 @@ public class ThermMod implements ModInitializer {
 				serverState.windTempModifier = rand.nextDouble(-serverState.windTempModifierRange,
 						serverState.windTempModifierRange);
 				serverState.precipitationWindModifier = rand.nextDouble(-serverState.windTempModifierRange, 0);
-
 				serverState.markDirty();
-				LOGGER.info("========WIND RANDOMIZED========");
-
 			}
+
 			serverState.windRandomizeTick += 1;
 
 		});
 
-		// commands
-		// thermite_resetPlayerState command
+		// Commands
+
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
 				.register(literal("thermite_resetPlayerState").requires(source -> source.hasPermissionLevel(4))
 						.then(argument("player", EntityArgumentType.player())
@@ -209,51 +216,6 @@ public class ThermMod implements ModInitializer {
 											EntityArgumentType.getPlayer(context, "player").getWorld().getServer());
 									PlayerEntity player = EntityArgumentType.getPlayer(context, "player");
 									ThermPlayerState playerState = ServerState.getPlayerState(player);
-
-									// LOGGER.info("" + player.getWorld().getBiome(player.getBlockPos()).isIn());
-
-									/*
-									 * Random rand = new Random();
-									 * //serverState.windYaw = rand.nextDouble(0, 360)*Math.PI/180;
-									 * //serverState.windPitch = 360*Math.PI/180;
-									 * 
-									 * //double yaw = rand.nextDouble(0, 360)*Math.PI/180;
-									 * //double pitch = 360*Math.PI/180;
-									 * 
-									 * for (int i = 0; i < 32; i++) {
-									 * 
-									 * double turbulence = 20*Math.PI/180;
-									 * //yaw += rand.nextDouble(-turbulence, turbulence);
-									 * //pitch += rand.nextDouble(-turbulence, turbulence);
-									 * 
-									 * Vec3d dir = new
-									 * Vec3d((Math.cos(serverState.windPitch+rand.nextDouble(-turbulence,
-									 * turbulence)) * Math.cos(serverState.windYaw+rand.nextDouble(-turbulence,
-									 * turbulence))), (Math.sin(serverState.windPitch+rand.nextDouble(-turbulence,
-									 * turbulence)) * Math.cos(serverState.windYaw+rand.nextDouble(-turbulence,
-									 * turbulence))), Math.sin(serverState.windYaw+rand.nextDouble(-turbulence,
-									 * turbulence)));
-									 * 
-									 * Vec3d startPos = new Vec3d(player.getPos().x, player.getPos().y + 1,
-									 * player.getPos().z);
-									 * 
-									 * BlockHitResult r = player.getWorld().raycast(new RaycastContext(startPos,
-									 * startPos.add(dir.multiply(32)), RaycastContext.ShapeType.COLLIDER,
-									 * RaycastContext.FluidHandling.WATER, player));
-									 * 
-									 * //context.getSource().sendMessage(Text.literal("" +
-									 * rand.nextDouble(-turbulence, turbulence)*Math.PI/180));
-									 * 
-									 * if (!player.getWorld().getBlockState(r.getBlockPos()).isAir()) {
-									 * player.getWorld().setBlockState(r.getBlockPos(),
-									 * Blocks.RED_CONCRETE.getDefaultState());
-									 * } else if (player.getWorld().getBlockState(r.getBlockPos()).isAir()) {
-									 * player.getWorld().setBlockState(r.getBlockPos(),
-									 * Blocks.LIME_CONCRETE.getDefaultState());
-									 * }
-									 * 
-									 * }
-									 */
 
 									return 1;
 								}))));
