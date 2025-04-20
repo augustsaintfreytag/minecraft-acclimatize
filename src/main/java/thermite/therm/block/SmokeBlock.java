@@ -26,7 +26,5 @@ public class SmokeBlock extends Block {
 	@Override
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
 		entity.setAir(entity.getAir() - 20);
-		super.onEntityCollision(state, world, pos, entity);
-
 	}
 }

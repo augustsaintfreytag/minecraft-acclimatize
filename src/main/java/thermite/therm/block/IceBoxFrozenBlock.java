@@ -1,7 +1,5 @@
 package thermite.therm.block;
 
-import java.util.Objects;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,6 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import thermite.therm.ThermUtil;
+import thermite.therm.library.ClimateKind;
 
 public class IceBoxFrozenBlock extends Block {
 
@@ -34,23 +33,30 @@ public class IceBoxFrozenBlock extends Block {
 		return ActionResult.SUCCESS;
 	}
 
-	public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		float temp = 23;
-		String climate = "err";
-		if (!world.isClient) {
-			temp = world.getBiome(pos).value().getTemperature();
-			climate = ThermUtil.getClimate(temp);
-			if (Objects.equals(climate, "temperate") || Objects.equals(climate, "hot")) {
-				if (random.nextInt(7) == 0) {
-					world.setBlockState(pos, ThermBlocks.ICE_BOX_FREEZING_BLOCK.getDefaultState());
-				}
-			} else if (Objects.equals(climate, "arid")) {
-				if (random.nextInt(5) == 0) {
-					world.setBlockState(pos, ThermBlocks.ICE_BOX_FREEZING_BLOCK.getDefaultState());
-				}
-			}
+	public void randomTick(BlockState state, ServerWorld world, BlockPos position, Random random) {
+		if (world.isClient()) {
+			return;
 		}
-		super.randomTick(state, world, pos, random);
+
+		var biome = world.getBiome(position).value();
+		var biomeTemperature = biome.getTemperature();
+		var climateKind = ThermUtil.climateKindForTemperature(biomeTemperature);
+
+		if (climateKind == ClimateKind.COLD || climateKind == ClimateKind.FRIGID) {
+			if (random.nextInt(7) == 0) {
+				world.setBlockState(position, ThermBlocks.ICE_BOX_FREEZING_BLOCK.getDefaultState());
+			}
+
+			return;
+		}
+
+		if (climateKind == ClimateKind.ARID) {
+			if (random.nextInt(5) == 0) {
+				world.setBlockState(position, ThermBlocks.ICE_BOX_EMPTY_BLOCK.getDefaultState());
+			}
+
+			return;
+		}
 	}
 
 }

@@ -23,6 +23,7 @@ public class IceBoxEmptyBlock extends Block {
 
 		if (!world.isClient) {
 			ItemStack stack = player.getStackInHand(hand);
+
 			if (stack.getItem() == Items.POTION) {
 				world.setBlockState(pos, ThermBlocks.ICE_BOX_FREEZING_BLOCK.getDefaultState());
 				player.getStackInHand(hand).setCount(player.getStackInHand(hand).getCount() - 1);

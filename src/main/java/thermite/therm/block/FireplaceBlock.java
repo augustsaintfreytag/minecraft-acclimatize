@@ -69,6 +69,8 @@ public class FireplaceBlock extends BlockWithEntity {
 			blockEntity.markDirty();
 			stack.setCount(stack.getCount() - 1);
 			world.playSound(null, pos, SoundEvents.ENTITY_BLAZE_SHOOT, SoundCategory.BLOCKS, 0.25f, 0.5f);
+
+			return ActionResult.SUCCESS;
 		} else if (stack.getItem() == Items.COAL_BLOCK) {
 			world.setBlockState(pos, state.with(LIT, true).with(FACING, state.get(FACING)));
 			FireplaceBlockEntity blockEntity = (FireplaceBlockEntity) world.getBlockEntity(pos);
@@ -76,6 +78,8 @@ public class FireplaceBlock extends BlockWithEntity {
 			blockEntity.markDirty();
 			stack.setCount(stack.getCount() - 1);
 			world.playSound(null, pos, SoundEvents.ENTITY_BLAZE_SHOOT, SoundCategory.BLOCKS, 0.25f, 0.5f);
+
+			return ActionResult.SUCCESS;
 		} else if (stack.getItem() == Items.STICK) {
 			world.setBlockState(pos, state.with(LIT, true).with(FACING, state.get(FACING)));
 			FireplaceBlockEntity blockEntity = (FireplaceBlockEntity) world.getBlockEntity(pos);
@@ -83,9 +87,11 @@ public class FireplaceBlock extends BlockWithEntity {
 			blockEntity.markDirty();
 			stack.setCount(stack.getCount() - 1);
 			world.playSound(null, pos, SoundEvents.ENTITY_BLAZE_SHOOT, SoundCategory.BLOCKS, 0.25f, 0.5f);
+
+			return ActionResult.SUCCESS;
 		}
 
-		return super.onUse(state, world, pos, player, hand, hit);
+		return ActionResult.PASS;
 	}
 
 	@Override
