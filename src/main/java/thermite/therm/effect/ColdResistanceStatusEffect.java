@@ -5,8 +5,8 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.player.PlayerEntity;
 
-public class CoolingStatusEffect extends StatusEffect {
-	public CoolingStatusEffect() {
+public class ColdResistanceStatusEffect extends StatusEffect {
+	public ColdResistanceStatusEffect() {
 		super(
 				StatusEffectCategory.NEUTRAL,
 				0x6bb0ff);

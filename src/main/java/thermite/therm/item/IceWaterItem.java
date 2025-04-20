@@ -15,9 +15,9 @@ import net.minecraft.world.World;
 import thermite.therm.ThermMod;
 import thermite.therm.effect.ThermStatusEffects;
 
-public class IceJuiceItem extends Item {
+public class IceWaterItem extends Item {
 
-	public IceJuiceItem(Settings settings) {
+	public IceWaterItem(Settings settings) {
 		super(settings);
 	}
 
@@ -33,7 +33,6 @@ public class IceJuiceItem extends Item {
 
 	@Override
 	public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
-
 		PlayerEntity playerEntity = user instanceof PlayerEntity ? (PlayerEntity) user : null;
 
 		playerEntity.playSound(SoundEvents.ENTITY_WANDERING_TRADER_DRINK_POTION, 1.0F, 1.0F);
@@ -43,8 +42,8 @@ public class IceJuiceItem extends Item {
 			playerEntity.getStackInHand(hand).setCount(playerEntity.getStackInHand(hand).getCount() - 1);
 			playerEntity.getInventory().insertStack(new ItemStack(Items.GLASS_BOTTLE));
 
-			playerEntity.addStatusEffect(new StatusEffectInstance(ThermStatusEffects.COOLING,
-					ThermMod.config.iceJuiceEffectDuration, 0, false, true));
+			playerEntity.addStatusEffect(new StatusEffectInstance(ThermStatusEffects.COLD_RESISTANCE,
+					ThermMod.config.iceWaterEffectDuration, 0, false, true));
 		}
 
 		return super.finishUsing(stack, world, user);
