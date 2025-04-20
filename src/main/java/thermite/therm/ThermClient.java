@@ -12,11 +12,11 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import thermite.therm.networking.ThermNetworkingPackets;
+import thermite.therm.util.ItemTemperatureUtil;
 
 public class ThermClient implements ClientModInitializer {
 
@@ -121,24 +121,8 @@ public class ThermClient implements ClientModInitializer {
 				return;
 			}
 
-			var nbt = stack.getNbt();
-
-			int warmth = nbt.getInt("wool");
-
-			// TODO: Write unified `temperatureForItem` and use here.
-			// Safeguard against null values given, see crash log.
-
-			if (stack.isOf(Items.LEATHER_HELMET)) {
-				warmth += ThermMod.config.helmetTemperatureItems.get("leather_helmet");
-			} else if (stack.isOf(Items.LEATHER_CHESTPLATE)) {
-				warmth += ThermMod.config.chestplateTemperatureItems.get("leather_chestplate");
-			} else if (stack.isOf(Items.LEATHER_LEGGINGS)) {
-				warmth += ThermMod.config.leggingTemperatureItems.get("leather_leggings");
-			} else if (stack.isOf(Items.LEATHER_BOOTS)) {
-				warmth += ThermMod.config.bootTemperatureItems.get("leather_boots");
-			}
-
-			list.add(Text.literal("§9+" + warmth + " Warmth"));
+			var temperature = ItemTemperatureUtil.temperatureValueForItem(stack);
+			list.add(Text.literal("§9+" + temperature + " Temperature"));
 
 		});
 
