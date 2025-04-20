@@ -4,32 +4,31 @@ import java.util.ArrayList;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import thermite.therm.util.BlockStatePosPair;
+import thermite.therm.library.BlockStatePositionTuple;
+import thermite.therm.library.ClimateKind;
 
 public class ThermUtil {
 
-	public static String getClimate(float temp) {
-		String climate = "n";
-
-		if (temp < 0.0) {
-			climate = "frigid";
-		} else if (temp < 0.31 && temp >= 0.0) {
-			climate = "cold";
-		} else if (temp < 0.9 && temp >= 0.31) {
-			climate = "temperate";
-		} else if (temp < 2.0 && temp > 0.8) {
-			climate = "hot";
-		} else if (temp >= 2.0) {
-			climate = "arid";
+	public static ClimateKind climateKindForTemperature(float temperature) {
+		if (temperature < 0.0) {
+			return ClimateKind.FRIGID;
+		} else if (temperature < 0.31 && temperature >= 0.0) {
+			return ClimateKind.COLD;
+		} else if (temperature < 0.9 && temperature >= 0.31) {
+			return ClimateKind.TEMPERATE;
+		} else if (temperature < 2.0 && temperature > 0.8) {
+			return ClimateKind.HOT;
+		} else if (temperature >= 2.0) {
+			return ClimateKind.ARID;
 		}
 
-		return climate;
+		return ClimateKind.ARID;
 	}
 
-	public static ArrayList<BlockStatePosPair> getBlockBox(World world, int x1, int y1, int z1, int x2, int y2,
+	public static ArrayList<BlockStatePositionTuple> getBlockBox(World world, int x1, int y1, int z1, int x2, int y2,
 			int z2) {
 
-		ArrayList<BlockStatePosPair> arr = new ArrayList<>();
+		ArrayList<BlockStatePositionTuple> arr = new ArrayList<>();
 
 		int y = 0;
 		int z = 0;
@@ -41,7 +40,7 @@ public class ThermUtil {
 		for (int x = 0; x < width;) {
 			for (y = 0; y < height;) {
 				for (z = 0; z < depth;) {
-					arr.add(new BlockStatePosPair(world.getBlockState(new BlockPos(x1 + x, y1 + y, z1 + z)),
+					arr.add(new BlockStatePositionTuple(world.getBlockState(new BlockPos(x1 + x, y1 + y, z1 + z)),
 							new BlockPos(x1 + x, y1 + y, z1 + z)));
 					z++;
 				}

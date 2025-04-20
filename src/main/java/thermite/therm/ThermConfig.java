@@ -26,7 +26,7 @@ public class ThermConfig extends Config {
 	@ConfigEntry(comment = "Length of winter (Default 48000 half seconds = 20 days).")
 	public long winterSeasonLength = 48000;
 
-	@ConfigEntry(comment = "This option doesn't work yet.")
+	@ConfigEntry(comment = "Not implemented.")
 	public String startingSeason = "spring";
 
 	@ConfigEntry(comment = "Multiplier for how much seasons affect your temperature.")
@@ -63,104 +63,134 @@ public class ThermConfig extends Config {
 	@ConfigEntry(comment = "When enabled, particles will spawn showing the direction that the wind is flowing. More wind = more particles. (Default: true)")
 	public boolean enableWindParticles = true;
 
-	// Game
+	// Player
 
-	@ConfigEntry(comment = "How quick your body temperature loses heat to the environment. (Default: 1.0)")
-	public float coolingAcclimatizationRate = 1.0f;
+	@ConfigEntry(comment = "How quick your body temperature absorbs or loses heat to the environment. (Default: 1.0)")
+	public double acclimatizationRate = 0.25;
 
-	@ConfigEntry(comment = "How quick your body temperature takes up heat from the environment. (Default: 1.0)")
-	public float heatingAcclimatizationRate = 1.0f;
+	// Player Damage
 
 	@ConfigEntry(comment = "Hyperthermia damage per 5 seconds. (Default: 1.0)")
-	public float hyperthermiaDamage = 1.5f;
+	public double hyperthermiaDamage = 1.5;
 
 	@ConfigEntry(comment = "Hypothermia damage per 5 seconds. (Default: 1.0)")
-	public float hypothermiaDamage = 1.5f;
-
-	@ConfigEntry(comment = "Multiplier for how much each level of fire protection cools you (Default: 1f)")
-	public float fireProtectionCoolingMultiplier = 1f;
-
-	@ConfigEntry(comment = "Helmets that will change your temperature.")
-	public Map<String, Integer> helmetTempItems = new HashMap(Map.of("leather_helmet", 1));
-
-	@ConfigEntry(comment = "Chestplates that will change your temperature.")
-	public Map<String, Integer> chestplateTempItems = new HashMap(Map.of("leather_chestplate", 3));
-
-	@ConfigEntry(comment = "Leggings that will change your temperature.")
-	public Map<String, Integer> leggingTempItems = new HashMap(Map.of("leather_leggings", 2));
-
-	@ConfigEntry(comment = "Boots that will change your temperature.")
-	public Map<String, Integer> bootTempItems = new HashMap(Map.of("leather_boots", 1));
-
-	@ConfigEntry(comment = "Items that when held will change your temperature.")
-	public Map<String, Integer> heldTempItems = new HashMap(Map.of("torch", 3, "lava_bucket", 3));
-
-	@ConfigEntry(comment = "Blocks that will heat you up when near.")
-	public Map<String, Integer> heatingBlocks = new HashMap(Map.ofEntries(
-			Map.entry("Block{minecraft:fire}", 3),
-			Map.entry("Block{minecraft:lava}", 1),
-			Map.entry("Block{minecraft:campfire}", 15),
-			Map.entry("Block{minecraft:torch}", 1),
-			Map.entry("Block{minecraft:wall_torch}", 1),
-			Map.entry("Block{minecraft:soul_torch}", 1),
-			Map.entry("Block{minecraft:soul_wall_torch}", 3),
-			Map.entry("Block{minecraft:soul_campfire}", 15),
-			Map.entry("Block{minecraft:lava_cauldron}", 6),
-			Map.entry("Block{minecraft:furnace}[facing=north,lit=true]", 8),
-			Map.entry("Block{minecraft:furnace}[facing=east,lit=true]", 8),
-			Map.entry("Block{minecraft:furnace}[facing=south,lit=true]", 8),
-			Map.entry("Block{minecraft:furnace}[facing=west,lit=true]", 8),
-			Map.entry("Block{minecraft:blast_furnace}[facing=north,lit=true]", 8),
-			Map.entry("Block{minecraft:blast_furnace}[facing=east,lit=true]", 8),
-			Map.entry("Block{minecraft:blast_furnace}[facing=south,lit=true]", 8),
-			Map.entry("Block{minecraft:blast_furnace}[facing=west,lit=true]", 8),
-			Map.entry("Block{minecraft:smoker}[facing=north,lit=true]", 6),
-			Map.entry("Block{minecraft:smoker}[facing=east,lit=true]", 6),
-			Map.entry("Block{minecraft:smoker}[facing=south,lit=true]", 6),
-			Map.entry("Block{minecraft:smoker}[facing=west,lit=true]", 6)));
-
-	@ConfigEntry(comment = "Blocks that will cool you down when near.")
-	public Map<String, Integer> coolingBlocks = new HashMap(Map.ofEntries(
-			Map.entry("Block{minecraft:ice}", 1),
-			Map.entry("Block{minecraft:packed_ice}", 3),
-			Map.entry("Block{minecraft:blue_ice}", 6),
-			Map.entry("Block{minecraft:powder_snow}", 1)));
-
-	@ConfigEntry(comment = "Base temperature for frigid climates. (Default: 25.0)")
-	public double frigidClimateTemp = 25;
-
-	@ConfigEntry(comment = "Base temperature for cold climates. (Default: 30.0)")
-	public double coldClimateTemp = 30;
-
-	@ConfigEntry(comment = "Base temperature for temperate climates. (Default: 50.0)")
-	public double temperateClimateTemp = 50;
-
-	@ConfigEntry(comment = "Base temperature for hot climates. (Default: 55.0)")
-	public double hotClimateTemp = 55;
-
-	@ConfigEntry(comment = "Base temperature for arid climates. (Default: 70.0)")
-	public double aridClimateTemp = 70;
-
-	@ConfigEntry(comment = "First threshold for hypothermia, being below this you will start to freeze (Default: 35)")
-	public int freezeThreshold1 = 35;
-
-	@ConfigEntry(comment = "Second threshold for hypothermia, being below this you will freeze faster. (Default: 25)")
-	public int freezeThreshold2 = 25;
-
-	@ConfigEntry(comment = "First threshold for hyperthermia, being above this you will start to burn (Default: 65)")
-	public int burnThreshold1 = 65;
-
-	@ConfigEntry(comment = "Second threshold for hyperthermia, being above this you will burn faster (Default: 75)")
-	public int burnThreshold2 = 75;
+	public double hypothermiaDamage = 1.5;
 
 	@ConfigEntry(comment = "Damage interval for hypothermia and hyperthermia in seconds (Default: 3)")
 	public int temperatureDamageInterval = 3;
 
 	@ConfigEntry(comment = "Damage interval for extreme hypothermia and hyperthermia in seconds (Default: 2)")
-	public int extremetemperatureDamageInterval = 2;
+	public int extremeTemperatureDamageInterval = 2;
 
-	@ConfigEntry(comment = "Duration of the cooling effect of ice juice in ticks. (Default: 6000)")
-	public int iceJuiceEffectDuration = 6000;
+	// Item Effects
+
+	@ConfigEntry(comment = "Multiplier for how much each level of fire protection cools you (Default: -1.0)")
+	public double fireProtectionCoolingMultiplier = -1.0;
+
+	@ConfigEntry(comment = "Multiplier for how much each level of cold protection warms you (Default: 1.0)")
+	public double coldProtectionCoolingMultiplier = 1.0;
+
+	@ConfigEntry(comment = "Duration of the cooling effect of ice water in ticks. (Default: 6000)")
+	public int iceWaterEffectDuration = 6000;
+
+	// Wearables Effects
+
+	@ConfigEntry(comment = "Helmets that will change your temperature.")
+	public Map<String, Double> helmetTemperatureItems = new HashMap<>() {
+		{
+			put("minecraft:leather_helmet", 1.0);
+		}
+	};
+
+	@ConfigEntry(comment = "Chestplates that will change your temperature.")
+	public Map<String, Double> chestplateTemperatureItems = new HashMap<>() {
+		{
+			put("minecraft:leather_chestplate", 3.0);
+		}
+	};
+
+	@ConfigEntry(comment = "Leggings that will change your temperature.")
+	public Map<String, Double> leggingTemperatureItems = new HashMap<>() {
+		{
+			put("minecraft:leather_leggings", 2.0);
+		}
+	};
+
+	@ConfigEntry(comment = "Boots that will change your temperature.")
+	public Map<String, Double> bootTemperatureItems = new HashMap<>() {
+		{
+			put("minecraft:leather_boots", 1.0);
+		}
+	};
+
+	@ConfigEntry(comment = "Items that when held will change your temperature.")
+	public Map<String, Double> heldTemperatureItems = new HashMap<>() {
+		{
+			put("minecraft:torch", 1.0);
+			put("minecraft:lava_bucket", 1.0);
+		}
+	};
+
+	@ConfigEntry(comment = "Blocks that will heat you up when near.")
+	public Map<String, Double> heatingBlocks = new HashMap<>() {
+		{
+			put("minecraft:fire", 3.0);
+			put("minecraft:lava", 2.0);
+			put("minecraft:campfire", 15.0);
+			put("minecraft:torch", 1.0);
+			put("minecraft:wall_torch", 1.0);
+			put("minecraft:soul_torch", 1.0);
+			put("minecraft:soul_wall_torch", 3.0);
+			put("minecraft:soul_campfire", 15.0);
+			put("minecraft:lava_cauldron", 2.0);
+			put("minecraft:furnace", 15.0);
+			put("minecraft:blast_furnace", 15.0);
+			put("minecraft:smoker", 15.0);
+		}
+	};
+
+	@ConfigEntry(comment = "Blocks that will cool you down when near.")
+	public Map<String, Double> coolingBlocks = new HashMap<>() {
+		{
+			put("minecraft:ice", -1.0);
+			put("minecraft:packed_ice", -3.0);
+			put("minecraft:blue_ice", -6.0);
+			put("minecraft:powder_snow", -1.0);
+		}
+	};
+
+	// Ambient Temperatures
+
+	@ConfigEntry(comment = "Base temperature for frigid climates. (Default: 25.0)")
+	public double frigidClimateTemperature = 25;
+
+	@ConfigEntry(comment = "Base temperature for cold climates. (Default: 30.0)")
+	public double coldClimateTemperature = 30;
+
+	@ConfigEntry(comment = "Base temperature for temperate climates. (Default: 50.0)")
+	public double temperateClimateTemperature = 50;
+
+	@ConfigEntry(comment = "Base temperature for hot climates. (Default: 55.0)")
+	public double hotClimateTemperature = 55;
+
+	@ConfigEntry(comment = "Base temperature for arid climates. (Default: 70.0)")
+	public double aridClimateTemperature = 70;
+
+	// Damage Thresholds
+
+	@ConfigEntry(comment = "First threshold for hypothermia, being below this you will start to freeze (Default: 35)")
+	public double freezeThresholdMinor = 35;
+
+	@ConfigEntry(comment = "Second threshold for hypothermia, being below this you will freeze faster. (Default: 25)")
+	public double freezeThresholdMajor = 25;
+
+	@ConfigEntry(comment = "First threshold for hyperthermia, being above this you will start to burn (Default: 65)")
+	public double burnThresholdMinor = 65;
+
+	@ConfigEntry(comment = "Second threshold for hyperthermia, being above this you will burn faster (Default: 75)")
+	public double burnThresholdMajor = 75;
+
+	// Wind
 
 	@ConfigEntry(comment = "Disables or enables wind. (Default: true)")
 	public boolean enableWind = true;
@@ -173,6 +203,8 @@ public class ThermConfig extends Config {
 
 	@ConfigEntry(comment = "How many blocks long wind rays are. (Default: 32)")
 	public int windRayLength = 32;
+
+	// Init
 
 	public ThermConfig() {
 		super(ConfigOptions.mod(ThermMod.modid));

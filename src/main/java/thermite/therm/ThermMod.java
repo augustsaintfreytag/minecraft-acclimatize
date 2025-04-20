@@ -29,17 +29,18 @@ import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
 import thermite.therm.block.ThermBlocks;
 import thermite.therm.block.entity.FireplaceBlockEntity;
 import thermite.therm.effect.ThermStatusEffects;
 import thermite.therm.item.GoldSweetBerriesItem;
-import thermite.therm.item.IceJuiceItem;
+import thermite.therm.item.IceWaterItem;
 import thermite.therm.item.TesterItem;
 import thermite.therm.item.ThermometerItem;
 import thermite.therm.item.WoolClothItem;
 import thermite.therm.networking.ThermNetworkingPackets;
+import thermite.therm.player.PlayerState;
 import thermite.therm.recipe.LeatherArmorWoolRecipe;
+import thermite.therm.server.ServerState;
 
 public class ThermMod implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("therm");
@@ -48,9 +49,9 @@ public class ThermMod implements ModInitializer {
 
 	// Items
 
-	public static final GoldSweetBerriesItem GOLD_SWEET_BERRIES_ITEM = new GoldSweetBerriesItem(
+	public static final GoldSweetBerriesItem GOLDEN_SWEET_BERRIES_ITEM = new GoldSweetBerriesItem(
 			new FabricItemSettings().maxCount(64));
-	public static final IceJuiceItem ICE_JUICE_ITEM = new IceJuiceItem(new FabricItemSettings().maxCount(16));
+	public static final IceWaterItem ICE_WATER_ITEM = new IceWaterItem(new FabricItemSettings().maxCount(16));
 	public static final ThermometerItem THERMOMETER_ITEM = new ThermometerItem(new FabricItemSettings().maxCount(1));
 	public static final WoolClothItem WOOL_CLOTH_ITEM = new WoolClothItem(new FabricItemSettings().maxCount(64));
 	public static final TesterItem TESTER_ITEM = new TesterItem(new FabricItemSettings().maxCount(1));
@@ -92,12 +93,13 @@ public class ThermMod implements ModInitializer {
 
 		// Status Effects
 
-		Registry.register(Registries.STATUS_EFFECT, new Identifier(modid, "cooling"), ThermStatusEffects.COOLING);
+		Registry.register(Registries.STATUS_EFFECT, new Identifier(modid, "cooling"),
+				ThermStatusEffects.COLD_RESISTANCE);
 
 		// Items
 
-		Registry.register(Registries.ITEM, new Identifier(modid, "gold_sweet_berries"), GOLD_SWEET_BERRIES_ITEM);
-		Registry.register(Registries.ITEM, new Identifier(modid, "ice_juice"), ICE_JUICE_ITEM);
+		Registry.register(Registries.ITEM, new Identifier(modid, "golden_sweet_berries"), GOLDEN_SWEET_BERRIES_ITEM);
+		Registry.register(Registries.ITEM, new Identifier(modid, "ice_water"), ICE_WATER_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modid, "thermometer"), THERMOMETER_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modid, "wool_cloth"), WOOL_CLOTH_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modid, "tester_item"), TESTER_ITEM);
@@ -121,8 +123,8 @@ public class ThermMod implements ModInitializer {
 		// Item Groups
 
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK).register(content -> {
-			content.add(GOLD_SWEET_BERRIES_ITEM);
-			content.add(ICE_JUICE_ITEM);
+			content.add(GOLDEN_SWEET_BERRIES_ITEM);
+			content.add(ICE_WATER_ITEM);
 		});
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(content -> {
 			content.add(THERMOMETER_ITEM);
@@ -142,11 +144,10 @@ public class ThermMod implements ModInitializer {
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 
 			ServerState serverState = ServerState.getServerState(handler.player.getWorld().getServer());
-			ThermPlayerState playerState = ServerState.getPlayerState(handler.player);
 
 			if (!Objects.equals(serverState.worldVersion, modVersion)) {
 				serverState.windRandomizeTick = 24000;
-				serverState.windTempModifierRange = 8;
+				serverState.windTemperatureModifierRange = 8;
 				serverState.worldVersion = modVersion;
 
 				serverState.players.forEach((uuid, state) -> {
@@ -164,12 +165,15 @@ public class ThermMod implements ModInitializer {
 			if (serverState.windRandomizeTick >= 24000) {
 				serverState.windRandomizeTick = 0;
 
-				Random rand = new Random();
+				var random = server.getOverworld().getRandom();
+
 				serverState.windPitch = 360 * Math.PI / 180;
-				serverState.windYaw = rand.nextDouble(0, 360) * Math.PI / 180;
-				serverState.windTempModifier = rand.nextDouble(-serverState.windTempModifierRange,
-						serverState.windTempModifierRange);
-				serverState.precipitationWindModifier = rand.nextDouble(-serverState.windTempModifierRange, 0);
+				serverState.windYaw = random.nextDouble() * 360 * Math.PI / 180;
+				serverState.windTemperatureModifier = -serverState.windTemperatureModifierRange
+						+ random.nextDouble() * serverState.windTemperatureModifierRange * 2;
+				serverState.precipitationWindModifier = -serverState.windTemperatureModifierRange
+						+ random.nextDouble() * -serverState.windTemperatureModifierRange;
+
 				serverState.markDirty();
 			}
 
@@ -186,14 +190,14 @@ public class ThermMod implements ModInitializer {
 
 									ServerState serverState = ServerState.getServerState(
 											EntityArgumentType.getPlayer(context, "player").getWorld().getServer());
-									ThermPlayerState playerState = ServerState
+									PlayerState playerState = ServerState
 											.getPlayerState(EntityArgumentType.getPlayer(context, "player"));
 
-									playerState.temp = 50;
-									playerState.tempRate = 0.0625;
-									playerState.restingTemp = 404;
-									playerState.minTemp = -400;
-									playerState.maxTemp = 400;
+									playerState.bodyTemperature = 50;
+									playerState.temperatureRate = 0.0625;
+									playerState.ambientTemperature = 404;
+									playerState.ambientMinTemperature = -400;
+									playerState.ambientMaxTemperature = 400;
 									playerState.damageType = "";
 									playerState.damageTick = 0;
 									playerState.maxDamageTick = 10;
@@ -212,22 +216,28 @@ public class ThermMod implements ModInitializer {
 						.then(argument("player", EntityArgumentType.player())
 								.executes(context -> {
 
-									ServerState serverState = ServerState.getServerState(
-											EntityArgumentType.getPlayer(context, "player").getWorld().getServer());
+									var player = EntityArgumentType.getPlayer(context, "player");
+									var world = player.getWorld();
+									var server = world.getServer();
 
-									Random rand = new Random();
-									serverState.windYaw = rand.nextDouble(0, 360) * Math.PI / 180;
+									var serverState = ServerState.getServerState(server);
+									var random = server.getOverworld().getRandom();
+
 									serverState.windPitch = 360 * Math.PI / 180;
-									serverState.windTempModifier = rand.nextDouble(-serverState.windTempModifierRange,
-											serverState.windTempModifierRange);
-									serverState.precipitationWindModifier = rand
-											.nextDouble(-serverState.windTempModifierRange, 0);
+									serverState.windYaw = random.nextDouble() * 360 * Math.PI / 180;
+									serverState.windTemperatureModifier = -serverState.windTemperatureModifierRange
+											+ random.nextDouble() * serverState.windTemperatureModifierRange * 2;
+									serverState.precipitationWindModifier = -serverState.windTemperatureModifierRange
+											+ random.nextDouble() * -serverState.windTemperatureModifierRange;
+
 									serverState.markDirty();
+
 									context.getSource().sendMessage(Text.literal("Wind Randomized."));
 									context.getSource().sendMessage(
 											Text.literal("Wind Yaw: " + serverState.windYaw * 180 / Math.PI));
 									context.getSource().sendMessage(
-											Text.literal("Wind Temperature Modifier: " + serverState.windTempModifier));
+											Text.literal("Wind Temperature Modifier: "
+													+ serverState.windTemperatureModifier));
 									context.getSource().sendMessage(Text.literal(
 											"Precipitation Modifier: " + serverState.precipitationWindModifier));
 
@@ -261,7 +271,8 @@ public class ThermMod implements ModInitializer {
 							context.getSource()
 									.sendMessage(Text.literal("§eWind Yaw: §6" + serverState.windYaw * 180 / Math.PI));
 							context.getSource().sendMessage(
-									Text.literal("§eWind Temperature Modifier: §6" + serverState.windTempModifier));
+									Text.literal(
+											"§eWind Temperature Modifier: §6" + serverState.windTemperatureModifier));
 							context.getSource().sendMessage(Text
 									.literal("§ePrecipitation Modifier: §6" + serverState.precipitationWindModifier));
 							context.getSource().sendMessage(

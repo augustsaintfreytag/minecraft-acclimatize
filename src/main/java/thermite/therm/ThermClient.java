@@ -9,25 +9,22 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
-import thermite.therm.client.TemperatureHudOverlay;
 import thermite.therm.networking.ThermNetworkingPackets;
 
 public class ThermClient implements ClientModInitializer {
 
 	public static long clientStoredTemperature = 70;
-	public static short clientStoredTempDir = 32;
+	public static short clientStoredTemperatureDifference = 32;
 	public static double clientStoredWindPitch = 0;
 	public static double clientStoredWindYaw = 0;
-	public static double clientStoredWindTemp = 0;
+	public static double clientStoredWindTemperature = 0;
 
 	public static boolean windParticles = false;
 
@@ -46,16 +43,12 @@ public class ThermClient implements ClientModInitializer {
 	public void onInitializeClient() {
 
 		showGuiKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-				"Toggle Temperature Gui",
+				"Toggle Temperature GUI",
 				InputUtil.Type.KEYSYM,
 				GLFW.GLFW_KEY_UNKNOWN,
 				"Thermite"));
 
 		ThermNetworkingPackets.registerS2CPackets();
-
-		// HUD
-
-		HudRenderCallback.EVENT.register(new TemperatureHudOverlay());
 
 		// Tick
 
@@ -82,14 +75,14 @@ public class ThermClient implements ClientModInitializer {
 					if (windParticles && ThermMod.config.enableWindParticles) {
 						Random rand = new Random();
 
-						int bound = 16 + (int) clientStoredWindTemp;
+						int bound = 16 + (int) clientStoredWindTemperature;
 						if (bound <= 0) {
 							bound = 1;
 						}
 
 						int shouldSpawn = rand.nextInt(0, bound);
 
-						if (clientStoredWindTemp < -3 && shouldSpawn == 0) {
+						if (clientStoredWindTemperature < -3 && shouldSpawn == 0) {
 							for (int i = 0; i < 1; i++) {
 								Vec3d dir = new Vec3d((Math.cos(clientStoredWindPitch) * Math.cos(clientStoredWindYaw)),
 										(Math.sin(clientStoredWindPitch) * Math.cos(clientStoredWindYaw)),
@@ -124,24 +117,28 @@ public class ThermClient implements ClientModInitializer {
 		});
 
 		ItemTooltipCallback.EVENT.register((stack, tooltipContext, list) -> {
-
-			if (stack.getNbt() != null) {
-				NbtCompound nbt = stack.getNbt();
-				int warmth = nbt.getInt("wool");
-				if (stack.isOf(Items.LEATHER_HELMET)) {
-					warmth += ThermMod.config.helmetTempItems.get("leather_helmet");
-					list.add(Text.literal("§9+" + warmth + " Warmth"));
-				} else if (stack.isOf(Items.LEATHER_CHESTPLATE)) {
-					warmth += ThermMod.config.chestplateTempItems.get("leather_chestplate");
-					list.add(Text.literal("§9+" + warmth + " Warmth"));
-				} else if (stack.isOf(Items.LEATHER_LEGGINGS)) {
-					warmth += ThermMod.config.leggingTempItems.get("leather_leggings");
-					list.add(Text.literal("§9+" + warmth + " Warmth"));
-				} else if (stack.isOf(Items.LEATHER_BOOTS)) {
-					warmth += ThermMod.config.bootTempItems.get("leather_boots");
-					list.add(Text.literal("§9+" + warmth + " Warmth"));
-				}
+			if (stack == null || !stack.hasNbt()) {
+				return;
 			}
+
+			var nbt = stack.getNbt();
+
+			int warmth = nbt.getInt("wool");
+
+			// TODO: Write unified `temperatureForItem` and use here.
+			// Safeguard against null values given, see crash log.
+
+			if (stack.isOf(Items.LEATHER_HELMET)) {
+				warmth += ThermMod.config.helmetTemperatureItems.get("leather_helmet");
+			} else if (stack.isOf(Items.LEATHER_CHESTPLATE)) {
+				warmth += ThermMod.config.chestplateTemperatureItems.get("leather_chestplate");
+			} else if (stack.isOf(Items.LEATHER_LEGGINGS)) {
+				warmth += ThermMod.config.leggingTemperatureItems.get("leather_leggings");
+			} else if (stack.isOf(Items.LEATHER_BOOTS)) {
+				warmth += ThermMod.config.bootTemperatureItems.get("leather_boots");
+			}
+
+			list.add(Text.literal("§9+" + warmth + " Warmth"));
 
 		});
 
