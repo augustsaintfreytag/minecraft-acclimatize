@@ -1,11 +1,12 @@
 {
-	"item.therm.gold_sweet_berries": "Shimmering Sweet berries",
-	"item.therm.ice_juice": "Bottle of Ice Juice",
+	"item.therm.golden_sweet_berries": "Golden Sweet Berries",
+	"item.therm.ice_water": "Bottle of Ice Water",
 	"item.therm.thermometer": "Thermometer",
 	"item.therm.wool_cloth": "Wool Cloth",
+	"item.therm.tester_item": "Temperature Tester",
 	"block.therm.ice_box_empty": "Empty Ice Box",
 	"block.therm.ice_box_freezing": "Freezing Ice Box",
 	"block.therm.ice_box_frozen": "Frozen Ice Box",
 	"block.therm.fireplace": "Brick Fireplace",
-	"effect.therm.cooling": "Cooling"
+	"effect.therm.cooling": "Cold Resistance"
 }
