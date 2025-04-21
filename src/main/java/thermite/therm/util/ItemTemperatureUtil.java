@@ -14,14 +14,14 @@ public final class ItemTemperatureUtil {
 		var temperature = 0f;
 
 		for (var itemStack : player.getArmorItems()) {
-			var temperatureValue = temperatureValueForItem(player, itemStack);
+			var temperatureValue = temperatureValueForItem(itemStack);
 			temperature += temperatureValue;
 		}
 
 		return temperature;
 	}
 
-	public static double temperatureValueForItem(ServerPlayerEntity player, ItemStack itemStack) {
+	public static double temperatureValueForItem(ItemStack itemStack) {
 		var itemId = itemStack.getTranslationKey();
 
 		if (!armorItems.containsKey(itemId)) {

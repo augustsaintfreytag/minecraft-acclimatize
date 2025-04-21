@@ -6,8 +6,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.FurnaceBlock;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import thermite.therm.ThermMod;
 
 public final class EnvironmentalTemperatureUtil {
@@ -24,7 +27,7 @@ public final class EnvironmentalTemperatureUtil {
 				for (int z = -radius; z <= radius; z++) {
 					var blockPosition = centerPosition.add(x, y, z);
 					var state = world.getBlockState(blockPosition);
-					var temperatureDelta = temperatureDeltaForBlock(blockPosition, state);
+					var temperatureDelta = temperatureDeltaForBlock(world, blockPosition, state);
 
 					aggregateTemperatureDelta += temperatureDelta;
 				}
@@ -44,22 +47,32 @@ public final class EnvironmentalTemperatureUtil {
 		return -10.0;
 	}
 
-	private static double temperatureDeltaForBlock(BlockPos position, BlockState state) {
-		var blockId = state.getBlock().toString();
-		var rawBlockTemperature = rawBlockTemperatureForId(blockId);
+	private static double temperatureDeltaForBlock(World world, BlockPos position, BlockState state) {
+		var block = state.getBlock();
+		var blockId = Registries.BLOCK.getId(block).toString();
+		var blockTemperature = rawBlockTemperatureForId(blockId);
+
+		if (blockTemperature == 0) {
+			return 0.0;
+		}
 
 		// Block-specific exceptions
 
 		if ((state.isOf(Blocks.CAMPFIRE) || state.isOf(Blocks.SOUL_CAMPFIRE)) && !state.get(CampfireBlock.LIT)) {
-			rawBlockTemperature = 0.0;
+			return 0.0;
 		}
 
 		if ((state.isOf(Blocks.FURNACE) || state.isOf(Blocks.BLAST_FURNACE) || state.isOf(Blocks.SMOKER))
 				&& !state.get(FurnaceBlock.LIT)) {
-			rawBlockTemperature = 0.0;
+			return 0.0;
 		}
 
-		return rawBlockTemperature;
+		if ((blockId.contains("lamp") || blockId.contains("light"))
+				&& (!state.contains(Properties.POWERED) || state.getLuminance() == 0)) {
+			return 0.0;
+		}
+
+		return blockTemperature;
 	}
 
 	private static double rawBlockTemperatureForId(String blockId) {
