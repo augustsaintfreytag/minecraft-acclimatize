@@ -15,8 +15,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -30,7 +28,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import thermite.therm.block.ThermBlocks;
-import thermite.therm.block.entity.FireplaceBlockEntity;
 import thermite.therm.effect.ThermStatusEffects;
 import thermite.therm.item.GoldSweetBerriesItem;
 import thermite.therm.item.IceWaterItem;
@@ -64,14 +61,6 @@ public class ThermMod implements ModInitializer {
 			new FabricItemSettings());
 	public static final BlockItem ICE_BOX_FROZEN_ITEM = new BlockItem(ThermBlocks.ICE_BOX_FROZEN_BLOCK,
 			new FabricItemSettings());
-	public static final BlockItem FIREPLACE_ITEM = new BlockItem(ThermBlocks.FIREPLACE_BLOCK, new FabricItemSettings());
-
-	// Block Entities
-
-	public static final BlockEntityType<FireplaceBlockEntity> FIREPLACE_BLOCK_ENTITY = Registry.register(
-			Registries.BLOCK_ENTITY_TYPE,
-			new Identifier(modid, "fireplace_block_entity"),
-			FabricBlockEntityTypeBuilder.create(FireplaceBlockEntity::new, ThermBlocks.FIREPLACE_BLOCK).build());
 
 	// Special Recipes
 
@@ -110,7 +99,6 @@ public class ThermMod implements ModInitializer {
 		Registry.register(Registries.BLOCK, new Identifier(modid, "ice_box_freezing"),
 				ThermBlocks.ICE_BOX_FREEZING_BLOCK);
 		Registry.register(Registries.BLOCK, new Identifier(modid, "ice_box_frozen"), ThermBlocks.ICE_BOX_FROZEN_BLOCK);
-		Registry.register(Registries.BLOCK, new Identifier(modid, "fireplace"), ThermBlocks.FIREPLACE_BLOCK);
 		Registry.register(Registries.BLOCK, new Identifier(modid, "smoke"), ThermBlocks.SMOKE_BLOCK);
 
 		// Block Item Registry
@@ -118,7 +106,6 @@ public class ThermMod implements ModInitializer {
 		Registry.register(Registries.ITEM, new Identifier(modid, "ice_box_empty_item"), ICE_BOX_EMPTY_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modid, "ice_box_freezing_item"), ICE_BOX_FREEZING_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modid, "ice_box_frozen_item"), ICE_BOX_FROZEN_ITEM);
-		Registry.register(Registries.ITEM, new Identifier(modid, "fireplace_item"), FIREPLACE_ITEM);
 
 		// Item Groups
 
@@ -131,7 +118,6 @@ public class ThermMod implements ModInitializer {
 		});
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register(content -> {
 			content.add(ICE_BOX_EMPTY_ITEM);
-			content.add(FIREPLACE_ITEM);
 		});
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register(content -> {
 			content.add(WOOL_CLOTH_ITEM);

@@ -10,9 +10,6 @@ public class ThermBlocks {
 			FabricBlockSettings.create().strength(1.0f).ticksRandomly());
 	public static final IceBoxFrozenBlock ICE_BOX_FROZEN_BLOCK = new IceBoxFrozenBlock(
 			FabricBlockSettings.create().strength(2.0f).ticksRandomly());
-
-	public static final FireplaceBlock FIREPLACE_BLOCK = new FireplaceBlock(FabricBlockSettings.create().requiresTool()
-			.strength(3.5f).luminance(state -> state.get(FireplaceBlock.LIT) != false ? 15 : 0));
 	public static final SmokeBlock SMOKE_BLOCK = new SmokeBlock(
 			FabricBlockSettings.create().replaceable().noCollision().dropsNothing().air());
 
