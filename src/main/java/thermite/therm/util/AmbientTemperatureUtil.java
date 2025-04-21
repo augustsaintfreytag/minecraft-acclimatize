@@ -23,17 +23,17 @@ public final class AmbientTemperatureUtil {
 	public static TemperatureRange ambientBaseTemperatureRangeForClimate(ClimateKind climateKind) {
 		switch (climateKind) {
 			case FRIGID:
-				return new TemperatureRange(0.0, ThermMod.config.frigidClimateTemperature, 80.0);
+				return new TemperatureRange(0.0, ThermMod.CONFIG.frigidClimateTemperature, 80.0);
 			case COLD:
-				return new TemperatureRange(0.0, ThermMod.config.coldClimateTemperature, 100.0);
+				return new TemperatureRange(0.0, ThermMod.CONFIG.coldClimateTemperature, 100.0);
 			case TEMPERATE:
-				return new TemperatureRange(0.0, ThermMod.config.temperateClimateTemperature, 100.0);
+				return new TemperatureRange(0.0, ThermMod.CONFIG.temperateClimateTemperature, 100.0);
 			case HOT:
-				return new TemperatureRange(40.0, ThermMod.config.hotClimateTemperature, 120.0);
+				return new TemperatureRange(40.0, ThermMod.CONFIG.hotClimateTemperature, 120.0);
 			case ARID:
-				return new TemperatureRange(40.0, ThermMod.config.aridClimateTemperature, 120.0);
+				return new TemperatureRange(40.0, ThermMod.CONFIG.aridClimateTemperature, 120.0);
 			default:
-				return new TemperatureRange(40.0, ThermMod.config.aridClimateTemperature, 120.0);
+				return new TemperatureRange(40.0, ThermMod.CONFIG.aridClimateTemperature, 120.0);
 		}
 	}
 

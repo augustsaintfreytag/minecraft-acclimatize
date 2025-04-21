@@ -56,7 +56,7 @@ public class PlayerTemperatureTickC2SPacket {
 		// State Changes
 
 		var bodyTemperature = playerState.bodyTemperature;
-		var acclimatizationRate = ThermMod.config.acclimatizationRate;
+		var acclimatizationRate = ThermMod.CONFIG.acclimatizationRate;
 		var timeDelta = 1.0 / 20.0;
 
 		// Newton’s Law (discretized)

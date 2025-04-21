@@ -72,7 +72,7 @@ public class ThermClient implements ClientModInitializer {
 						tempTickCounter = 0;
 					}
 
-					if (windParticles && ThermMod.config.enableWindParticles) {
+					if (windParticles && ThermMod.CONFIG.enableWindParticles) {
 						Random rand = new Random();
 
 						int bound = 16 + (int) clientStoredWindTemperature;

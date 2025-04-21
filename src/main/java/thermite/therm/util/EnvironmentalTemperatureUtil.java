@@ -86,8 +86,8 @@ public final class EnvironmentalTemperatureUtil {
 	private static HashMap<String, Double> allBlockTemperatureById() {
 		var allBlocks = new HashMap<String, Double>();
 
-		allBlocks.putAll(ThermMod.config.heatingBlocks);
-		allBlocks.putAll(ThermMod.config.coolingBlocks);
+		allBlocks.putAll(ThermMod.CONFIG.heatingBlocks);
+		allBlocks.putAll(ThermMod.CONFIG.coolingBlocks);
 
 		return allBlocks;
 	}

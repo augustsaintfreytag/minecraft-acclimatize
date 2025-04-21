@@ -36,7 +36,7 @@ public final class WindTemperatureUtil {
 		var world = player.getWorld();
 		var dimension = world.getDimension();
 
-		if (!ThermMod.config.enableWind || (!ThermMod.config.multidimensionalWind && !dimension.natural())) {
+		if (!ThermMod.CONFIG.enableWind || (!ThermMod.CONFIG.multidimensionalWind && !dimension.natural())) {
 			return WindTemperatureTuple.zero();
 		}
 
@@ -75,8 +75,8 @@ public final class WindTemperatureUtil {
 		// Wind Ray Calculation
 
 		Random rand = new Random();
-		int unblockedRays = ThermMod.config.windRayCount;
-		for (int i = 0; i < ThermMod.config.windRayCount; i++) {
+		int unblockedRays = ThermMod.CONFIG.windRayCount;
+		for (int i = 0; i < ThermMod.CONFIG.windRayCount; i++) {
 
 			double turbulence = playerState.windTurbulence * Math.PI / 180;
 
@@ -91,14 +91,14 @@ public final class WindTemperatureUtil {
 
 			BlockHitResult r = player.getWorld()
 					.raycast(new RaycastContext(startPos,
-							startPos.add(dir.multiply(ThermMod.config.windRayLength)),
+							startPos.add(dir.multiply(ThermMod.CONFIG.windRayLength)),
 							RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.WATER, player));
 			if (!player.getWorld().getBlockState(r.getBlockPos()).isAir()) {
 				unblockedRays -= 1;
 			}
 		}
 
-		var windChillTemperatureFactor = ((double) unblockedRays / ThermMod.config.windRayCount);
+		var windChillTemperatureFactor = ((double) unblockedRays / ThermMod.CONFIG.windRayCount);
 
 		return new WindTemperatureTuple(windTemperature, windChillTemperatureFactor);
 	}

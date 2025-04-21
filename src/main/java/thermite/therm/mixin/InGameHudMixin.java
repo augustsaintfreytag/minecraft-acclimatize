@@ -25,12 +25,12 @@ public class InGameHudMixin {
 			return;
 		}
 
-		if (ThermMod.config.temperatureDisplayType == "gauge") {
+		if (ThermMod.CONFIG.temperatureDisplayType == "gauge") {
 			TemperatureHudUtil.renderGaugeThermometerHud(context);
 			return;
 		}
 
-		if (ThermMod.config.temperatureDisplayType == "glass_thermometer") {
+		if (ThermMod.CONFIG.temperatureDisplayType == "glass_thermometer") {
 			TemperatureHudUtil.renderGlassThermometerHud(context);
 			return;
 		}

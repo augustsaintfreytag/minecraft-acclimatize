@@ -19,7 +19,7 @@ public final class TemperatureHudOverlayUtil {
 			"textures/overlay/extreme_temperature_overlay.png");
 
 	public static void renderVignetteHudOverlay(DrawContext context, Entity entity) {
-		if (!ThermMod.config.enableTemperatureVignette) {
+		if (!ThermMod.CONFIG.enableTemperatureVignette) {
 			return;
 		}
 

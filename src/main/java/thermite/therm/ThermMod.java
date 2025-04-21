@@ -71,7 +71,7 @@ public class ThermMod implements ModInitializer {
 
 	// Config
 
-	public static ThermConfig config;
+	public static ThermConfig CONFIG;
 
 	// Init
 
