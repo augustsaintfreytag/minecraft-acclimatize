@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.util.Identifier;
 import thermite.therm.ThermClient;
 import thermite.therm.ThermMod;
-import thermite.therm.networking.packet.DrinkIceJuiceC2SPacket;
 import thermite.therm.networking.packet.PlayerTemperatureTickC2SPacket;
 
 public class ThermNetworkingPackets {
@@ -25,7 +24,6 @@ public class ThermNetworkingPackets {
 	public static void registerC2SPackets() {
 		ServerPlayNetworking.registerGlobalReceiver(PLAYER_TEMP_TICK_C2S_PACKET_ID,
 				PlayerTemperatureTickC2SPacket::receive);
-		ServerPlayNetworking.registerGlobalReceiver(DRINK_ICE_WATER_C2S_PACKET_ID, DrinkIceJuiceC2SPacket::receive);
 
 	}
 
