@@ -65,7 +65,7 @@ public class ThermClient implements ClientModInitializer {
 							windParticles = false;
 						}
 						if (!paused && !client.player.isCreative() && !client.player.isSpectator()) {
-							ClientPlayNetworking.send(ThermNetworkingPackets.PLAYER_TEMP_TICK_C2S_PACKET_ID,
+							ClientPlayNetworking.send(ThermNetworkingPackets.PLAYER_TEMPERATURE_TICK_C2S_PACKET_ID,
 									PacketByteBufs.create());
 							windParticles = true;
 						}
