@@ -31,7 +31,7 @@ public final class StatusEffectsTemperatureUtil {
 			}
 		}
 
-		return fireProtectionLevels * ThermMod.config.fireProtectionCoolingMultiplier;
+		return fireProtectionLevels * ThermMod.config.fireProtectionCoolingFactor;
 	}
 
 	private static double temperatureDeltaFromStatusEffects(ServerPlayerEntity player) {
@@ -48,8 +48,8 @@ public final class StatusEffectsTemperatureUtil {
 			}
 		}
 
-		var fireProtectionTemperatureDelta = fireProtectionLevels * ThermMod.config.fireProtectionCoolingMultiplier;
-		var coldProtectionTemperatureDelta = coldProtectionLevels * ThermMod.config.coldProtectionCoolingMultiplier;
+		var fireProtectionTemperatureDelta = fireProtectionLevels * ThermMod.config.fireProtectionCoolingFactor;
+		var coldProtectionTemperatureDelta = coldProtectionLevels * ThermMod.config.coldProtectionCoolingFactor;
 
 		return fireProtectionTemperatureDelta + coldProtectionTemperatureDelta;
 	}
