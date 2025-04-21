@@ -122,6 +122,11 @@ public class ThermClient implements ClientModInitializer {
 			}
 
 			var temperature = ItemTemperatureUtil.temperatureValueForItem(stack);
+
+			if (temperature == 0) {
+				return;
+			}
+
 			list.add(Text.literal("§9+" + temperature + " Temperature"));
 
 		});
