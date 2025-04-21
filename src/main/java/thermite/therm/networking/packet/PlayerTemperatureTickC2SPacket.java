@@ -63,8 +63,8 @@ public class PlayerTemperatureTickC2SPacket {
 
 		bodyTemperature += (effectiveTemperature - bodyTemperature) * acclimatizationRate * timeDelta;
 
-		playerState.bodyTemperature = bodyTemperature;
-		playerState.ambientTemperature = effectiveTemperature;
+		playerState.bodyTemperature = Math.round(bodyTemperature * 100.0) / 100.0;
+		playerState.ambientTemperature = Math.round(effectiveTemperature * 100.0) / 100.0;
 		playerState.ambientMinTemperature = ambientTemperature.minTemperature;
 		playerState.ambientMaxTemperature = ambientTemperature.maxTemperature;
 
