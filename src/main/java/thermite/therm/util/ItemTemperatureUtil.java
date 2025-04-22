@@ -41,10 +41,10 @@ public final class ItemTemperatureUtil {
 	private static HashMap<String, Double> allArmorItemsFromConfig() {
 		var allArmorItems = new HashMap<String, Double>();
 
-		allArmorItems.putAll(ThermMod.CONFIG.bootTemperatureItems);
-		allArmorItems.putAll(ThermMod.CONFIG.helmetTemperatureItems);
-		allArmorItems.putAll(ThermMod.CONFIG.chestplateTemperatureItems);
-		allArmorItems.putAll(ThermMod.CONFIG.leggingTemperatureItems);
+		allArmorItems.putAll(ConfigCodingUtil.decodeTemperatureMapFromRaw(ThermMod.CONFIG.bootTemperatureItems));
+		allArmorItems.putAll(ConfigCodingUtil.decodeTemperatureMapFromRaw(ThermMod.CONFIG.helmetTemperatureItems));
+		allArmorItems.putAll(ConfigCodingUtil.decodeTemperatureMapFromRaw(ThermMod.CONFIG.chestplateTemperatureItems));
+		allArmorItems.putAll(ConfigCodingUtil.decodeTemperatureMapFromRaw(ThermMod.CONFIG.leggingTemperatureItems));
 
 		return allArmorItems;
 	}
