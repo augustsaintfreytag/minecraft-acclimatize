@@ -1,8 +1,5 @@
 package thermite.therm;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
@@ -100,76 +97,55 @@ public class ThermConfig implements ConfigData {
 
 	@ConfigEntry.Category("items")
 	@Comment("Helmets that will change your temperature.")
-	public Map<String, Double> helmetTemperatureItems = new HashMap<>() {
-		{
-			put("minecraft:leather_helmet", 1.0);
-		}
-	};
+	public String helmetTemperatureItems = String.join(", ",
+			"minecraft:leather_helmet = 1.0");
 
 	@ConfigEntry.Category("items")
 	@Comment("Chestplates that will change your temperature.")
-	public Map<String, Double> chestplateTemperatureItems = new HashMap<>() {
-		{
-			put("minecraft:leather_chestplate", 3.0);
-		}
-	};
+	public String chestplateTemperatureItems = String.join(", ",
+			"minecraft:leather_chestplate = 3.0");
 
 	@ConfigEntry.Category("items")
 	@Comment("Leggings that will change your temperature.")
-	public Map<String, Double> leggingTemperatureItems = new HashMap<>() {
-		{
-			put("minecraft:leather_leggings", 2.0);
-		}
-	};
+	public String leggingTemperatureItems = String.join(", ",
+			"minecraft:leather_leggings = 2.0");
 
 	@ConfigEntry.Category("items")
 	@Comment("Boots that will change your temperature.")
-	public Map<String, Double> bootTemperatureItems = new HashMap<>() {
-		{
-			put("minecraft:leather_boots", 1.0);
-		}
-	};
+	public String bootTemperatureItems = String.join(", ",
+			"minecraft:leather_boots = 1.0");
 
 	// Blocks
 
 	@ConfigEntry.Category("blocks")
 	@Comment("Items that when held will change your temperature.")
-	public Map<String, Double> heldTemperatureItems = new HashMap<>() {
-		{
-			put("minecraft:torch", 1.0);
-			put("minecraft:lava_bucket", 1.0);
-		}
-	};
+	public String heldTemperatureItems = String.join(", ",
+			"minecraft:torch = 1.0",
+			"minecraft:lava_bucket = 1.0");
 
 	@ConfigEntry.Category("blocks")
 	@Comment("Blocks that will heat you up when near.")
-	public Map<String, Double> heatingBlocks = new HashMap<>() {
-		{
-			put("minecraft:fire", 3.0);
-			put("minecraft:lava", 2.0);
-			put("minecraft:campfire", 15.0);
-			put("minecraft:torch", 1.0);
-			put("minecraft:wall_torch", 1.0);
-			put("minecraft:soul_torch", 1.0);
-			put("minecraft:soul_wall_torch", 3.0);
-			put("minecraft:soul_campfire", 15.0);
-			put("minecraft:lava_cauldron", 2.0);
-			put("minecraft:furnace", 15.0);
-			put("minecraft:blast_furnace", 15.0);
-			put("minecraft:smoker", 15.0);
-		}
-	};
+	public String heatingBlocks = String.join(", ",
+			"minecraft:fire = 3.0",
+			"minecraft:lava = 2.0",
+			"minecraft:campfire = 15.0",
+			"minecraft:torch = 1.0",
+			"minecraft:wall_torch = 1.0",
+			"minecraft:soul_torch = 1.0",
+			"minecraft:soul_wall_torch = 3.0",
+			"minecraft:soul_campfire = 15.0",
+			"minecraft:lava_cauldron = 2.0",
+			"minecraft:furnace = 15.0",
+			"minecraft:blast_furnace = 15.0",
+			"minecraft:smoker = 15.0");
 
 	@ConfigEntry.Category("blocks")
 	@Comment("Blocks that will cool you down when near.")
-	public Map<String, Double> coolingBlocks = new HashMap<>() {
-		{
-			put("minecraft:ice", -1.0);
-			put("minecraft:packed_ice", -3.0);
-			put("minecraft:blue_ice", -6.0);
-			put("minecraft:powder_snow", -1.0);
-		}
-	};
+	public String coolingBlocks = String.join(", ",
+			"minecraft:ice = -1.0",
+			"minecraft:packed_ice = -3.0",
+			"minecraft:blue_ice = -6.0",
+			"minecraft:powder_snow = -1.0");
 
 	// Ambient Temperatures
 
