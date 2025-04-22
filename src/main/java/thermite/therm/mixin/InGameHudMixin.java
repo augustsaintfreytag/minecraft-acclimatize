@@ -17,7 +17,7 @@ import thermite.therm.util.TemperatureHudUtil;
 
 @Environment(EnvType.CLIENT)
 @Mixin(InGameHud.class)
-public class InGameHudMixin {
+public abstract class InGameHudMixin {
 
 	@Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", ordinal = 1))
 	private void mixinRenderStatusBars(DrawContext context, CallbackInfo callbackInfo) {
@@ -25,12 +25,12 @@ public class InGameHudMixin {
 			return;
 		}
 
-		if (ThermMod.config.temperatureDisplayType == "gauge") {
+		if (ThermMod.CONFIG.temperatureDisplayType.equals("gauge")) {
 			TemperatureHudUtil.renderGaugeThermometerHud(context);
 			return;
 		}
 
-		if (ThermMod.config.temperatureDisplayType == "glass_thermometer") {
+		if (ThermMod.CONFIG.temperatureDisplayType.equals("glass_thermometer")) {
 			TemperatureHudUtil.renderGlassThermometerHud(context);
 			return;
 		}

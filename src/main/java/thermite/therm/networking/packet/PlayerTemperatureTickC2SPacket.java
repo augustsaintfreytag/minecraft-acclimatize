@@ -56,7 +56,7 @@ public class PlayerTemperatureTickC2SPacket {
 		// State Changes
 
 		var bodyTemperature = playerState.bodyTemperature;
-		var acclimatizationRate = ThermMod.config.acclimatizationRate;
+		var acclimatizationRate = ThermMod.CONFIG.acclimatizationRate;
 		var timeDelta = 1.0 / 20.0;
 
 		// Newton’s Law (discretized)
@@ -84,7 +84,8 @@ public class PlayerTemperatureTickC2SPacket {
 		sendingdata.writeDouble(serverState.windYaw);
 		sendingdata.writeDouble(playerState.windTemperature);
 
-		ServerPlayNetworking.send(player, ThermNetworkingPackets.SEND_THERMPLAYERSTATE_S2C_PACKET_ID, sendingdata);
+		ServerPlayNetworking.send(player, ThermNetworkingPackets.SEND_TEMPERATURE_PLAYERSTATE_S2C_PACKET_ID,
+				sendingdata);
 
 		serverState.markDirty();
 	}

@@ -89,26 +89,26 @@ public final class PlayerEffectsUtil {
 	private static TemperatureDamageTuple temperatureDamageTupleForPlayerState(PlayerState playerState) {
 		var bodyTemperature = playerState.bodyTemperature;
 
-		if (bodyTemperature <= ThermMod.config.freezeThresholdMinor
-				&& bodyTemperature > ThermMod.config.freezeThresholdMajor) {
+		if (bodyTemperature <= ThermMod.CONFIG.freezeThresholdMinor
+				&& bodyTemperature > ThermMod.CONFIG.freezeThresholdMajor) {
 			return new TemperatureDamageTuple(TemperatureDamageKind.COLD, TemperatureIntensityKind.MINOR,
-					ThermMod.config.temperatureDamageInterval);
+					ThermMod.CONFIG.temperatureDamageInterval);
 		}
 
-		if (bodyTemperature <= ThermMod.config.freezeThresholdMajor) {
+		if (bodyTemperature <= ThermMod.CONFIG.freezeThresholdMajor) {
 			return new TemperatureDamageTuple(TemperatureDamageKind.COLD, TemperatureIntensityKind.MAJOR,
-					ThermMod.config.extremeTemperatureDamageInterval);
+					ThermMod.CONFIG.extremeTemperatureDamageInterval);
 		}
 
-		if (bodyTemperature >= ThermMod.config.burnThresholdMinor
-				&& bodyTemperature < ThermMod.config.burnThresholdMajor) {
+		if (bodyTemperature >= ThermMod.CONFIG.burnThresholdMinor
+				&& bodyTemperature < ThermMod.CONFIG.burnThresholdMajor) {
 			return new TemperatureDamageTuple(TemperatureDamageKind.HEAT, TemperatureIntensityKind.MINOR,
-					ThermMod.config.temperatureDamageInterval);
+					ThermMod.CONFIG.temperatureDamageInterval);
 		}
 
-		if (bodyTemperature >= ThermMod.config.burnThresholdMajor) {
+		if (bodyTemperature >= ThermMod.CONFIG.burnThresholdMajor) {
 			return new TemperatureDamageTuple(TemperatureDamageKind.HEAT, TemperatureIntensityKind.MAJOR,
-					ThermMod.config.extremeTemperatureDamageInterval);
+					ThermMod.CONFIG.extremeTemperatureDamageInterval);
 		}
 
 		return null;

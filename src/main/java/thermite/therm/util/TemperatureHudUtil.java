@@ -54,8 +54,8 @@ public final class TemperatureHudUtil {
 		MinecraftClient client = MinecraftClient.getInstance();
 
 		if (client != null) {
-			x = (client.getWindow().getScaledWidth() / 2) + ThermMod.config.temperatureXOffset;
-			y = client.getWindow().getScaledHeight() + ThermMod.config.temperatureYOffset;
+			x = (client.getWindow().getScaledWidth() / 2) + ThermMod.CONFIG.temperatureXOffset;
+			y = client.getWindow().getScaledHeight() + ThermMod.CONFIG.temperatureYOffset;
 			assert client.player != null;
 			offHand = client.player.getOffHandStack();
 		}
@@ -101,14 +101,14 @@ public final class TemperatureHudUtil {
 		}
 
 		if (offHand.getItem() == ThermMod.THERMOMETER_ITEM) {
-			context.drawTexture(THERMOMETER_DISPLAY, (x - (x - 16)) + ThermMod.config.thermometerXOffset,
-					frameY + ThermMod.config.thermometerYOffset, 0, 0, Math.round(16 * pixelMultiplier),
+			context.drawTexture(THERMOMETER_DISPLAY, (x - (x - 16)) + ThermMod.CONFIG.thermometerXOffset,
+					frameY + ThermMod.CONFIG.thermometerYOffset, 0, 0, Math.round(16 * pixelMultiplier),
 					Math.round(13 * pixelMultiplier), Math.round(16 * pixelMultiplier),
 					Math.round(13 * pixelMultiplier));
 			assert client != null;
 			context.drawText(client.textRenderer, "§7" + ThermClient.clientStoredTemperature,
-					((x - (x - 16)) + 6) + ThermMod.config.thermometerXOffset,
-					(frameY + 7) + ThermMod.config.thermometerYOffset, 16777215, true);
+					((x - (x - 16)) + 6) + ThermMod.CONFIG.thermometerXOffset,
+					(frameY + 7) + ThermMod.CONFIG.thermometerYOffset, 16777215, true);
 		}
 	}
 
@@ -124,11 +124,11 @@ public final class TemperatureHudUtil {
 		int y = 0;
 
 		if (client != null) {
-			tx = (client.getWindow().getScaledWidth() / 2) + ThermMod.config.temperatureXOffset;
-			ty = client.getWindow().getScaledHeight() + ThermMod.config.temperatureYOffset;
+			tx = (client.getWindow().getScaledWidth() / 2) + ThermMod.CONFIG.temperatureXOffset;
+			ty = client.getWindow().getScaledHeight() + ThermMod.CONFIG.temperatureYOffset;
 
-			x = (client.getWindow().getScaledWidth() / 2) + ThermMod.config.temperatureXOffset;
-			y = (client.getWindow().getScaledHeight() - 48) + ThermMod.config.temperatureYOffset;
+			x = (client.getWindow().getScaledWidth() / 2) + ThermMod.CONFIG.temperatureXOffset;
+			y = (client.getWindow().getScaledHeight() - 48) + ThermMod.CONFIG.temperatureYOffset;
 
 			assert client.player != null;
 			offHand = client.player.getOffHandStack();
@@ -140,18 +140,18 @@ public final class TemperatureHudUtil {
 		assert client != null;
 
 		if (!client.player.isSpectator() && !client.player.isCreative()) {
-			if (temp < ThermMod.config.freezeThresholdMinor + 1
-					&& temp > ThermMod.config.freezeThresholdMajor) {
+			if (temp < ThermMod.CONFIG.freezeThresholdMinor + 1
+					&& temp > ThermMod.CONFIG.freezeThresholdMajor) {
 				ThermClient.glassShakeTickMax = 4;
 				ThermClient.glassShakeAxis = true;
-			} else if (temp < ThermMod.config.freezeThresholdMajor + 1) {
+			} else if (temp < ThermMod.CONFIG.freezeThresholdMajor + 1) {
 				ThermClient.glassShakeTickMax = 3;
 				ThermClient.glassShakeAxis = true;
-			} else if (temp > ThermMod.config.burnThresholdMinor - 1
-					&& temp < ThermMod.config.burnThresholdMajor) {
+			} else if (temp > ThermMod.CONFIG.burnThresholdMinor - 1
+					&& temp < ThermMod.CONFIG.burnThresholdMajor) {
 				ThermClient.glassShakeTickMax = 4;
 				ThermClient.glassShakeAxis = false;
-			} else if (temp > ThermMod.config.burnThresholdMajor - 1) {
+			} else if (temp > ThermMod.CONFIG.burnThresholdMajor - 1) {
 				ThermClient.glassShakeTickMax = 3;
 				ThermClient.glassShakeAxis = false;
 			} else {
@@ -175,18 +175,18 @@ public final class TemperatureHudUtil {
 				}
 			}
 
-			if (temp < ThermMod.config.burnThresholdMinor - 10
-					&& temp > ThermMod.config.freezeThresholdMinor + 10) {
+			if (temp < ThermMod.CONFIG.burnThresholdMinor - 10
+					&& temp > ThermMod.CONFIG.freezeThresholdMinor + 10) {
 				context.drawTexture(TEMPERATE_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temp < ThermMod.config.freezeThresholdMinor + 11
-					&& temp > ThermMod.config.freezeThresholdMinor + 5) {
+			} else if (temp < ThermMod.CONFIG.freezeThresholdMinor + 11
+					&& temp > ThermMod.CONFIG.freezeThresholdMinor + 5) {
 				context.drawTexture(COLD_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temp < ThermMod.config.freezeThresholdMinor + 6) {
+			} else if (temp < ThermMod.CONFIG.freezeThresholdMinor + 6) {
 				context.drawTexture(FROZEN_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temp > ThermMod.config.burnThresholdMinor - 11
-					&& temp < ThermMod.config.burnThresholdMinor - 5) {
+			} else if (temp > ThermMod.CONFIG.burnThresholdMinor - 11
+					&& temp < ThermMod.CONFIG.burnThresholdMinor - 5) {
 				context.drawTexture(HOT_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temp > ThermMod.config.burnThresholdMinor - 6) {
+			} else if (temp > ThermMod.CONFIG.burnThresholdMinor - 6) {
 				context.drawTexture(BLAZING_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
 			}
 
@@ -204,14 +204,14 @@ public final class TemperatureHudUtil {
 		}
 
 		if (offHand.isOf(ThermMod.THERMOMETER_ITEM)) {
-			context.drawTexture(THERMOMETER_DISPLAY, (tx - (tx - 16)) + ThermMod.config.thermometerXOffset,
-					tFrameY + ThermMod.config.thermometerYOffset, 0, 0, Math.round(16 * pixelMultiplier),
+			context.drawTexture(THERMOMETER_DISPLAY, (tx - (tx - 16)) + ThermMod.CONFIG.thermometerXOffset,
+					tFrameY + ThermMod.CONFIG.thermometerYOffset, 0, 0, Math.round(16 * pixelMultiplier),
 					Math.round(13 * pixelMultiplier), Math.round(16 * pixelMultiplier),
 					Math.round(13 * pixelMultiplier));
 			assert client != null;
 			context.drawText(client.textRenderer, "§7" + ThermClient.clientStoredTemperature,
-					((tx - (tx - 16)) + 6) + ThermMod.config.thermometerXOffset,
-					(tFrameY + 7) + ThermMod.config.thermometerYOffset, 16777215, true);
+					((tx - (tx - 16)) + 6) + ThermMod.CONFIG.thermometerXOffset,
+					(tFrameY + 7) + ThermMod.CONFIG.thermometerYOffset, 16777215, true);
 		}
 	}
 

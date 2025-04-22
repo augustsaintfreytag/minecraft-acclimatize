@@ -8,7 +8,8 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.lortseam.completeconfig.data.ConfigOptions;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -70,15 +71,17 @@ public class ThermMod implements ModInitializer {
 
 	// Config
 
-	public static final ThermConfig config = new ThermConfig();
+	public static ThermConfig CONFIG;
 
 	// Init
 
 	@Override
 	public void onInitialize() {
 
-		config.load();
-		ConfigOptions.mod(modid).branch(new String[] { "branch", "config" });
+		// Config
+
+		AutoConfig.register(ThermConfig.class, JanksonConfigSerializer::new);
+		config = AutoConfig.getConfigHolder(ThermConfig.class).getConfig();
 
 		// Status Effects
 
