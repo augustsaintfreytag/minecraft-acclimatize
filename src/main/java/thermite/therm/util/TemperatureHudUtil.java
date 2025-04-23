@@ -2,7 +2,6 @@ package thermite.therm.util;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import thermite.therm.ThermClient;
 import thermite.therm.ThermMod;
@@ -47,111 +46,116 @@ public final class TemperatureHudUtil {
 			"textures/glass_thermometer/heating_small_outline.png");
 
 	public static void renderGaugeThermometerHud(DrawContext context) {
-		int x = 0;
-		int y = 0;
-
-		ItemStack offHand = ItemStack.EMPTY;
 		MinecraftClient client = MinecraftClient.getInstance();
 
-		if (client != null) {
-			x = (client.getWindow().getScaledWidth() / 2) + ThermMod.CONFIG.temperatureXOffset;
-			y = client.getWindow().getScaledHeight() + ThermMod.CONFIG.temperatureYOffset;
-			assert client.player != null;
-			offHand = client.player.getOffHandStack();
+		float temperature = ThermClient.clientStoredTemperature;
+		float temperatureDifference = ThermClient.clientStoredTemperatureDifference;
+
+		if (temperature == 0.0) {
+			return;
 		}
 
-		float pixelMultiplier = 1.5f;
-		float tempFract = ((ThermClient.clientStoredTemperature / 100f) * Math.round(40 * pixelMultiplier));
+		int xOffset = ThermMod.CONFIG.temperatureXOffset;
+		int yOffset = ThermMod.CONFIG.temperatureYOffset;
 
-		if (((ThermClient.clientStoredTemperature / 100f) * Math.round(40 * pixelMultiplier)) > 59.0f) {
-			tempFract = ((97 / 100f) * Math.round(40 * pixelMultiplier));
-		} else if ((ThermClient.clientStoredTemperature / 100f) < 0) {
-			tempFract = 0f;
+		int x = (client.getWindow().getScaledWidth() / 2) + xOffset;
+		int y = client.getWindow().getScaledHeight() + yOffset;
+
+		float spacingFactor = 1.5f;
+		float temperatureFraction = ((temperature / 100f) * Math.round(40 * spacingFactor));
+
+		if (((temperature / 100f) * Math.round(40 * spacingFactor)) > 59.0f) {
+			temperatureFraction = ((97 / 100f) * Math.round(40 * spacingFactor));
+		} else if ((temperature / 100f) < 0) {
+			temperatureFraction = 0f;
 		}
 
-		context.drawTexture(THERMOMETER_GAUGE, x - ((44 + 149) - Math.round(2 * pixelMultiplier)),
-				y - (Math.round(8 * pixelMultiplier) + Math.round(3 * pixelMultiplier) + 1), 0, 0,
-				Math.round(40 * pixelMultiplier), Math.round(9 * pixelMultiplier),
-				Math.round(40 * pixelMultiplier), Math.round(9 * pixelMultiplier));
+		context.drawTexture(THERMOMETER_GAUGE, x - ((44 + 149) - Math.round(2 * spacingFactor)),
+				y - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1), 0, 0,
+				Math.round(40 * spacingFactor), Math.round(9 * spacingFactor),
+				Math.round(40 * spacingFactor), Math.round(9 * spacingFactor));
 
 		context.drawTexture(THERMOMETER_HAND,
-				x - (int) (((44 + 149) - Math.round(2 * pixelMultiplier)) - tempFract),
-				y - (Math.round(8 * pixelMultiplier) + Math.round(3 * pixelMultiplier) + 1), 0, 0,
-				Math.round(1), Math.round(9 * pixelMultiplier), Math.round(1), Math.round(9 * pixelMultiplier));
+				x - (int) (((44 + 149) - Math.round(2 * spacingFactor)) - temperatureFraction),
+				y - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1), 0, 0,
+				Math.round(1), Math.round(9 * spacingFactor), Math.round(1), Math.round(9 * spacingFactor));
 
-		int frameY = y - (Math.round(13 * pixelMultiplier) + 1);
+		int frameY = y - (Math.round(13 * spacingFactor) + 1);
 
 		context.drawTexture(THERMOMETER_FRAME, x - (44 + 149), frameY, 0, 0,
-				Math.round(44 * pixelMultiplier), Math.round(13 * pixelMultiplier),
-				Math.round(44 * pixelMultiplier), Math.round(13 * pixelMultiplier));
+				Math.round(44 * spacingFactor), Math.round(13 * spacingFactor),
+				Math.round(44 * spacingFactor), Math.round(13 * spacingFactor));
 
-		if (ThermClient.clientStoredTemperatureDifference > 0) {
-			context.drawTexture(THERMOMETER_FLAME, x - (17 + 149), y - (Math.round(22 * pixelMultiplier)),
-					0, 0, Math.round(8 * pixelMultiplier), Math.round(8 * pixelMultiplier),
-					Math.round(8 * pixelMultiplier), Math.round(8 * pixelMultiplier));
-		} else if (ThermClient.clientStoredTemperatureDifference < 0) {
+		if (temperatureDifference > 0) {
+			context.drawTexture(THERMOMETER_FLAME, x - (17 + 149), y - (Math.round(22 * spacingFactor)),
+					0, 0, Math.round(8 * spacingFactor), Math.round(8 * spacingFactor),
+					Math.round(8 * spacingFactor), Math.round(8 * spacingFactor));
+		} else if (temperatureDifference < 0) {
 			context.drawTexture(THERMOMETER_SNOWFLAKE, x - (17 + 149),
-					y - (Math.round(22 * pixelMultiplier)), 0, 0, Math.round(8 * pixelMultiplier),
-					Math.round(8 * pixelMultiplier), Math.round(8 * pixelMultiplier),
-					Math.round(8 * pixelMultiplier));
+					y - (Math.round(22 * spacingFactor)), 0, 0, Math.round(8 * spacingFactor),
+					Math.round(8 * spacingFactor), Math.round(8 * spacingFactor),
+					Math.round(8 * spacingFactor));
 		} else {
-			context.drawTexture(THERMOMETER_STILL, x - (17 + 149), y - (Math.round(22 * pixelMultiplier)),
-					0, 0, Math.round(8 * pixelMultiplier), Math.round(8 * pixelMultiplier),
-					Math.round(8 * pixelMultiplier), Math.round(8 * pixelMultiplier));
+			context.drawTexture(THERMOMETER_STILL, x - (17 + 149), y - (Math.round(22 * spacingFactor)),
+					0, 0, Math.round(8 * spacingFactor), Math.round(8 * spacingFactor),
+					Math.round(8 * spacingFactor), Math.round(8 * spacingFactor));
 		}
 
-		if (offHand.getItem() == ThermMod.THERMOMETER_ITEM) {
-			context.drawTexture(THERMOMETER_DISPLAY, (x - (x - 16)) + ThermMod.CONFIG.thermometerXOffset,
-					frameY + ThermMod.CONFIG.thermometerYOffset, 0, 0, Math.round(16 * pixelMultiplier),
-					Math.round(13 * pixelMultiplier), Math.round(16 * pixelMultiplier),
-					Math.round(13 * pixelMultiplier));
-			assert client != null;
-			context.drawText(client.textRenderer, "§7" + ThermClient.clientStoredTemperature,
-					((x - (x - 16)) + 6) + ThermMod.CONFIG.thermometerXOffset,
-					(frameY + 7) + ThermMod.CONFIG.thermometerYOffset, 16777215, true);
+		// Thermometer Item
+
+		var player = client.player;
+		var mainHand = player.getMainHandStack();
+		var offHand = player.getOffHandStack();
+
+		if (mainHand.isOf(ThermMod.THERMOMETER_ITEM) || offHand.isOf(ThermMod.THERMOMETER_ITEM)) {
+			context.drawTexture(THERMOMETER_DISPLAY, (x - (x - 16)) + xOffset,
+					frameY + yOffset, 0, 0, Math.round(16 * spacingFactor),
+					Math.round(13 * spacingFactor), Math.round(16 * spacingFactor),
+					Math.round(13 * spacingFactor));
+
+			context.drawText(client.textRenderer, "§7" + temperature,
+					((x - (x - 16)) + 6) + xOffset,
+					(frameY + 7) + yOffset, 16777215, true);
 		}
 	}
 
 	public static void renderGlassThermometerHud(DrawContext context) {
-		int tx = 0;
-		int ty = 0;
-
-		float pixelMultiplier = 1.5f;
-		ItemStack offHand = ItemStack.EMPTY;
 		MinecraftClient client = MinecraftClient.getInstance();
+		float spacingFactor = 1.5f;
 
-		int x = 0;
-		int y = 0;
+		int tx = (client.getWindow().getScaledWidth() / 2) + ThermMod.CONFIG.temperatureXOffset;
+		int ty = client.getWindow().getScaledHeight() + ThermMod.CONFIG.temperatureYOffset;
 
-		if (client != null) {
-			tx = (client.getWindow().getScaledWidth() / 2) + ThermMod.CONFIG.temperatureXOffset;
-			ty = client.getWindow().getScaledHeight() + ThermMod.CONFIG.temperatureYOffset;
+		int x = (client.getWindow().getScaledWidth() / 2) + ThermMod.CONFIG.temperatureXOffset;
+		int y = (client.getWindow().getScaledHeight() - 48) + ThermMod.CONFIG.temperatureYOffset;
 
-			x = (client.getWindow().getScaledWidth() / 2) + ThermMod.CONFIG.temperatureXOffset;
-			y = (client.getWindow().getScaledHeight() - 48) + ThermMod.CONFIG.temperatureYOffset;
+		int tFrameY = ty - (Math.round(13 * spacingFactor) + 1);
 
-			assert client.player != null;
-			offHand = client.player.getOffHandStack();
+		double temperature = ThermClient.clientStoredTemperature;
+		double temperatureDifference = ThermClient.clientStoredTemperatureDifference;
+
+		if (temperature == 0.0) {
+			return;
 		}
 
-		int tFrameY = ty - (Math.round(13 * pixelMultiplier) + 1);
-		int temp = (int) ThermClient.clientStoredTemperature;
-
-		assert client != null;
+		double burnThresholdMinor = ThermMod.CONFIG.burnThresholdMinor;
+		double burnThresholdMajor = ThermMod.CONFIG.burnThresholdMajor;
+		double freezeThresholdMinor = ThermMod.CONFIG.freezeThresholdMinor;
+		double freezeThresholdMajor = ThermMod.CONFIG.freezeThresholdMajor;
 
 		if (!client.player.isSpectator() && !client.player.isCreative()) {
-			if (temp < ThermMod.CONFIG.freezeThresholdMinor + 1
-					&& temp > ThermMod.CONFIG.freezeThresholdMajor) {
+			if (temperature < freezeThresholdMinor + 1
+					&& temperature > freezeThresholdMajor) {
 				ThermClient.glassShakeTickMax = 4;
 				ThermClient.glassShakeAxis = true;
-			} else if (temp < ThermMod.CONFIG.freezeThresholdMajor + 1) {
+			} else if (temperature < freezeThresholdMajor + 1) {
 				ThermClient.glassShakeTickMax = 3;
 				ThermClient.glassShakeAxis = true;
-			} else if (temp > ThermMod.CONFIG.burnThresholdMinor - 1
-					&& temp < ThermMod.CONFIG.burnThresholdMajor) {
+			} else if (temperature > burnThresholdMinor - 1
+					&& temperature < burnThresholdMajor) {
 				ThermClient.glassShakeTickMax = 4;
 				ThermClient.glassShakeAxis = false;
-			} else if (temp > ThermMod.CONFIG.burnThresholdMajor - 1) {
+			} else if (temperature > burnThresholdMajor - 1) {
 				ThermClient.glassShakeTickMax = 3;
 				ThermClient.glassShakeAxis = false;
 			} else {
@@ -175,41 +179,45 @@ public final class TemperatureHudUtil {
 				}
 			}
 
-			if (temp < ThermMod.CONFIG.burnThresholdMinor - 10
-					&& temp > ThermMod.CONFIG.freezeThresholdMinor + 10) {
+			if (temperature < burnThresholdMinor - 10
+					&& temperature > freezeThresholdMinor + 10) {
 				context.drawTexture(TEMPERATE_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temp < ThermMod.CONFIG.freezeThresholdMinor + 11
-					&& temp > ThermMod.CONFIG.freezeThresholdMinor + 5) {
+			} else if (temperature < freezeThresholdMinor + 11
+					&& temperature > freezeThresholdMinor + 5) {
 				context.drawTexture(COLD_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temp < ThermMod.CONFIG.freezeThresholdMinor + 6) {
+			} else if (temperature < freezeThresholdMinor + 6) {
 				context.drawTexture(FROZEN_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temp > ThermMod.CONFIG.burnThresholdMinor - 11
-					&& temp < ThermMod.CONFIG.burnThresholdMinor - 5) {
+			} else if (temperature > burnThresholdMinor - 11
+					&& temperature < burnThresholdMinor - 5) {
 				context.drawTexture(HOT_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temp > ThermMod.CONFIG.burnThresholdMinor - 6) {
+			} else if (temperature > burnThresholdMinor - 6) {
 				context.drawTexture(BLAZING_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
 			}
 
-			if (ThermClient.clientStoredTemperatureDifference < 0
-					&& ThermClient.clientStoredTemperatureDifference > -10) {
+			if (temperatureDifference < 0
+					&& temperatureDifference > -10) {
 				context.drawTexture(COOLING_OUTLINE_SMALL, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (ThermClient.clientStoredTemperatureDifference < -9) {
+			} else if (temperatureDifference < -9) {
 				context.drawTexture(COOLING_OUTLINE, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (ThermClient.clientStoredTemperatureDifference > 0
-					&& ThermClient.clientStoredTemperatureDifference < 10) {
+			} else if (temperatureDifference > 0
+					&& temperatureDifference < 10) {
 				context.drawTexture(HEATING_OUTLINE_SMALL, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (ThermClient.clientStoredTemperatureDifference > 9) {
+			} else if (temperatureDifference > 9) {
 				context.drawTexture(HEATING_OUTLINE, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
 			}
 		}
 
-		if (offHand.isOf(ThermMod.THERMOMETER_ITEM)) {
+		var player = client.player;
+		var mainHand = player.getMainHandStack();
+		var offHand = player.getOffHandStack();
+
+		if (mainHand.isOf(ThermMod.THERMOMETER_ITEM) || offHand.isOf(ThermMod.THERMOMETER_ITEM)) {
 			context.drawTexture(THERMOMETER_DISPLAY, (tx - (tx - 16)) + ThermMod.CONFIG.thermometerXOffset,
-					tFrameY + ThermMod.CONFIG.thermometerYOffset, 0, 0, Math.round(16 * pixelMultiplier),
-					Math.round(13 * pixelMultiplier), Math.round(16 * pixelMultiplier),
-					Math.round(13 * pixelMultiplier));
-			assert client != null;
-			context.drawText(client.textRenderer, "§7" + ThermClient.clientStoredTemperature,
+					tFrameY + ThermMod.CONFIG.thermometerYOffset, 0, 0, Math.round(16 * spacingFactor),
+					Math.round(13 * spacingFactor), Math.round(16 * spacingFactor),
+					Math.round(13 * spacingFactor));
+
+			context.drawText(client.textRenderer, "§7" + (Math.round(temperature * 10.0) / 10.0),
 					((tx - (tx - 16)) + 6) + ThermMod.CONFIG.thermometerXOffset,
 					(tFrameY + 7) + ThermMod.CONFIG.thermometerYOffset, 16777215, true);
 		}
