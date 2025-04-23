@@ -38,7 +38,7 @@ public class PlayerTemperatureTickC2SPacket {
 
 		// Heat Source Temperature
 
-		var environmentalTemperatureDelta = EnvironmentalTemperatureUtil.temperatureDeltaForEnvironment(player, 8);
+		var environmentalTemperatureDelta = EnvironmentalTemperatureUtil.temperatureDeltaForEnvironment(player);
 		effectiveTemperature += environmentalTemperatureDelta;
 
 		// Wind

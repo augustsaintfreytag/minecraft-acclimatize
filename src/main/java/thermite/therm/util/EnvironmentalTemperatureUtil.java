@@ -17,20 +17,28 @@ public final class EnvironmentalTemperatureUtil {
 
 	private static HashMap<String, Double> blockTemperatureById;
 
-	public static double temperatureDeltaForEnvironment(ServerPlayerEntity player, int radius) {
 	public static void reloadBlocks() {
 		blockTemperatureById = allBlockTemperatureById();
 	}
+
+	public static double temperatureDeltaForEnvironment(ServerPlayerEntity player) {
+		var radius = 5;
 		var world = player.getWorld();
 		var centerPosition = player.getBlockPos();
+
 		var aggregateTemperatureDelta = 0.0;
 
 		for (int x = -radius; x <= radius; x++) {
 			for (int y = -radius; y <= radius; y++) {
 				for (int z = -radius; z <= radius; z++) {
 					var blockPosition = centerPosition.add(x, y, z);
-					var state = world.getBlockState(blockPosition);
-					var temperatureDelta = temperatureDeltaForBlock(world, blockPosition, state);
+					var blockState = world.getBlockState(blockPosition);
+					var blockId = Registries.BLOCK.getId(blockState.getBlock()).toString();
+					var temperatureDelta = temperatureDeltaForBlock(world, blockPosition, blockState, blockId);
+
+					if (temperatureDelta == 0.0) {
+						continue;
+					}
 
 					aggregateTemperatureDelta += temperatureDelta;
 				}
