@@ -22,25 +22,30 @@ public final class EnvironmentalTemperatureUtil {
 	}
 
 	public static double temperatureDeltaForEnvironment(ServerPlayerEntity player) {
-		var radius = 5;
+		var radius = ThermMod.CONFIG.blockTemperatureRadius;
+		var falloffConstant = Math.max(0.001, ThermMod.CONFIG.blockTemperatureFalloffConstant);
+
 		var world = player.getWorld();
-		var centerPosition = player.getBlockPos();
+		var playerPosition = player.getBlockPos();
 
 		var aggregateTemperatureDelta = 0.0;
 
 		for (int x = -radius; x <= radius; x++) {
-			for (int y = -radius; y <= radius; y++) {
+			for (int y = -radius / 2; y <= radius / 2; y++) {
 				for (int z = -radius; z <= radius; z++) {
-					var blockPosition = centerPosition.add(x, y, z);
+					var blockPosition = playerPosition.add(x, y, z);
 					var blockState = world.getBlockState(blockPosition);
 					var blockId = Registries.BLOCK.getId(blockState.getBlock()).toString();
-					var temperatureDelta = temperatureDeltaForBlock(world, blockPosition, blockState, blockId);
+					var blockTemperature = temperatureDeltaForBlock(world, blockPosition, blockState, blockId);
 
-					if (temperatureDelta == 0.0) {
+					if (blockTemperature == 0.0) {
 						continue;
 					}
 
-					aggregateTemperatureDelta += temperatureDelta;
+					var blockDistance = blockPosition.getSquaredDistance(playerPosition);
+					var fallOffTemperature = blockTemperature / (blockDistance + falloffConstant);
+
+					aggregateTemperatureDelta += fallOffTemperature;
 				}
 			}
 		}
