@@ -57,11 +57,10 @@ public class PlayerTemperatureTickC2SPacket {
 
 		var bodyTemperature = playerState.bodyTemperature;
 		var acclimatizationRate = ThermMod.CONFIG.acclimatizationRate;
-		var timeDelta = 1.0 / 20.0;
 
 		// Newton’s Law (discretized)
 
-		bodyTemperature += (effectiveTemperature - bodyTemperature) * acclimatizationRate * timeDelta;
+		bodyTemperature += (effectiveTemperature - bodyTemperature) * acclimatizationRate;
 
 		playerState.bodyTemperature = Math.round(bodyTemperature * 100.0) / 100.0;
 		playerState.ambientTemperature = Math.round(effectiveTemperature * 100.0) / 100.0;
