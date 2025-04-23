@@ -47,9 +47,8 @@ public final class EnvironmentalTemperatureUtil {
 		return -10.0;
 	}
 
-	private static double temperatureDeltaForBlock(World world, BlockPos position, BlockState state) {
-		var block = state.getBlock();
-		var blockId = Registries.BLOCK.getId(block).toString();
+	private static double temperatureDeltaForBlock(World world, BlockPos position, BlockState blockState,
+			String blockId) {
 		var blockTemperature = rawBlockTemperatureForId(blockId);
 
 		if (blockTemperature == 0) {
@@ -58,17 +57,18 @@ public final class EnvironmentalTemperatureUtil {
 
 		// Block-specific exceptions
 
-		if ((state.isOf(Blocks.CAMPFIRE) || state.isOf(Blocks.SOUL_CAMPFIRE)) && !state.get(CampfireBlock.LIT)) {
+		if ((blockState.isOf(Blocks.CAMPFIRE) || blockState.isOf(Blocks.SOUL_CAMPFIRE))
+				&& !blockState.get(CampfireBlock.LIT)) {
 			return 0.0;
 		}
 
-		if ((state.isOf(Blocks.FURNACE) || state.isOf(Blocks.BLAST_FURNACE) || state.isOf(Blocks.SMOKER))
-				&& !state.get(FurnaceBlock.LIT)) {
+		if ((blockState.isOf(Blocks.FURNACE) || blockState.isOf(Blocks.BLAST_FURNACE) || blockState.isOf(Blocks.SMOKER))
+				&& !blockState.get(FurnaceBlock.LIT)) {
 			return 0.0;
 		}
 
 		if ((blockId.contains("lamp") || blockId.contains("light"))
-				&& (!state.contains(Properties.POWERED) || state.getLuminance() == 0)) {
+				&& (!blockState.contains(Properties.POWERED) || blockState.getLuminance() == 0)) {
 			return 0.0;
 		}
 
