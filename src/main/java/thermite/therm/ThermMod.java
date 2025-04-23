@@ -32,7 +32,6 @@ import thermite.therm.block.ThermBlocks;
 import thermite.therm.effect.ThermStatusEffects;
 import thermite.therm.item.GoldSweetBerriesItem;
 import thermite.therm.item.IceWaterItem;
-import thermite.therm.item.TesterItem;
 import thermite.therm.item.ThermometerItem;
 import thermite.therm.item.WoolClothItem;
 import thermite.therm.networking.ThermNetworkingPackets;
@@ -52,7 +51,6 @@ public class ThermMod implements ModInitializer {
 	public static final IceWaterItem ICE_WATER_ITEM = new IceWaterItem(new FabricItemSettings().maxCount(16));
 	public static final ThermometerItem THERMOMETER_ITEM = new ThermometerItem(new FabricItemSettings().maxCount(1));
 	public static final WoolClothItem WOOL_CLOTH_ITEM = new WoolClothItem(new FabricItemSettings().maxCount(64));
-	public static final TesterItem TESTER_ITEM = new TesterItem(new FabricItemSettings().maxCount(1));
 
 	// Block Items
 
@@ -94,7 +92,6 @@ public class ThermMod implements ModInitializer {
 		Registry.register(Registries.ITEM, new Identifier(modid, "ice_water"), ICE_WATER_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modid, "thermometer"), THERMOMETER_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modid, "wool_cloth"), WOOL_CLOTH_ITEM);
-		Registry.register(Registries.ITEM, new Identifier(modid, "tester_item"), TESTER_ITEM);
 
 		// Blocks
 
