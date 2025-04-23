@@ -20,8 +20,8 @@ import thermite.therm.util.ItemTemperatureUtil;
 
 public class ThermClient implements ClientModInitializer {
 
-	public static long clientStoredTemperature = 70;
-	public static short clientStoredTemperatureDifference = 32;
+	public static long clientStoredTemperature = 0;
+	public static short clientStoredTemperatureDifference = 0;
 	public static double clientStoredWindPitch = 0;
 	public static double clientStoredWindYaw = 0;
 	public static double clientStoredWindTemperature = 0;
