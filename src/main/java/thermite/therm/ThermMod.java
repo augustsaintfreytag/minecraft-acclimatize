@@ -38,6 +38,8 @@ import thermite.therm.networking.ThermNetworkingPackets;
 import thermite.therm.player.PlayerState;
 import thermite.therm.recipe.LeatherArmorWoolRecipe;
 import thermite.therm.server.ServerState;
+import thermite.therm.util.EnvironmentalTemperatureUtil;
+import thermite.therm.util.ItemTemperatureUtil;
 
 public class ThermMod implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("therm");
@@ -79,7 +81,19 @@ public class ThermMod implements ModInitializer {
 		// Config
 
 		AutoConfig.register(ThermConfig.class, JanksonConfigSerializer::new);
-		config = AutoConfig.getConfigHolder(ThermConfig.class).getConfig();
+		CONFIG = AutoConfig.getConfigHolder(ThermConfig.class).getConfig();
+
+		AutoConfig.getConfigHolder(ThermConfig.class).registerSaveListener(
+				(config, data) -> {
+					ItemTemperatureUtil.reloadItems();
+					EnvironmentalTemperatureUtil.reloadBlocks();
+					return null;
+				});
+
+		// Reload
+
+		ItemTemperatureUtil.reloadItems();
+		EnvironmentalTemperatureUtil.reloadBlocks();
 
 		// Status Effects
 
