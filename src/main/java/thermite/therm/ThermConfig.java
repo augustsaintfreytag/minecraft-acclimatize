@@ -46,24 +46,24 @@ public class ThermConfig implements ConfigData {
 	// Player
 
 	@ConfigEntry.Category("player")
-	@Comment("First threshold for hypothermia, being below this you will start to freeze (Default: 35)")
+	@Comment("First threshold for hypothermia, being below this you will start to freeze (Default: 35.0)")
 	public double freezeThresholdMinor = 35.0;
 
 	@ConfigEntry.Category("player")
-	@Comment("Second threshold for hypothermia, being below this you will freeze faster. (Default: 25)")
-	public double freezeThresholdMajor = 25.0;
+	@Comment("Second threshold for hypothermia, being below this you will freeze faster. (Default: 20.0)")
+	public double freezeThresholdMajor = 20.0;
 
 	@ConfigEntry.Category("player")
-	@Comment("First threshold for hyperthermia, being above this you will start to burn (Default: 65)")
+	@Comment("First threshold for hyperthermia, being above this you will start to burn (Default: 65.0)")
 	public double burnThresholdMinor = 65.0;
 
 	@ConfigEntry.Category("player")
-	@Comment("Second threshold for hyperthermia, being above this you will burn faster (Default: 75)")
+	@Comment("Second threshold for hyperthermia, being above this you will burn faster (Default: 75.0)")
 	public double burnThresholdMajor = 75.0;
 
 	@ConfigEntry.Category("player")
-	@Comment("How quick your body temperature absorbs or loses heat from/to the environment. (Default: 1.0)")
-	public double acclimatizationRate = 1.0;
+	@Comment("How quick your body temperature absorbs or loses heat from/to the environment. (Default: 0.1)")
+	public double acclimatizationRate = 0.5;
 
 	@ConfigEntry.Category("player")
 	@Comment("Hyperthermia damage per 5 seconds. (Default: 1.0)")
@@ -81,47 +81,37 @@ public class ThermConfig implements ConfigData {
 	@Comment("Damage interval for extreme hypothermia and hyperthermia in seconds (Default: 2)")
 	public int extremeTemperatureDamageInterval = 2;
 
-	// Items
+	// Ambient Temperatures
 
-	@ConfigEntry.Category("items")
-	@Comment("Multiplier for how much each level of fire protection cools you (Default: -1.0)")
-	public double fireProtectionCoolingFactor = -1.0;
+	@ConfigEntry.Category("environment")
+	@Comment("Base temperature for frigid climates. (Default: 20.0)")
+	public double frigidClimateTemperature = 20.0;
 
-	@ConfigEntry.Category("items")
-	@Comment("Multiplier for how much each level of cold protection warms you (Default: 1.0)")
-	public double coldProtectionCoolingFactor = 1.0;
+	@ConfigEntry.Category("environment")
+	@Comment("Base temperature for cold climates. (Default: 30.0)")
+	public double coldClimateTemperature = 30.0;
 
-	@ConfigEntry.Category("items")
-	@Comment("Duration of the cooling effect of ice water drinks in ticks. (Default: 6000)")
-	public int iceWaterEffectDuration = 6000;
+	@ConfigEntry.Category("environment")
+	@Comment("Base temperature for temperate climates. (Default: 50.0)")
+	public double temperateClimateTemperature = 50.0;
 
-	@ConfigEntry.Category("items")
-	@Comment("Helmets that will change your temperature.")
-	public String helmetTemperatureItems = String.join(", ",
-			"minecraft:leather_helmet = 1.0");
+	@ConfigEntry.Category("environment")
+	@Comment("Base temperature for hot climates. (Default: 55.0)")
+	public double hotClimateTemperature = 55.0;
 
-	@ConfigEntry.Category("items")
-	@Comment("Chestplates that will change your temperature.")
-	public String chestplateTemperatureItems = String.join(", ",
-			"minecraft:leather_chestplate = 3.0");
-
-	@ConfigEntry.Category("items")
-	@Comment("Leggings that will change your temperature.")
-	public String leggingTemperatureItems = String.join(", ",
-			"minecraft:leather_leggings = 2.0");
-
-	@ConfigEntry.Category("items")
-	@Comment("Boots that will change your temperature.")
-	public String bootTemperatureItems = String.join(", ",
-			"minecraft:leather_boots = 1.0");
+	@ConfigEntry.Category("environment")
+	@Comment("Base temperature for arid climates. (Default: 70.0)")
+	public double aridClimateTemperature = 70.0;
 
 	// Blocks
 
 	@ConfigEntry.Category("blocks")
-	@Comment("Items that when held will change your temperature.")
-	public String heldTemperatureItems = String.join(", ",
-			"minecraft:torch = 1.0",
-			"minecraft:lava_bucket = 1.0");
+	@Comment("The radius around the player in which blocks are checked for temperature effects. (Default: 8)")
+	public int blockTemperatureRadius = 8;
+
+	@ConfigEntry.Category("blocks")
+	@Comment("The value added to distance under heat intensity used in the fall-off calculation. (Default: 0.1)")
+	public double blockTemperatureFalloffConstant = 0.1;
 
 	@ConfigEntry.Category("blocks")
 	@Comment("Blocks that will heat you up when near.")
@@ -147,27 +137,45 @@ public class ThermConfig implements ConfigData {
 			"minecraft:blue_ice = -6.0",
 			"minecraft:powder_snow = -1.0");
 
-	// Ambient Temperatures
+	// Items
 
-	@ConfigEntry.Category("environment")
-	@Comment("Base temperature for frigid climates. (Default: 25.0)")
-	public double frigidClimateTemperature = 25.0;
+	@ConfigEntry.Category("items")
+	@Comment("Multiplier for how much each level of fire protection cools you (Default: -1.0)")
+	public double fireProtectionCoolingFactor = -1.0;
 
-	@ConfigEntry.Category("environment")
-	@Comment("Base temperature for cold climates. (Default: 30.0)")
-	public double coldClimateTemperature = 30.0;
+	@ConfigEntry.Category("items")
+	@Comment("Multiplier for how much each level of cold protection warms you (Default: 1.0)")
+	public double coldProtectionCoolingFactor = 1.0;
 
-	@ConfigEntry.Category("environment")
-	@Comment("Base temperature for temperate climates. (Default: 50.0)")
-	public double temperateClimateTemperature = 50.0;
+	@ConfigEntry.Category("items")
+	@Comment("Duration of the cooling effect of ice water drinks in ticks. (Default: 6000)")
+	public int iceWaterEffectDuration = 6000;
 
-	@ConfigEntry.Category("environment")
-	@Comment("Base temperature for hot climates. (Default: 55.0)")
-	public double hotClimateTemperature = 55.0;
+	@ConfigEntry.Category("items")
+	@Comment("Items that when held will change your temperature.")
+	public String heldTemperatureItems = String.join(", ",
+			"minecraft:torch = 1.0",
+			"minecraft:lava_bucket = 1.0");
 
-	@ConfigEntry.Category("environment")
-	@Comment("Base temperature for arid climates. (Default: 70.0)")
-	public double aridClimateTemperature = 70.0;
+	@ConfigEntry.Category("items")
+	@Comment("Helmets that will change your temperature.")
+	public String helmetTemperatureItems = String.join(", ",
+			"minecraft:leather_helmet = 1.0");
+
+	@ConfigEntry.Category("items")
+	@Comment("Chestplates that will change your temperature.")
+	public String chestplateTemperatureItems = String.join(", ",
+			"minecraft:leather_chestplate = 3.0");
+
+	@ConfigEntry.Category("items")
+	@Comment("Leggings that will change your temperature.")
+	public String leggingTemperatureItems = String.join(", ",
+			"minecraft:leather_leggings = 2.0");
+
+	@ConfigEntry.Category("items")
+	@Comment("Boots that will change your temperature.")
+	public String bootTemperatureItems = String.join(", ",
+			"minecraft:leather_boots = 1.0");
 
 	// Wind
 

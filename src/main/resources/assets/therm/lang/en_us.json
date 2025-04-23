@@ -20,14 +20,6 @@
     "text.autoconfig.therm.category.environment": "Environment",
     "text.autoconfig.therm.category.wind": "Wind",
     
-    "text.autoconfig.therm.option.enableSeasonSystem": "Enable Season System",
-    "text.autoconfig.therm.option.springSeasonLength": "Spring Season Length",
-    "text.autoconfig.therm.option.summerSeasonLength": "Summer Season Length",
-    "text.autoconfig.therm.option.fallSeasonLength": "Fall Season Length",
-    "text.autoconfig.therm.option.winterSeasonLength": "Winter Season Length",
-    "text.autoconfig.therm.option.seasonTemperatureExtremenessFactor": "Season Temperature Extremeness",
-    "text.autoconfig.therm.option.seasonalWeather": "Seasonal Weather",
-    
     "text.autoconfig.therm.option.temperatureXOffset": "Temperature HUD X Offset",
     "text.autoconfig.therm.option.temperatureYOffset": "Temperature HUD Y Offset",
     "text.autoconfig.therm.option.thermometerXOffset": "Thermometer X Offset",
@@ -46,16 +38,18 @@
     "text.autoconfig.therm.option.hypothermiaDamage": "Hypothermia Damage",
     "text.autoconfig.therm.option.temperatureDamageInterval": "Temperature Damage Interval",
     "text.autoconfig.therm.option.extremeTemperatureDamageInterval": "Extreme Temperature Damage Interval",
-    
+
     "text.autoconfig.therm.option.fireProtectionCoolingFactor": "Fire Protection Cooling Factor",
     "text.autoconfig.therm.option.coldProtectionCoolingFactor": "Cold Protection Warming Factor",
     "text.autoconfig.therm.option.iceWaterEffectDuration": "Ice Water Effect Duration",
+	"text.autoconfig.therm.option.heldTemperatureItems": "Held Temperature Items",
     "text.autoconfig.therm.option.helmetTemperatureItems": "Helmet Temperature Items",
     "text.autoconfig.therm.option.chestplateTemperatureItems": "Chestplate Temperature Items",
     "text.autoconfig.therm.option.leggingTemperatureItems": "Legging Temperature Items",
     "text.autoconfig.therm.option.bootTemperatureItems": "Boot Temperature Items",
     
-    "text.autoconfig.therm.option.heldTemperatureItems": "Held Temperature Items",
+	"text.autoconfig.therm.option.blockTemperatureRadius": "Block Temperature Radius",
+	"text.autoconfig.therm.option.blockTemperatureFalloffConstant": "Block Temperature Falloff Constant",
     "text.autoconfig.therm.option.heatingBlocks": "Heating Blocks",
     "text.autoconfig.therm.option.coolingBlocks": "Cooling Blocks",
     
@@ -68,5 +62,13 @@
     "text.autoconfig.therm.option.enableWind": "Enable Wind",
     "text.autoconfig.therm.option.multidimensionalWind": "Multidimensional Wind",
     "text.autoconfig.therm.option.windRayCount": "Wind Ray Count",
-    "text.autoconfig.therm.option.windRayLength": "Wind Ray Length"
+    "text.autoconfig.therm.option.windRayLength": "Wind Ray Length",
+	    
+    "text.autoconfig.therm.option.enableSeasonSystem": "Enable Season System",
+    "text.autoconfig.therm.option.springSeasonLength": "Spring Season Length",
+    "text.autoconfig.therm.option.summerSeasonLength": "Summer Season Length",
+    "text.autoconfig.therm.option.fallSeasonLength": "Fall Season Length",
+    "text.autoconfig.therm.option.winterSeasonLength": "Winter Season Length",
+    "text.autoconfig.therm.option.seasonTemperatureExtremenessFactor": "Season Temperature Extremeness",
+    "text.autoconfig.therm.option.seasonalWeather": "Seasonal Weather",
 }
