@@ -15,9 +15,12 @@ import thermite.therm.ThermMod;
 
 public final class EnvironmentalTemperatureUtil {
 
-	private static final HashMap<String, Double> blockTemperatureById = allBlockTemperatureById();
+	private static HashMap<String, Double> blockTemperatureById;
 
 	public static double temperatureDeltaForEnvironment(ServerPlayerEntity player, int radius) {
+	public static void reloadBlocks() {
+		blockTemperatureById = allBlockTemperatureById();
+	}
 		var world = player.getWorld();
 		var centerPosition = player.getBlockPos();
 		var aggregateTemperatureDelta = 0.0;

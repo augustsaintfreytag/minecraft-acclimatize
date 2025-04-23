@@ -8,7 +8,11 @@ import thermite.therm.ThermMod;
 
 public final class ItemTemperatureUtil {
 
-	private static HashMap<String, Double> armorItems = allArmorItemsFromConfig();
+	private static HashMap<String, Double> armorItems;
+
+	public static void reloadItems() {
+		armorItems = allArmorItemsFromConfig();
+	}
 
 	public static double temperatureDeltaForAllArmorItems(ServerPlayerEntity player) {
 		var temperature = 0f;
