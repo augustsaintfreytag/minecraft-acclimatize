@@ -42,11 +42,15 @@ public class ThermClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 
+		// Keybindings
+
 		showGuiKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 				"Toggle Temperature GUI",
 				InputUtil.Type.KEYSYM,
 				GLFW.GLFW_KEY_UNKNOWN,
 				"Thermite"));
+
+		// Network
 
 		ThermNetworkingPackets.registerS2CPackets();
 
