@@ -124,24 +124,46 @@ public class ThermConfig implements ConfigData {
 	@ConfigEntry.Category("blocks")
 	@Comment("Blocks that will heat you up when near.")
 	public String heatingBlocks = String.join(", ",
-			"minecraft:fire = 3.0",
-			"minecraft:lava = 2.0",
-			"minecraft:campfire = 15.0",
-			"minecraft:torch = 1.0",
-			"minecraft:wall_torch = 1.0",
-			"minecraft:soul_torch = 1.0",
-			"minecraft:soul_wall_torch = 3.0",
-			"minecraft:soul_campfire = 15.0",
-			"minecraft:lava_cauldron = 2.0",
+			"minecraft:fire = 5.0",
+			"minecraft:lava = 8.0",
+			"minecraft:campfire = 20.0",
+			"minecraft:torch = 2.0",
+			"minecraft:wall_torch = 2.0",
+			"minecraft:soul_torch = 2.0",
+			"minecraft:soul_wall_torch = 2.0",
+			"minecraft:soul_campfire = 20.0",
+			"minecraft:lava_cauldron = 5.0",
 			"minecraft:furnace = 15.0",
 			"minecraft:blast_furnace = 15.0",
-			"minecraft:smoker = 15.0");
+			"minecraft:smoker = 15.0",
+			"minecraft:redstone_lamp = 2.0",
+			"hardcore_torches:lit_torch = 2.0",
+			"hardcore_torches:lit_wall_torch = 2.0",
+			"hardcore_torches:lit_lantern = 1.0",
+			"farmersdelight:stove = 15.0",
+			"refurbished_furniture:light_ceiling_light = 10.0",
+			"refurbished_furniture:dark_ceiling_light = 10.0",
+			"refurbished_furniture:black_lamp = 10.0",
+			"refurbished_furniture:blue_lamp = 10.0",
+			"refurbished_furniture:brown_lamp = 10.0",
+			"refurbished_furniture:cyan_lamp = 10.0",
+			"refurbished_furniture:gray_lamp = 10.0",
+			"refurbished_furniture:green_lamp = 10.0",
+			"refurbished_furniture:light_blue_lamp = 10.0",
+			"refurbished_furniture:light_gray_lamp = 10.0",
+			"refurbished_furniture:lime_lamp = 10.0",
+			"refurbished_furniture:magenta_lamp = 10.0",
+			"refurbished_furniture:orange_lamp = 10.0",
+			"refurbished_furniture:pink_lamp = 10.0",
+			"refurbished_furniture:red_lamp = 10.0",
+			"refurbished_furniture:white_lamp = 10.0",
+			"refurbished_furniture:yellow_lamp = 10.0");
 
 	@ConfigEntry.Category("blocks")
 	@Comment("Blocks that will cool you down when near.")
 	public String coolingBlocks = String.join(", ",
 			"minecraft:ice = -1.0",
-			"minecraft:packed_ice = -3.0",
+			"minecraft:packed_ice = -2.0",
 			"minecraft:blue_ice = -6.0",
 			"minecraft:powder_snow = -1.0");
 
@@ -162,8 +184,10 @@ public class ThermConfig implements ConfigData {
 	@ConfigEntry.Category("items")
 	@Comment("Items that when held will change your temperature.")
 	public String heldTemperatureItems = String.join(", ",
-			"minecraft:torch = 1.0",
-			"minecraft:lava_bucket = 1.0");
+			"minecraft:torch = 2.0",
+			"minecraft:lava_bucket = 1.0",
+			"hardcore_torches:lit_torch = 2.0",
+			"hardcore_torches:lit_lantern = 1.0");
 
 	@ConfigEntry.Category("items")
 	@Comment("Helmets that will change your temperature.")
