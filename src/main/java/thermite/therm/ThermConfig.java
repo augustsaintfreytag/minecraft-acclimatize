@@ -209,6 +209,48 @@ public class ThermConfig implements ConfigData {
 	public String bootTemperatureItems = String.join(", ",
 			"minecraft:leather_boots = 1.0");
 
+	@ConfigEntry.Category("items")
+	@Comment("Material temperature values used to auto-assign values to wearable items.")
+	public String materialAutoTemperature = String.join(", ",
+			"leather = 3.0",
+			"iron = 2.0",
+			"gold = 2.0",
+			"diamond = 1.0",
+			"netherite = 3.0",
+			"chainmail = 1.0",
+			"aeternium = 2.0",
+			"brass = 1.0",
+			"bronze = 1.0",
+			"cincinnasite = 2.0",
+			"copper = 1.0",
+			"crystalite = 3.0",
+			"flaming_ruby = 5.0",
+			"nether_ruby = 4.0",
+			"resonarium = 3.0",
+			"rose_quartz = 2.0",
+			"steel = 2.0",
+			"sturdy = 3.0",
+			"terminite = 3.0",
+			"thallasium = 2.0",
+			"warden = 3.0",
+			"turtle = 1.0");
+
+	@ConfigEntry.Category("items")
+	@Comment("Temperature factor for helmets with auto-assigned material-based values. (Default: 1.0)")
+	public double helmetAutoTemperatureFactor = 1.0;
+
+	@ConfigEntry.Category("items")
+	@Comment("Temperature factor for chestplates with auto-assigned material-based values. (Default: 1.0)")
+	public double leggingsAutoTemperatureFactor = 2.0;
+
+	@ConfigEntry.Category("items")
+	@Comment("Temperature factor for leggings with auto-assigned material-based values. (Default: 2.0)")
+	public double chestplateAutoTemperatureFactor = 2.0;
+
+	@ConfigEntry.Category("items")
+	@Comment("Temperature factor for boots with auto-assigned material-based values. (Default: 1.0)")
+	public double bootsAutoTemperatureFactor = 1.0;
+
 	// Wind
 
 	@ConfigEntry.Category("wind")
