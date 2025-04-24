@@ -52,6 +52,11 @@ public final class EnvironmentalTemperatureUtil {
 			}
 		}
 
+		aggregateTemperatureDelta = Math.max(ThermMod.CONFIG.blockTemperatureAbsoluteMinimum,
+				aggregateTemperatureDelta);
+		aggregateTemperatureDelta = Math.min(ThermMod.CONFIG.blockTemperatureAbsoluteMaximum,
+				aggregateTemperatureDelta);
+
 		aggregateTemperatureDelta += waterSubmersionDeltaForPlayer(player);
 
 		return aggregateTemperatureDelta;
