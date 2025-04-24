@@ -20,26 +20,6 @@ public class LeatherArmorWoolRecipe extends SpecialCraftingRecipe {
 
 	@Override
 	public boolean matches(RecipeInputInventory recipeInputInventory, World world) {
-		/*
-		 * boolean bl = false;
-		 * int i = 0;
-		 * for (int j = 0; j < recipeInputInventory.size(); ++j) {
-		 * ItemStack itemStack = recipeInputInventory.getStack(j);
-		 * if (itemStack.isEmpty()) continue;
-		 * if (PAPER.test(itemStack)) {
-		 * if (bl) {
-		 * return false;
-		 * }
-		 * bl = true;
-		 * continue;
-		 * }
-		 * if (!(DURATION_MODIFIER.test(itemStack) ? ++i > 3 :
-		 * !FIREWORK_STAR.test(itemStack))) continue;
-		 * return false;
-		 * }
-		 * return bl && i >= 1;
-		 */
-
 		byte wools = 0;
 		byte armors = 0;
 
@@ -64,21 +44,16 @@ public class LeatherArmorWoolRecipe extends SpecialCraftingRecipe {
 			}
 		}
 		int max = 2;
-		/*
-		 * if (inputArmor.isOf(Items.LEATHER_HELMET) ||
-		 * inputArmor.isOf(Items.LEATHER_BOOTS)) {
-		 * max = 2;
-		 * } else {
-		 * max = 2;
-		 * }
-		 */
+
 		ItemStack stack = new ItemStack(inputArmor.getItem(), 1);
 		NbtCompound nbt = inputArmor.getOrCreateNbt().copy();
+
 		if (nbt.getInt("wool") < max) {
 			nbt.putInt("wool", nbt.getInt("wool") + 1);
 		} else {
 			stack = new ItemStack(Items.AIR, 1);
 		}
+
 		stack.setNbt(nbt);
 		return stack;
 	}
