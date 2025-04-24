@@ -33,7 +33,7 @@ public class PlayerTemperatureTickC2SPacket {
 
 		// Wearable Item Temperature
 
-		var wearableTemperatureDelta = ItemTemperatureUtil.temperatureDeltaForAllArmorItems(player);
+		var wearableTemperatureDelta = ItemTemperatureUtil.temperatureValueForAllArmorItems(player);
 		effectiveTemperature += wearableTemperatureDelta;
 
 		// Heat Source Temperature

@@ -40,7 +40,7 @@ public class ThermometerItem extends Item {
 		var ambientMaxTemperature = formatTemperature(playerState.ambientMaxTemperature);
 		var environmentalTemperature = formatTemperature(
 				EnvironmentalTemperatureUtil.temperatureDeltaForEnvironment(player));
-		var itemTemperature = formatTemperature(ItemTemperatureUtil.temperatureDeltaForAllArmorItems(player));
+		var itemTemperature = formatTemperature(ItemTemperatureUtil.temperatureValueForAllArmorItems(player));
 
 		user.sendMessage(Text.of("Body: " + bodyTemperature + " (Ambient " + ambientTemperature
 				+ ", Min " + ambientMinTemperature + ", Max " + ambientMaxTemperature
