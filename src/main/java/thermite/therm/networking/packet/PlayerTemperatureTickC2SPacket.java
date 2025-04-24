@@ -66,6 +66,7 @@ public class PlayerTemperatureTickC2SPacket {
 		playerState.ambientTemperature = Math.round(effectiveTemperature * 100.0) / 100.0;
 		playerState.ambientMinTemperature = ambientTemperature.minTemperature;
 		playerState.ambientMaxTemperature = ambientTemperature.maxTemperature;
+		playerState.windTemperature = Math.round(windTemperatureTuple.temperature * 100.0) / 100.0;
 
 		// Damage
 

@@ -31,7 +31,8 @@ public final class WindTemperatureUtil {
 
 	// Main
 
-	public static WindTemperatureTuple windTemperatureForEnvironment(ServerPlayerEntity player, PlayerState playerState,
+	public static WindTemperatureTuple windTemperatureForEnvironment(ServerPlayerEntity player,
+			PlayerState playerState,
 			ServerState serverState) {
 		var world = player.getWorld();
 		var dimension = world.getDimension();
