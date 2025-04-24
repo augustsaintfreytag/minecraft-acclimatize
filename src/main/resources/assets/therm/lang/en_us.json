@@ -28,6 +28,7 @@
     "text.autoconfig.therm.option.temperatureDamageDecreasesSaturation": "Temperature Damage Decreases Saturation",
     "text.autoconfig.therm.option.enableTemperatureVignette": "Enable Temperature Vignette",
     "text.autoconfig.therm.option.enableWindParticles": "Enable Wind Particles",
+	"text.autoconfig.therm.option.enableThermometerTemperatureDisplay": "Enable Thermometer Temperature Display",
     
     "text.autoconfig.therm.option.freezeThresholdMinor": "Minor Freeze Threshold",
     "text.autoconfig.therm.option.freezeThresholdMajor": "Major Freeze Threshold",

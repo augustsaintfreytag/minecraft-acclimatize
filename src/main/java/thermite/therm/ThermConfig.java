@@ -43,6 +43,10 @@ public class ThermConfig implements ConfigData {
 	@Comment("When enabled, particles will spawn showing the direction that the wind is flowing. More wind = more particles. (Default: true)")
 	public boolean enableWindParticles = true;
 
+	@ConfigEntry.Category("hud")
+	@Comment("When enabled, holding a thermometer will show the exact measured ambient temperature. (Default: false)")
+	public boolean enableThermometerTemperatureDisplay = false;
+
 	// Player
 
 	@ConfigEntry.Category("player")

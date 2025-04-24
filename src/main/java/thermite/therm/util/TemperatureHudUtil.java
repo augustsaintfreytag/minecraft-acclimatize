@@ -107,29 +107,35 @@ public final class TemperatureHudUtil {
 		var mainHand = player.getMainHandStack();
 		var offHand = player.getOffHandStack();
 
-		if (mainHand.isOf(ThermMod.THERMOMETER_ITEM) || offHand.isOf(ThermMod.THERMOMETER_ITEM)) {
-			context.drawTexture(THERMOMETER_DISPLAY, (x - (x - 16)) + xOffset,
-					frameY + yOffset, 0, 0, Math.round(16 * spacingFactor),
-					Math.round(13 * spacingFactor), Math.round(16 * spacingFactor),
-					Math.round(13 * spacingFactor));
+		if (ThermMod.CONFIG.enableThermometerTemperatureDisplay && (mainHand.isOf(ThermMod.THERMOMETER_ITEM) ||
+				offHand.isOf(ThermMod.THERMOMETER_ITEM))) {
+			var text = "§7" + (Math.round(temperature * 10.0) / 10.0);
+			var textWidth = client.textRenderer.getWidth(text);
+			var textHeight = client.textRenderer.fontHeight;
+
+			context.drawTexture(THERMOMETER_DISPLAY, (x - (x - textWidth)) + xOffset,
+					frameY + yOffset, 0, 0, Math.round(textWidth * spacingFactor),
+					Math.round(textHeight * spacingFactor), Math.round(textWidth *
+							spacingFactor),
+					Math.round(textHeight * spacingFactor));
 
 			context.drawText(client.textRenderer, "§7" + temperature,
-					((x - (x - 16)) + 6) + xOffset,
+					((x - (x - textWidth)) + 6) + xOffset,
 					(frameY + 7) + yOffset, 16777215, true);
 		}
 	}
 
 	public static void renderGlassThermometerHud(DrawContext context) {
 		MinecraftClient client = MinecraftClient.getInstance();
-		float spacingFactor = 1.5f;
 
-		int tx = (client.getWindow().getScaledWidth() / 2) + ThermMod.CONFIG.temperatureXOffset;
-		int ty = client.getWindow().getScaledHeight() + ThermMod.CONFIG.temperatureYOffset;
+		int xOffset = ThermMod.CONFIG.temperatureXOffset;
+		int yOffset = ThermMod.CONFIG.temperatureYOffset;
 
-		int x = (client.getWindow().getScaledWidth() / 2) + ThermMod.CONFIG.temperatureXOffset;
-		int y = (client.getWindow().getScaledHeight() - 48) + ThermMod.CONFIG.temperatureYOffset;
+		int tx = (client.getWindow().getScaledWidth() / 2) + xOffset;
+		int ty = client.getWindow().getScaledHeight() + yOffset;
 
-		int tFrameY = ty - (Math.round(13 * spacingFactor) + 1);
+		int x = (client.getWindow().getScaledWidth() / 2) + xOffset;
+		int y = (client.getWindow().getScaledHeight() - 48) + yOffset;
 
 		double temperature = ThermClient.clientStoredTemperature;
 		double temperatureDifference = ThermClient.clientStoredTemperatureDifference;
@@ -211,15 +217,24 @@ public final class TemperatureHudUtil {
 		var mainHand = player.getMainHandStack();
 		var offHand = player.getOffHandStack();
 
-		if (mainHand.isOf(ThermMod.THERMOMETER_ITEM) || offHand.isOf(ThermMod.THERMOMETER_ITEM)) {
-			context.drawTexture(THERMOMETER_DISPLAY, (tx - (tx - 16)) + ThermMod.CONFIG.thermometerXOffset,
-					tFrameY + ThermMod.CONFIG.thermometerYOffset, 0, 0, Math.round(16 * spacingFactor),
-					Math.round(13 * spacingFactor), Math.round(16 * spacingFactor),
-					Math.round(13 * spacingFactor));
+		if (ThermMod.CONFIG.enableThermometerTemperatureDisplay && (mainHand.isOf(ThermMod.THERMOMETER_ITEM) ||
+				offHand.isOf(ThermMod.THERMOMETER_ITEM))) {
+			var text = "§7" + (Math.round(temperature * 10.0) / 10.0);
+			var textWidth = client.textRenderer.getWidth(text);
+			var textHeight = client.textRenderer.fontHeight;
 
-			context.drawText(client.textRenderer, "§7" + (Math.round(temperature * 10.0) / 10.0),
-					((tx - (tx - 16)) + 6) + ThermMod.CONFIG.thermometerXOffset,
-					(tFrameY + 7) + ThermMod.CONFIG.thermometerYOffset, 16777215, true);
+			float spacingFactor = 1.75f;
+			int tFrameY = ty - (Math.round(textHeight * spacingFactor) + 1);
+
+			context.drawTexture(THERMOMETER_DISPLAY, (tx - (tx - textWidth)) + xOffset,
+					tFrameY + yOffset, 0, 0, Math.round(textWidth * spacingFactor),
+					Math.round(textHeight * spacingFactor), Math.round(textWidth *
+							spacingFactor),
+					Math.round(textHeight * spacingFactor));
+
+			context.drawText(client.textRenderer, text,
+					((tx - (tx - textWidth)) + 6) + xOffset,
+					(tFrameY + 7) + yOffset, 16777215, true);
 		}
 	}
 
