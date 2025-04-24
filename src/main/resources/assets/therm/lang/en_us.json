@@ -48,6 +48,11 @@
     "text.autoconfig.therm.option.chestplateTemperatureItems": "Chestplate Temperature Items",
     "text.autoconfig.therm.option.leggingTemperatureItems": "Legging Temperature Items",
     "text.autoconfig.therm.option.bootTemperatureItems": "Boot Temperature Items",
+	"text.autoconfig.therm.option.materialAutoTemperature": "Material Auto-Assigned Temperature",
+	"text.autoconfig.therm.option.helmetAutoTemperatureFactor": "Helmet Auto-Assigned Temperature Factor",
+	"text.autoconfig.therm.option.leggingsAutoTemperatureFactor": "Leggings Auto-Assigned Temperature Factor",
+	"text.autoconfig.therm.option.chestplateAutoTemperatureFactor": "Chestplate Auto-Assigned Temperature Factor",
+	"text.autoconfig.therm.option.bootsAutoTemperatureFactor": "Boots Auto-Assigned Temperature Factor",
     
 	"text.autoconfig.therm.option.blockTemperatureRadius": "Block Temperature Radius",
 	"text.autoconfig.therm.option.blockTemperatureFalloffConstant": "Block Temperature Falloff Constant",
