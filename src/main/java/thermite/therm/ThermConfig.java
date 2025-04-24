@@ -78,18 +78,18 @@ public class ThermConfig implements ConfigData {
 	public double hypothermiaDamage = 1.0;
 
 	@ConfigEntry.Category("player")
-	@Comment("Damage interval for hypothermia and hyperthermia in seconds (Default: 3)")
-	public int temperatureDamageInterval = 3;
+	@Comment("Damage interval for hypothermia and hyperthermia in network ticks (Default: 10)")
+	public int temperatureDamageInterval = 10;
 
 	@ConfigEntry.Category("player")
-	@Comment("Damage interval for extreme hypothermia and hyperthermia in seconds (Default: 2)")
-	public int extremeTemperatureDamageInterval = 2;
+	@Comment("Damage interval for extreme hypothermia and hyperthermia in network ticks (Default: 10)")
+	public int extremeTemperatureDamageInterval = 10;
 
 	// Ambient Temperatures
 
 	@ConfigEntry.Category("environment")
-	@Comment("Base temperature for frigid climates. (Default: 20.0)")
-	public double frigidClimateTemperature = 20.0;
+	@Comment("Base temperature for frigid climates. (Default: 15.0)")
+	public double frigidClimateTemperature = 15.0;
 
 	@ConfigEntry.Category("environment")
 	@Comment("Base temperature for cold climates. (Default: 30.0)")
@@ -120,13 +120,14 @@ public class ThermConfig implements ConfigData {
 	@ConfigEntry.Category("blocks")
 	@Comment("The highest possible value to be added to ambient temperatures based on blocks in the environment. (Default: 40.0)")
 	public double blockTemperatureAbsoluteMaximum = 40.0;
+
 	@ConfigEntry.Category("blocks")
 	@Comment("The value added to distance under heat intensity used in the fall-off calculation. (Default: 0.1)")
-	public double blockTemperatureFalloffConstant = 0.1;
+	public double blockTemperatureFalloffConstant = 0.75;
 
 	@ConfigEntry.Category("blocks")
 	@Comment("The factor multiplied by the distance between player and heat source. Lower means less falloff. (Default: 0.5)")
-	public double blockTemperatureDistanceFalloffFactor = 0.5;
+	public double blockTemperatureDistanceFalloffFactor = 0.075;
 
 	@ConfigEntry.Category("blocks")
 	@Comment("Blocks that will heat you up when near.")
@@ -169,10 +170,10 @@ public class ThermConfig implements ConfigData {
 	@ConfigEntry.Category("blocks")
 	@Comment("Blocks that will cool you down when near.")
 	public String coolingBlocks = String.join(", ",
-			"minecraft:ice = -1.0",
-			"minecraft:packed_ice = -2.0",
-			"minecraft:blue_ice = -6.0",
-			"minecraft:powder_snow = -1.0");
+			"minecraft:ice = -0.5",
+			"minecraft:packed_ice = -1.0",
+			"minecraft:blue_ice = -2.0",
+			"minecraft:snow_block = -0.5");
 
 	// Items
 
@@ -199,22 +200,22 @@ public class ThermConfig implements ConfigData {
 	@ConfigEntry.Category("items")
 	@Comment("Helmets that will change your temperature.")
 	public String helmetTemperatureItems = String.join(", ",
-			"minecraft:leather_helmet = 1.0");
+			"");
 
 	@ConfigEntry.Category("items")
 	@Comment("Chestplates that will change your temperature.")
 	public String chestplateTemperatureItems = String.join(", ",
-			"minecraft:leather_chestplate = 3.0");
+			"");
 
 	@ConfigEntry.Category("items")
 	@Comment("Leggings that will change your temperature.")
 	public String leggingTemperatureItems = String.join(", ",
-			"minecraft:leather_leggings = 2.0");
+			"");
 
 	@ConfigEntry.Category("items")
 	@Comment("Boots that will change your temperature.")
 	public String bootTemperatureItems = String.join(", ",
-			"minecraft:leather_boots = 1.0");
+			"");
 
 	@ConfigEntry.Category("items")
 	@Comment("Material temperature values used to auto-assign values to wearable items.")
@@ -244,25 +245,25 @@ public class ThermConfig implements ConfigData {
 
 	@ConfigEntry.Category("items")
 	@Comment("Temperature factor for helmets with auto-assigned material-based values. (Default: 1.0)")
-	public double helmetAutoTemperatureFactor = 1.0;
+	public double helmetAutoTemperatureFactor = 0.5;
 
 	@ConfigEntry.Category("items")
 	@Comment("Temperature factor for chestplates with auto-assigned material-based values. (Default: 1.0)")
-	public double leggingsAutoTemperatureFactor = 2.0;
+	public double leggingsAutoTemperatureFactor = 1.0;
 
 	@ConfigEntry.Category("items")
 	@Comment("Temperature factor for leggings with auto-assigned material-based values. (Default: 2.0)")
-	public double chestplateAutoTemperatureFactor = 2.0;
+	public double chestplateAutoTemperatureFactor = 1.25;
 
 	@ConfigEntry.Category("items")
 	@Comment("Temperature factor for boots with auto-assigned material-based values. (Default: 1.0)")
-	public double bootsAutoTemperatureFactor = 1.0;
+	public double bootsAutoTemperatureFactor = 0.5;
 
 	// Wind
 
 	@ConfigEntry.Category("wind")
 	@Comment("Disables or enables wind. (Default: true)")
-	public boolean enableWind = true;
+	public boolean enableWind = false;
 
 	@ConfigEntry.Category("wind")
 	@Comment("If disabled, wind will only be applied in the overworld. (Default: false)")
