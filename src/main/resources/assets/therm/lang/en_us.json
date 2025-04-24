@@ -55,6 +55,8 @@
 	"text.autoconfig.therm.option.bootsAutoTemperatureFactor": "Boots Auto-Assigned Temperature Factor",
     
 	"text.autoconfig.therm.option.blockTemperatureRadius": "Block Temperature Radius",
+	"text.autoconfig.therm.option.blockTemperatureAbsoluteMinimum": "Block Temperature Absolute Minimum",
+	"text.autoconfig.therm.option.blockTemperatureAbsoluteMaximum": "Block Temperature Absolute Maximum",
 	"text.autoconfig.therm.option.blockTemperatureFalloffConstant": "Block Temperature Falloff Constant",
 	"text.autoconfig.therm.option.blockTemperatureDistanceFalloffFactor": "Block Temperature Distance Falloff Factor",
     "text.autoconfig.therm.option.heatingBlocks": "Heating Blocks",

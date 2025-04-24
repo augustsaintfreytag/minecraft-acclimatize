@@ -114,6 +114,13 @@ public class ThermConfig implements ConfigData {
 	public int blockTemperatureRadius = 8;
 
 	@ConfigEntry.Category("blocks")
+	@Comment("The lowest possible value to be added to ambient temperatures based on blocks in the environment. (Default: -20.0")
+	public double blockTemperatureAbsoluteMinimum = -20.0;
+
+	@ConfigEntry.Category("blocks")
+	@Comment("The highest possible value to be added to ambient temperatures based on blocks in the environment. (Default: 40.0)")
+	public double blockTemperatureAbsoluteMaximum = 40.0;
+	@ConfigEntry.Category("blocks")
 	@Comment("The value added to distance under heat intensity used in the fall-off calculation. (Default: 0.1)")
 	public double blockTemperatureFalloffConstant = 0.1;
 
