@@ -5,7 +5,7 @@ import java.util.Map;
 
 public final class ConfigCodingUtil {
 
-	public static Map<String, Double> decodeTemperatureMapFromRaw(String rawString) {
+	public static HashMap<String, Double> decodeTemperatureMapFromRaw(String rawString) {
 		// Encoded form: minecraft:fire = 3.0, minecraft:lava = 2.0
 
 		var map = new HashMap<String, Double>();
