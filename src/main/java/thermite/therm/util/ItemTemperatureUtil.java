@@ -61,6 +61,11 @@ public final class ItemTemperatureUtil {
 
 	private static double temperatureValueForItemFromAutoAssignment(ItemStack itemStack) {
 		var itemKind = wearableKindForItem(itemStack);
+
+		if (itemKind == null) {
+			return 0.0;
+		}
+
 		var itemKindTemperatureFactor = temperatureFactorForItemKind(itemKind);
 		var materialTemperature = temperatureValueForMaterial(itemStack);
 
