@@ -2,11 +2,11 @@ package thermite.therm.player;
 
 public class PlayerState {
 
-	public double bodyTemperature = 50;
-	public double temperatureRate = 0.0625;
-	public double ambientTemperature = 404;
-	public double ambientMinTemperature = -400;
-	public double ambientMaxTemperature = 400;
+	public double bodyTemperature = 0;
+	public double temperatureRate = 0;
+	public double ambientTemperature = 0;
+	public double ambientMinTemperature = 0;
+	public double ambientMaxTemperature = 0;
 
 	public String damageType = "";
 	public int damageTick = 0;
