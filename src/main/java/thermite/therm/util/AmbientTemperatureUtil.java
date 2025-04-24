@@ -20,40 +20,6 @@ public final class AmbientTemperatureUtil {
 		}
 	}
 
-	public static TemperatureRange ambientBaseTemperatureRangeForClimate(ClimateKind climateKind) {
-		switch (climateKind) {
-			case FRIGID:
-				return new TemperatureRange(0.0, ThermMod.CONFIG.frigidClimateTemperature, 80.0);
-			case COLD:
-				return new TemperatureRange(0.0, ThermMod.CONFIG.coldClimateTemperature, 100.0);
-			case TEMPERATE:
-				return new TemperatureRange(0.0, ThermMod.CONFIG.temperateClimateTemperature, 100.0);
-			case HOT:
-				return new TemperatureRange(40.0, ThermMod.CONFIG.hotClimateTemperature, 120.0);
-			case ARID:
-				return new TemperatureRange(40.0, ThermMod.CONFIG.aridClimateTemperature, 120.0);
-			default:
-				return new TemperatureRange(40.0, ThermMod.CONFIG.aridClimateTemperature, 120.0);
-		}
-	}
-
-	public static double ambientNighttimeTemperatureDeltaForClimate(ClimateKind climateKind) {
-		switch (climateKind) {
-			case FRIGID:
-				return -10;
-			case COLD:
-				return -10;
-			case TEMPERATE:
-				return -10;
-			case HOT:
-				return -8;
-			case ARID:
-				return -15;
-			default:
-				return 0;
-		}
-	}
-
 	public static TemperatureRange ambientTemperatureForPlayer(ServerPlayerEntity player) {
 		var world = player.getWorld();
 		var dimension = world.getDimension();
@@ -75,14 +41,47 @@ public final class AmbientTemperatureUtil {
 
 		// Precipitation
 
-		if (precipitation == Biome.Precipitation.RAIN && world.isRaining() && player.isWet()
-				&& !player.isTouchingWater()) {
+		if (precipitation == Biome.Precipitation.RAIN && world.isRaining() && player.isWet()) {
 			temperatureRange.medTemperature -= 8;
 		} else if (precipitation == Biome.Precipitation.SNOW && world.isRaining()) {
 			temperatureRange.medTemperature -= 12;
 		}
 
 		return temperatureRange;
+	}
+
+	private static TemperatureRange ambientBaseTemperatureRangeForClimate(ClimateKind climateKind) {
+		switch (climateKind) {
+			case FRIGID:
+				return new TemperatureRange(0.0, ThermMod.CONFIG.frigidClimateTemperature, 80.0);
+			case COLD:
+				return new TemperatureRange(0.0, ThermMod.CONFIG.coldClimateTemperature, 100.0);
+			case TEMPERATE:
+				return new TemperatureRange(0.0, ThermMod.CONFIG.temperateClimateTemperature, 100.0);
+			case HOT:
+				return new TemperatureRange(40.0, ThermMod.CONFIG.hotClimateTemperature, 120.0);
+			case ARID:
+				return new TemperatureRange(40.0, ThermMod.CONFIG.aridClimateTemperature, 120.0);
+			default:
+				return new TemperatureRange(40.0, ThermMod.CONFIG.aridClimateTemperature, 120.0);
+		}
+	}
+
+	private static double ambientNighttimeTemperatureDeltaForClimate(ClimateKind climateKind) {
+		switch (climateKind) {
+			case FRIGID:
+				return -10;
+			case COLD:
+				return -10;
+			case TEMPERATE:
+				return -10;
+			case HOT:
+				return -8;
+			case ARID:
+				return -15;
+			default:
+				return 0;
+		}
 	}
 
 }
