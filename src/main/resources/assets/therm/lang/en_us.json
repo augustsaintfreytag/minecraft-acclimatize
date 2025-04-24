@@ -50,6 +50,7 @@
     
 	"text.autoconfig.therm.option.blockTemperatureRadius": "Block Temperature Radius",
 	"text.autoconfig.therm.option.blockTemperatureFalloffConstant": "Block Temperature Falloff Constant",
+	"text.autoconfig.therm.option.blockTemperatureDistanceFalloffFactor": "Block Temperature Distance Falloff Factor",
     "text.autoconfig.therm.option.heatingBlocks": "Heating Blocks",
     "text.autoconfig.therm.option.coolingBlocks": "Cooling Blocks",
     
@@ -70,5 +71,5 @@
     "text.autoconfig.therm.option.fallSeasonLength": "Fall Season Length",
     "text.autoconfig.therm.option.winterSeasonLength": "Winter Season Length",
     "text.autoconfig.therm.option.seasonTemperatureExtremenessFactor": "Season Temperature Extremeness",
-    "text.autoconfig.therm.option.seasonalWeather": "Seasonal Weather",
+    "text.autoconfig.therm.option.seasonalWeather": "Seasonal Weather"
 }

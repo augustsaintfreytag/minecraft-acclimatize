@@ -114,6 +114,10 @@ public class ThermConfig implements ConfigData {
 	public double blockTemperatureFalloffConstant = 0.1;
 
 	@ConfigEntry.Category("blocks")
+	@Comment("The factor multiplied by the distance between player and heat source. Lower means less falloff. (Default: 0.5)")
+	public double blockTemperatureDistanceFalloffFactor = 0.5;
+
+	@ConfigEntry.Category("blocks")
 	@Comment("Blocks that will heat you up when near.")
 	public String heatingBlocks = String.join(", ",
 			"minecraft:fire = 3.0",
