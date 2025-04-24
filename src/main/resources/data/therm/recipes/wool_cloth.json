@@ -1,16 +1,16 @@
 {
 	"type": "minecraft:crafting_shaped",
 	"pattern": [
-		"WP ",
-		"WP ",
+		"WW ",
+		"SS ",
 		"   "
 	],
 	"key": {
 		"W": {
 			"tag": "minecraft:wool"
 		},
-		"P": {
-			"item": "minecraft:wheat"
+		"S": {
+			"item": "minecraft:string"
 		}
 	},
 	"result": {
