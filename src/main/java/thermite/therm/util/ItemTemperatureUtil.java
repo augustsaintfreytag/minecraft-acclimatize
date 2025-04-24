@@ -26,7 +26,7 @@ public final class ItemTemperatureUtil {
 
 	// Temperature
 
-	public static double temperatureValueForAllArmorItems(ServerPlayerEntity player) {
+	public static double temperatureDeltaForAllArmorItems(ServerPlayerEntity player) {
 		var temperature = 0f;
 
 		for (var itemStack : player.getArmorItems()) {
