@@ -11,6 +11,7 @@ import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
 import thermite.therm.server.ServerState;
 import thermite.therm.util.EnvironmentalTemperatureUtil;
+import thermite.therm.util.ItemTemperatureUtil;
 
 public class ThermometerItem extends Item {
 
@@ -32,15 +33,25 @@ public class ThermometerItem extends Item {
 		}
 
 		var player = (ServerPlayerEntity) user;
-		var server = world.getServer();
-		var serverState = ServerState.getServerState(server);
 		var playerState = ServerState.getPlayerState(player);
+		var bodyTemperature = formatTemperature(playerState.bodyTemperature);
+		var ambientTemperature = formatTemperature(playerState.ambientTemperature);
+		var ambientMinTemperature = formatTemperature(playerState.ambientMinTemperature);
+		var ambientMaxTemperature = formatTemperature(playerState.ambientMaxTemperature);
+		var environmentalTemperature = formatTemperature(
+				EnvironmentalTemperatureUtil.temperatureDeltaForEnvironment(player));
+		var itemTemperature = formatTemperature(ItemTemperatureUtil.temperatureDeltaForAllArmorItems(player));
 
-		user.sendMessage(Text.of("Body: " + playerState.bodyTemperature + " (Ambient " + playerState.ambientTemperature
-				+ ", Min " + playerState.ambientMinTemperature + ", Max " + playerState.ambientMaxTemperature
-				+ ", Env " + EnvironmentalTemperatureUtil.temperatureDeltaForEnvironment(player) + ")"));
+		user.sendMessage(Text.of("Body: " + bodyTemperature + " (Ambient " + ambientTemperature
+				+ ", Min " + ambientMinTemperature + ", Max " + ambientMaxTemperature
+				+ ", Env " + environmentalTemperature + ", Items "
+				+ itemTemperature + ")"));
 
 		return TypedActionResult.success(itemStack);
+	}
+
+	private static String formatTemperature(double temperature) {
+		return String.format("%.1f", temperature);
 	}
 
 	@Override
