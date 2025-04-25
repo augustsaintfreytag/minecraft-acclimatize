@@ -180,7 +180,7 @@ public class ThermMod implements ModInitializer {
 		// Commands
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("thermite_resetPlayerState").requires(source -> source.hasPermissionLevel(4))
+				.register(literal("thermiteResetPlayerState").requires(source -> source.hasPermissionLevel(4))
 						.then(argument("player", EntityArgumentType.player())
 								.executes(context -> {
 
@@ -208,7 +208,7 @@ public class ThermMod implements ModInitializer {
 								}))));
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("windRandomize").requires(source -> source.hasPermissionLevel(4))
+				.register(literal("thermiteRandomizeWind").requires(source -> source.hasPermissionLevel(4))
 						.then(argument("player", EntityArgumentType.player())
 								.executes(context -> {
 
@@ -241,7 +241,7 @@ public class ThermMod implements ModInitializer {
 								}))));
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("showWind").requires(source -> source.hasPermissionLevel(4))
+				.register(literal("thermiteShowWind").requires(source -> source.hasPermissionLevel(4))
 						.executes(context -> {
 
 							ServerState serverState = ServerState.getServerState(context.getSource().getServer());
@@ -258,7 +258,7 @@ public class ThermMod implements ModInitializer {
 						})));
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("windInfo").requires(source -> source.hasPermissionLevel(4))
+				.register(literal("thermiteWindInfo").requires(source -> source.hasPermissionLevel(4))
 						.executes(context -> {
 
 							ServerState serverState = ServerState.getServerState(context.getSource().getServer());
