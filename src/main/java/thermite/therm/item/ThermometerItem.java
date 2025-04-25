@@ -9,9 +9,9 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
-import thermite.therm.server.ServerState;
 import thermite.therm.util.EnvironmentalTemperatureUtil;
 import thermite.therm.util.ItemTemperatureUtil;
+import thermite.therm.util.ServerStateUtil;
 
 public class ThermometerItem extends Item {
 
@@ -27,13 +27,12 @@ public class ThermometerItem extends Item {
 			return TypedActionResult.success(itemStack);
 		}
 
-		// Check if user is player
 		if (!(user instanceof PlayerEntity)) {
 			return TypedActionResult.pass(itemStack);
 		}
 
 		var player = (ServerPlayerEntity) user;
-		var playerState = ServerState.getPlayerState(player);
+		var playerState = ServerStateUtil.getPlayerState(player);
 		var bodyTemperature = formatTemperature(playerState.bodyTemperature);
 		var ambientTemperature = formatTemperature(playerState.ambientTemperature);
 		var ambientMinTemperature = formatTemperature(playerState.ambientMinTemperature);

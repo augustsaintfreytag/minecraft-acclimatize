@@ -17,14 +17,15 @@ import thermite.therm.util.ItemTemperatureUtil;
 import thermite.therm.util.PlayerEffectsUtil;
 import thermite.therm.util.StatusEffectsTemperatureUtil;
 import thermite.therm.util.WindTemperatureUtil;
+import thermite.therm.util.ServerStateUtil;
 
 public class PlayerTemperatureTickC2SPacket {
 
 	public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler,
 			PacketByteBuf buf, PacketSender responseSender) {
 
-		ServerState serverState = ServerState.getServerState(server);
-		PlayerState playerState = ServerState.getPlayerState(player);
+		ServerState serverState = ServerStateUtil.getServerState(server);
+		PlayerState playerState = ServerStateUtil.getPlayerState(player);
 
 		// Ambient Temperature
 

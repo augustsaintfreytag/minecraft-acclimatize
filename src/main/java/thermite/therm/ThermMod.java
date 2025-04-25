@@ -40,6 +40,7 @@ import thermite.therm.recipe.LeatherArmorWoolRecipe;
 import thermite.therm.server.ServerState;
 import thermite.therm.util.EnvironmentalTemperatureUtil;
 import thermite.therm.util.ItemTemperatureUtil;
+import thermite.therm.util.ServerStateUtil;
 
 public class ThermMod implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("therm");
@@ -143,7 +144,7 @@ public class ThermMod implements ModInitializer {
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 
-			ServerState serverState = ServerState.getServerState(handler.player.getWorld().getServer());
+			ServerState serverState = ServerStateUtil.getServerState(handler.player.getWorld().getServer());
 
 			if (!Objects.equals(serverState.worldVersion, modVersion)) {
 				serverState.windRandomizeTick = 24000;
@@ -156,7 +157,7 @@ public class ThermMod implements ModInitializer {
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register((server) -> {
-			ServerState serverState = ServerState.getServerState(server);
+			ServerState serverState = ServerStateUtil.getServerState(server);
 
 			if (serverState.windRandomizeTick >= 24000) {
 				serverState.windRandomizeTick = 0;
@@ -184,9 +185,9 @@ public class ThermMod implements ModInitializer {
 						.then(argument("player", EntityArgumentType.player())
 								.executes(context -> {
 
-									ServerState serverState = ServerState.getServerState(
+									ServerState serverState = ServerStateUtil.getServerState(
 											EntityArgumentType.getPlayer(context, "player").getWorld().getServer());
-									PlayerState playerState = ServerState
+									PlayerState playerState = ServerStateUtil
 											.getPlayerState(EntityArgumentType.getPlayer(context, "player"));
 
 									playerState.bodyTemperature = 50;
@@ -216,7 +217,7 @@ public class ThermMod implements ModInitializer {
 									var world = player.getWorld();
 									var server = world.getServer();
 
-									var serverState = ServerState.getServerState(server);
+									var serverState = ServerStateUtil.getServerState(server);
 									var random = server.getOverworld().getRandom();
 
 									serverState.windPitch = 360 * Math.PI / 180;
@@ -244,7 +245,7 @@ public class ThermMod implements ModInitializer {
 				.register(literal("thermiteShowWind").requires(source -> source.hasPermissionLevel(4))
 						.executes(context -> {
 
-							ServerState serverState = ServerState.getServerState(context.getSource().getServer());
+							ServerState serverState = ServerStateUtil.getServerState(context.getSource().getServer());
 							PlayerEntity player = context.getSource().getPlayer();
 
 							Vec3d dir = new Vec3d((Math.cos(serverState.windPitch) * Math.cos(serverState.windYaw)),
@@ -261,7 +262,7 @@ public class ThermMod implements ModInitializer {
 				.register(literal("thermiteWindInfo").requires(source -> source.hasPermissionLevel(4))
 						.executes(context -> {
 
-							ServerState serverState = ServerState.getServerState(context.getSource().getServer());
+							ServerState serverState = ServerStateUtil.getServerState(context.getSource().getServer());
 
 							context.getSource().sendMessage(Text.literal("§e=====Wind Info====="));
 							context.getSource()
