@@ -7,16 +7,11 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import thermite.therm.ThermMod;
 import thermite.therm.networking.ThermNetworkingPackets;
 import thermite.therm.player.PlayerState;
 import thermite.therm.server.ServerState;
-import thermite.therm.util.AmbientTemperatureUtil;
-import thermite.therm.util.EnvironmentalTemperatureUtil;
-import thermite.therm.util.ItemTemperatureUtil;
 import thermite.therm.util.PlayerEffectsUtil;
-import thermite.therm.util.StatusEffectsTemperatureUtil;
-import thermite.therm.util.WindTemperatureUtil;
+import thermite.therm.util.PlayerTemperatureUtil;
 import thermite.therm.util.ServerStateUtil;
 
 public class PlayerTemperatureTickC2SPacket {
@@ -27,47 +22,9 @@ public class PlayerTemperatureTickC2SPacket {
 		ServerState serverState = ServerStateUtil.getServerState(server);
 		PlayerState playerState = ServerStateUtil.getPlayerState(player);
 
-		// Ambient Temperature
+		// Temperature
 
-		var ambientTemperature = AmbientTemperatureUtil.ambientTemperatureForPlayer(player);
-		var effectiveTemperature = ambientTemperature.medTemperature;
-
-		// Wearable Item Temperature
-
-		var wearableTemperatureDelta = ItemTemperatureUtil.temperatureDeltaForAllArmorItems(player);
-		effectiveTemperature += wearableTemperatureDelta;
-
-		// Heat Source Temperature
-
-		var environmentalTemperatureDelta = EnvironmentalTemperatureUtil.temperatureDeltaForEnvironment(player);
-		effectiveTemperature += environmentalTemperatureDelta;
-
-		// Wind
-
-		var windTemperatureTuple = WindTemperatureUtil.windTemperatureForEnvironment(player, playerState, serverState);
-		var windTemperatureDelta = windTemperatureTuple.temperature * windTemperatureTuple.windChillFactor;
-
-		effectiveTemperature += windTemperatureDelta;
-
-		// Effects
-
-		var effectsTemperatureDelta = StatusEffectsTemperatureUtil.temperatureDeltaForItemsAndStatusEffects(player);
-		effectiveTemperature += effectsTemperatureDelta;
-
-		// State Changes
-
-		var bodyTemperature = playerState.bodyTemperature;
-		var acclimatizationRate = ThermMod.CONFIG.acclimatizationRate;
-
-		// Newton’s Law (discretized)
-
-		bodyTemperature += (effectiveTemperature - bodyTemperature) * acclimatizationRate;
-
-		playerState.bodyTemperature = Math.round(bodyTemperature * 100.0) / 100.0;
-		playerState.ambientTemperature = Math.round(effectiveTemperature * 100.0) / 100.0;
-		playerState.ambientMinTemperature = ambientTemperature.minTemperature;
-		playerState.ambientMaxTemperature = ambientTemperature.maxTemperature;
-		playerState.windTemperature = Math.round(windTemperatureTuple.temperature * 100.0) / 100.0;
+		PlayerTemperatureUtil.tickPlayerTemperature(player, serverState, playerState);
 
 		// Damage
 
