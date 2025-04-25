@@ -9,20 +9,20 @@ public class PlayerTemperatureUtil {
 
 	public static void tickPlayerTemperature(ServerPlayerEntity player, ServerState serverState,
 			PlayerState playerState) {
-		// Ambient Temperature
+		// Biome Temperature
 
-		var ambientTemperature = AmbientTemperatureUtil.ambientTemperatureForPlayer(player);
-		var effectiveTemperature = ambientTemperature.medTemperature;
+		var biomeTemperature = BiomeTemperatureUtil.biomeTemperatureForPlayer(player);
+		var effectiveTemperature = biomeTemperature.median;
 
-		// Wearable Item Temperature
+		// Item Temperature (Wearables)
 
-		var wearableTemperatureDelta = ItemTemperatureUtil.temperatureDeltaForAllArmorItems(player);
-		effectiveTemperature += wearableTemperatureDelta;
+		var itemTemperatureDelta = ItemTemperatureUtil.temperatureDeltaForAllArmorItems(player);
+		effectiveTemperature += itemTemperatureDelta;
 
-		// Heat Source Temperature
+		// Block Temperature (Heating & Cooling)
 
-		var environmentalTemperatureDelta = EnvironmentalTemperatureUtil.temperatureDeltaForEnvironment(player);
-		effectiveTemperature += environmentalTemperatureDelta;
+		var blockTemperatureDelta = BlockTemperatureUtil.temperatureDeltaForBlocksInVicinity(player);
+		effectiveTemperature += blockTemperatureDelta;
 
 		// Wind
 
@@ -47,13 +47,17 @@ public class PlayerTemperatureUtil {
 
 		// State
 
-		playerState.bodyTemperature = Math.round(bodyTemperature * 100.0) / 100.0;
+		playerState.bodyTemperature = roundedTemperatureValue(bodyTemperature);
+		playerState.ambientTemperature = roundedTemperatureValue(effectiveTemperature);
 
-		playerState.ambientTemperature = Math.round(effectiveTemperature * 100.0) / 100.0;
-		playerState.ambientMinTemperature = ambientTemperature.minTemperature;
-		playerState.ambientMaxTemperature = ambientTemperature.maxTemperature;
+		playerState.biomeTemperature = roundedTemperatureValue(biomeTemperature.median);
+		playerState.blockTemperature = roundedTemperatureValue(blockTemperatureDelta);
+		playerState.itemTemperature = roundedTemperatureValue(itemTemperatureDelta);
+		playerState.windTemperature = roundedTemperatureValue(windTemperatureDelta);
+	}
 
-		playerState.windTemperature = Math.round(windTemperatureTuple.temperature * 100.0) / 100.0;
+	private static double roundedTemperatureValue(double value) {
+		return Math.round(value * 100.0) / 100.0;
 	}
 
 }

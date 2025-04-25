@@ -35,10 +35,9 @@ import thermite.therm.item.IceWaterItem;
 import thermite.therm.item.ThermometerItem;
 import thermite.therm.item.WoolClothItem;
 import thermite.therm.networking.ThermNetworkingPackets;
-import thermite.therm.player.PlayerState;
 import thermite.therm.recipe.LeatherArmorWoolRecipe;
 import thermite.therm.server.ServerState;
-import thermite.therm.util.EnvironmentalTemperatureUtil;
+import thermite.therm.util.BlockTemperatureUtil;
 import thermite.therm.util.ItemTemperatureUtil;
 import thermite.therm.util.ServerStateUtil;
 
@@ -87,14 +86,14 @@ public class ThermMod implements ModInitializer {
 		AutoConfig.getConfigHolder(ThermConfig.class).registerSaveListener(
 				(config, data) -> {
 					ItemTemperatureUtil.reloadItems();
-					EnvironmentalTemperatureUtil.reloadBlocks();
+					BlockTemperatureUtil.reloadBlocks();
 					return null;
 				});
 
 		// Reload
 
 		ItemTemperatureUtil.reloadItems();
-		EnvironmentalTemperatureUtil.reloadBlocks();
+		BlockTemperatureUtil.reloadBlocks();
 
 		// Status Effects
 
