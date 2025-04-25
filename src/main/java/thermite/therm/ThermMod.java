@@ -190,11 +190,11 @@ public class ThermMod implements ModInitializer {
 									PlayerState playerState = ServerStateUtil
 											.getPlayerState(EntityArgumentType.getPlayer(context, "player"));
 
-									playerState.bodyTemperature = 50;
-									playerState.temperatureRate = 0.0625;
-									playerState.ambientTemperature = 404;
-									playerState.ambientMinTemperature = -400;
-									playerState.ambientMaxTemperature = 400;
+									playerState.bodyTemperature = 0;
+									playerState.temperatureRate = 0;
+									playerState.ambientTemperature = 0;
+									playerState.ambientMinTemperature = 0;
+									playerState.ambientMaxTemperature = 0;
 									playerState.damageType = "";
 									playerState.damageTick = 0;
 									playerState.maxDamageTick = 10;
