@@ -10,32 +10,29 @@ public class PlayerState extends PersistentState {
 	public double bodyTemperature = 0;
 	public double temperatureRate = 0;
 	public double ambientTemperature = 0;
-	public double ambientMinTemperature = 0;
-	public double ambientMaxTemperature = 0;
 
-	public String damageType = "";
-	public int damageTick = 0;
-	public int maxDamageTick = 10;
-
-	public double baseWindTemperature = 0;
+	public double biomeTemperature = 0;
+	public double blockTemperature = 0;
+	public double itemTemperature = 0;
 	public double windTemperature = 0;
+
+	public int damageTick = 0;
+	public int damageTickDuration = 10;
 
 	// NBT
 
 	@Override
 	public NbtCompound writeNbt(NbtCompound nbt) {
-		nbt.putDouble("temperature", bodyTemperature);
-		nbt.putDouble("temperatureRate", temperatureRate);
-		nbt.putDouble("restingTemperature", ambientTemperature);
-		nbt.putDouble("minTemperature", ambientMinTemperature);
-		nbt.putDouble("maxTemperature", ambientMaxTemperature);
+		nbt.putDouble(PlayerStateNBTKeys.bodyTemperature, bodyTemperature);
+		nbt.putDouble(PlayerStateNBTKeys.temperatureRate, temperatureRate);
+		nbt.putDouble(PlayerStateNBTKeys.ambientTemperature, ambientTemperature);
+		nbt.putDouble(PlayerStateNBTKeys.biomeTemperature, biomeTemperature);
+		nbt.putDouble(PlayerStateNBTKeys.blockTemperature, blockTemperature);
+		nbt.putDouble(PlayerStateNBTKeys.itemTemperature, itemTemperature);
+		nbt.putDouble(PlayerStateNBTKeys.windTemperature, windTemperature);
 
-		nbt.putString("damageType", damageType);
-		nbt.putInt("damageTick", damageTick);
-		nbt.putInt("maxDamageTick", maxDamageTick);
-
-		nbt.putDouble("baseWindTemperature", baseWindTemperature);
-		nbt.putDouble("windTemperature", windTemperature);
+		nbt.putInt(PlayerStateNBTKeys.damageTick, damageTick);
+		nbt.putInt(PlayerStateNBTKeys.damageTickDuration, damageTickDuration);
 
 		return nbt;
 	}
@@ -43,18 +40,16 @@ public class PlayerState extends PersistentState {
 	public static PlayerState fromNbt(NbtCompound nbt) {
 		PlayerState playerState = new PlayerState();
 
-		playerState.bodyTemperature = nbt.getDouble("temperature");
-		playerState.temperatureRate = nbt.getDouble("temperatureRate");
-		playerState.ambientTemperature = nbt.getDouble("restingTemperature");
-		playerState.ambientMinTemperature = nbt.getDouble("minTemperature");
-		playerState.ambientMaxTemperature = nbt.getDouble("maxTemperature");
+		playerState.bodyTemperature = nbt.getDouble(PlayerStateNBTKeys.bodyTemperature);
+		playerState.temperatureRate = nbt.getDouble(PlayerStateNBTKeys.temperatureRate);
+		playerState.ambientTemperature = nbt.getDouble(PlayerStateNBTKeys.ambientTemperature);
+		playerState.biomeTemperature = nbt.getDouble(PlayerStateNBTKeys.biomeTemperature);
+		playerState.blockTemperature = nbt.getDouble(PlayerStateNBTKeys.blockTemperature);
+		playerState.itemTemperature = nbt.getDouble(PlayerStateNBTKeys.itemTemperature);
+		playerState.windTemperature = nbt.getDouble(PlayerStateNBTKeys.windTemperature);
 
-		playerState.damageType = nbt.getString("damageType");
-		playerState.damageTick = nbt.getInt("damageTick");
-		playerState.maxDamageTick = nbt.getInt("maxDamageTick");
-
-		playerState.baseWindTemperature = nbt.getDouble("baseWindTemperature");
-		playerState.windTemperature = nbt.getDouble("windTemperature");
+		playerState.damageTick = nbt.getInt(PlayerStateNBTKeys.damageTick);
+		playerState.damageTickDuration = nbt.getInt(PlayerStateNBTKeys.damageTickDuration);
 
 		return playerState;
 	}
