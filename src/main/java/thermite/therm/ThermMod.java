@@ -180,34 +180,6 @@ public class ThermMod implements ModInitializer {
 		// Commands
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("thermiteResetPlayerState").requires(source -> source.hasPermissionLevel(4))
-						.then(argument("player", EntityArgumentType.player())
-								.executes(context -> {
-
-									ServerState serverState = ServerStateUtil.getServerState(
-											EntityArgumentType.getPlayer(context, "player").getWorld().getServer());
-									PlayerState playerState = ServerStateUtil
-											.getPlayerState(EntityArgumentType.getPlayer(context, "player"));
-
-									playerState.bodyTemperature = 0;
-									playerState.temperatureRate = 0;
-									playerState.ambientTemperature = 0;
-									playerState.ambientMinTemperature = 0;
-									playerState.ambientMaxTemperature = 0;
-									playerState.damageType = "";
-									playerState.damageTick = 0;
-									playerState.maxDamageTick = 10;
-
-									serverState.markDirty();
-
-									context.getSource().sendMessage(Text.literal("Reset "
-											+ EntityArgumentType.getPlayer(context, "player").getName().getString()
-											+ "'s playerState."));
-
-									return 1;
-								}))));
-
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
 				.register(literal("thermiteRandomizeWind").requires(source -> source.hasPermissionLevel(4))
 						.then(argument("player", EntityArgumentType.player())
 								.executes(context -> {
