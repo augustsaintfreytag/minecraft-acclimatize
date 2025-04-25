@@ -47,10 +47,8 @@ public class ServerState extends PersistentState {
 			playerStateNbt.putString(PlayerStateNBTKeys.damageType, playerSate.damageType);
 			playerStateNbt.putInt(PlayerStateNBTKeys.damageTick, playerSate.damageTick);
 			playerStateNbt.putInt(PlayerStateNBTKeys.maxDamageTick, playerSate.maxDamageTick);
-			playerStateNbt.putInt(PlayerStateNBTKeys.searchFireplaceTick, playerSate.searchFireplaceTick);
 			playerStateNbt.putDouble(PlayerStateNBTKeys.baseWindTemperature, playerSate.baseWindTemperature);
 			playerStateNbt.putDouble(PlayerStateNBTKeys.windTemperature, playerSate.windTemperature);
-			playerStateNbt.putDouble(PlayerStateNBTKeys.windTurbulence, playerSate.windTurbulence);
 
 			playersNbtCompound.put(String.valueOf(UUID), playerStateNbt);
 		});
@@ -87,10 +85,8 @@ public class ServerState extends PersistentState {
 			playerState.damageType = playerTag.getString(PlayerStateNBTKeys.damageType);
 			playerState.damageTick = playerTag.getInt(PlayerStateNBTKeys.damageTick);
 			playerState.maxDamageTick = playerTag.getInt(PlayerStateNBTKeys.maxDamageTick);
-			playerState.searchFireplaceTick = playerTag.getInt(PlayerStateNBTKeys.searchFireplaceTick);
 			playerState.baseWindTemperature = playerTag.getDouble(PlayerStateNBTKeys.baseWindTemperature);
 			playerState.windTemperature = playerTag.getDouble(PlayerStateNBTKeys.windTemperature);
-			playerState.windTurbulence = playerTag.getDouble(PlayerStateNBTKeys.windTurbulence);
 
 			UUID uuid = UUID.fromString(key);
 			serverState.players.put(uuid, playerState);

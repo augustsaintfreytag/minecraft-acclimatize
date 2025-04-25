@@ -150,10 +150,6 @@ public class ThermMod implements ModInitializer {
 				serverState.windTemperatureModifierRange = 8;
 				serverState.worldVersion = modVersion;
 
-				serverState.players.forEach((uuid, state) -> {
-					state.windTurbulence = 23;
-				});
-
 				serverState.markDirty();
 			}
 
@@ -201,7 +197,7 @@ public class ThermMod implements ModInitializer {
 									playerState.damageType = "";
 									playerState.damageTick = 0;
 									playerState.maxDamageTick = 10;
-									playerState.searchFireplaceTick = 4;
+
 									serverState.markDirty();
 
 									context.getSource().sendMessage(Text.literal("Reset "
