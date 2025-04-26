@@ -35,11 +35,11 @@ import thermite.therm.item.IceWaterItem;
 import thermite.therm.item.ThermometerItem;
 import thermite.therm.item.WoolClothItem;
 import thermite.therm.networking.ThermNetworkingPackets;
-import thermite.therm.player.PlayerState;
 import thermite.therm.recipe.LeatherArmorWoolRecipe;
 import thermite.therm.server.ServerState;
-import thermite.therm.util.EnvironmentalTemperatureUtil;
+import thermite.therm.util.BlockTemperatureUtil;
 import thermite.therm.util.ItemTemperatureUtil;
+import thermite.therm.util.ServerStateUtil;
 
 public class ThermMod implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("therm");
@@ -86,14 +86,14 @@ public class ThermMod implements ModInitializer {
 		AutoConfig.getConfigHolder(ThermConfig.class).registerSaveListener(
 				(config, data) -> {
 					ItemTemperatureUtil.reloadItems();
-					EnvironmentalTemperatureUtil.reloadBlocks();
+					BlockTemperatureUtil.reloadBlocks();
 					return null;
 				});
 
 		// Reload
 
 		ItemTemperatureUtil.reloadItems();
-		EnvironmentalTemperatureUtil.reloadBlocks();
+		BlockTemperatureUtil.reloadBlocks();
 
 		// Status Effects
 
@@ -143,16 +143,12 @@ public class ThermMod implements ModInitializer {
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 
-			ServerState serverState = ServerState.getServerState(handler.player.getWorld().getServer());
+			ServerState serverState = ServerStateUtil.getServerState(handler.player.getWorld().getServer());
 
 			if (!Objects.equals(serverState.worldVersion, modVersion)) {
 				serverState.windRandomizeTick = 24000;
 				serverState.windTemperatureModifierRange = 8;
 				serverState.worldVersion = modVersion;
-
-				serverState.players.forEach((uuid, state) -> {
-					state.windTurbulence = 23;
-				});
 
 				serverState.markDirty();
 			}
@@ -160,7 +156,7 @@ public class ThermMod implements ModInitializer {
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register((server) -> {
-			ServerState serverState = ServerState.getServerState(server);
+			ServerState serverState = ServerStateUtil.getServerState(server);
 
 			if (serverState.windRandomizeTick >= 24000) {
 				serverState.windRandomizeTick = 0;
@@ -184,35 +180,7 @@ public class ThermMod implements ModInitializer {
 		// Commands
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("thermite_resetPlayerState").requires(source -> source.hasPermissionLevel(4))
-						.then(argument("player", EntityArgumentType.player())
-								.executes(context -> {
-
-									ServerState serverState = ServerState.getServerState(
-											EntityArgumentType.getPlayer(context, "player").getWorld().getServer());
-									PlayerState playerState = ServerState
-											.getPlayerState(EntityArgumentType.getPlayer(context, "player"));
-
-									playerState.bodyTemperature = 50;
-									playerState.temperatureRate = 0.0625;
-									playerState.ambientTemperature = 404;
-									playerState.ambientMinTemperature = -400;
-									playerState.ambientMaxTemperature = 400;
-									playerState.damageType = "";
-									playerState.damageTick = 0;
-									playerState.maxDamageTick = 10;
-									playerState.searchFireplaceTick = 4;
-									serverState.markDirty();
-
-									context.getSource().sendMessage(Text.literal("Reset "
-											+ EntityArgumentType.getPlayer(context, "player").getName().getString()
-											+ "'s playerState."));
-
-									return 1;
-								}))));
-
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("windRandomize").requires(source -> source.hasPermissionLevel(4))
+				.register(literal("thermiteRandomizeWind").requires(source -> source.hasPermissionLevel(4))
 						.then(argument("player", EntityArgumentType.player())
 								.executes(context -> {
 
@@ -220,7 +188,7 @@ public class ThermMod implements ModInitializer {
 									var world = player.getWorld();
 									var server = world.getServer();
 
-									var serverState = ServerState.getServerState(server);
+									var serverState = ServerStateUtil.getServerState(server);
 									var random = server.getOverworld().getRandom();
 
 									serverState.windPitch = 360 * Math.PI / 180;
@@ -245,10 +213,10 @@ public class ThermMod implements ModInitializer {
 								}))));
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("showWind").requires(source -> source.hasPermissionLevel(4))
+				.register(literal("thermiteShowWind").requires(source -> source.hasPermissionLevel(4))
 						.executes(context -> {
 
-							ServerState serverState = ServerState.getServerState(context.getSource().getServer());
+							ServerState serverState = ServerStateUtil.getServerState(context.getSource().getServer());
 							PlayerEntity player = context.getSource().getPlayer();
 
 							Vec3d dir = new Vec3d((Math.cos(serverState.windPitch) * Math.cos(serverState.windYaw)),
@@ -262,10 +230,10 @@ public class ThermMod implements ModInitializer {
 						})));
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("windInfo").requires(source -> source.hasPermissionLevel(4))
+				.register(literal("thermiteWindInfo").requires(source -> source.hasPermissionLevel(4))
 						.executes(context -> {
 
-							ServerState serverState = ServerState.getServerState(context.getSource().getServer());
+							ServerState serverState = ServerStateUtil.getServerState(context.getSource().getServer());
 
 							context.getSource().sendMessage(Text.literal("§e=====Wind Info====="));
 							context.getSource()

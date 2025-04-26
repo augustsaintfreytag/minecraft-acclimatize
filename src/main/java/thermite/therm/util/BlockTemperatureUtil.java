@@ -13,7 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import thermite.therm.ThermMod;
 
-public final class EnvironmentalTemperatureUtil {
+public final class BlockTemperatureUtil {
 
 	private static HashMap<String, Double> blockTemperatureById;
 
@@ -21,7 +21,7 @@ public final class EnvironmentalTemperatureUtil {
 		blockTemperatureById = allBlockTemperatureById();
 	}
 
-	public static double temperatureDeltaForEnvironment(ServerPlayerEntity player) {
+	public static double temperatureDeltaForBlocksInVicinity(ServerPlayerEntity player) {
 		var radius = ThermMod.CONFIG.blockTemperatureRadius;
 		var falloffConstant = ThermMod.CONFIG.blockTemperatureFalloffConstant;
 		var distanceFalloffFactor = ThermMod.CONFIG.blockTemperatureDistanceFalloffFactor;

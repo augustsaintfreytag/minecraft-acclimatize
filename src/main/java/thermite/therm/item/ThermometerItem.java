@@ -9,9 +9,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
-import thermite.therm.server.ServerState;
-import thermite.therm.util.EnvironmentalTemperatureUtil;
-import thermite.therm.util.ItemTemperatureUtil;
+import thermite.therm.util.ServerStateUtil;
 
 public class ThermometerItem extends Item {
 
@@ -27,31 +25,20 @@ public class ThermometerItem extends Item {
 			return TypedActionResult.success(itemStack);
 		}
 
-		// Check if user is player
 		if (!(user instanceof PlayerEntity)) {
 			return TypedActionResult.pass(itemStack);
 		}
 
 		var player = (ServerPlayerEntity) user;
-		var playerState = ServerState.getPlayerState(player);
-		var bodyTemperature = formatTemperature(playerState.bodyTemperature);
-		var ambientTemperature = formatTemperature(playerState.ambientTemperature);
-		var ambientMinTemperature = formatTemperature(playerState.ambientMinTemperature);
-		var ambientMaxTemperature = formatTemperature(playerState.ambientMaxTemperature);
-		var environmentalTemperature = formatTemperature(
-				EnvironmentalTemperatureUtil.temperatureDeltaForEnvironment(player));
-		var itemTemperature = formatTemperature(ItemTemperatureUtil.temperatureDeltaForAllArmorItems(player));
+		var playerState = ServerStateUtil.getPlayerState(player);
 
 		user.sendMessage(Text
-				.of("♜ Body: " + bodyTemperature + " (☼ Ambient " + ambientMinTemperature + " < " + ambientTemperature
-						+ " > " + ambientMaxTemperature + ", ♢ Env " + environmentalTemperature + ", ☵ Items "
-						+ itemTemperature + ")"));
+				.of("♜ Body: " + playerState.bodyTemperature + " \n(☼ Ambient " + playerState.ambientTemperature
+						+ ", ♣ Biome " + playerState.biomeTemperature + ", ☰ Wind " + playerState.windTemperature
+						+ ", ♢ Blocks " + playerState.blockTemperature
+						+ ", ☍ Items " + playerState.itemTemperature + ")"));
 
 		return TypedActionResult.success(itemStack);
-	}
-
-	private static String formatTemperature(double temperature) {
-		return String.format("%.1f", temperature);
 	}
 
 	@Override

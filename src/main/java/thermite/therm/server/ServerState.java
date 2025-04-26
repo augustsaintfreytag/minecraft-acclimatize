@@ -3,25 +3,22 @@ package thermite.therm.server;
 import java.util.HashMap;
 import java.util.UUID;
 
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;
-import net.minecraft.world.PersistentStateManager;
-import net.minecraft.world.World;
-import thermite.therm.ThermMod;
 import thermite.therm.player.PlayerState;
-import thermite.therm.player.PlayerStateNBTKeys;
 
 public class ServerState extends PersistentState {
 
+	// Server metadata
 	public String worldVersion = "4.1.0.8";
 
+	// Seasonal state
 	public int season = 0;
 	public int seasonTick = 0;
 	public long currentSeasonTick = 0;
 	public int seasonalWeatherTick = 0;
 
+	// Wind parameters
 	public double windPitch = 360 * Math.PI / 180;
 	public double windYaw = 0;
 	public int windRandomizeTick = 0;
@@ -32,30 +29,25 @@ public class ServerState extends PersistentState {
 
 	public HashMap<UUID, PlayerState> players = new HashMap<>();
 
+	// NBT
+
 	@Override
 	public NbtCompound writeNbt(NbtCompound nbt) {
+		// Player State Properties
 
-		NbtCompound playersNbtCompound = new NbtCompound();
-		players.forEach((UUID, playerSate) -> {
-			NbtCompound playerStateNbt = new NbtCompound();
+		NbtCompound playersNbt = new NbtCompound();
 
-			playerStateNbt.putDouble(PlayerStateNBTKeys.temperature, playerSate.bodyTemperature);
-			playerStateNbt.putDouble(PlayerStateNBTKeys.temperatureRate, playerSate.temperatureRate);
-			playerStateNbt.putDouble(PlayerStateNBTKeys.restingTemperature, playerSate.ambientTemperature);
-			playerStateNbt.putDouble(PlayerStateNBTKeys.minTemperature, playerSate.ambientMinTemperature);
-			playerStateNbt.putDouble(PlayerStateNBTKeys.maxTemperature, playerSate.ambientMaxTemperature);
-			playerStateNbt.putString(PlayerStateNBTKeys.damageType, playerSate.damageType);
-			playerStateNbt.putInt(PlayerStateNBTKeys.damageTick, playerSate.damageTick);
-			playerStateNbt.putInt(PlayerStateNBTKeys.maxDamageTick, playerSate.maxDamageTick);
-			playerStateNbt.putInt(PlayerStateNBTKeys.searchFireplaceTick, playerSate.searchFireplaceTick);
-			playerStateNbt.putDouble(PlayerStateNBTKeys.baseWindTemperature, playerSate.baseWindTemperature);
-			playerStateNbt.putDouble(PlayerStateNBTKeys.windTemperature, playerSate.windTemperature);
-			playerStateNbt.putDouble(PlayerStateNBTKeys.windTurbulence, playerSate.windTurbulence);
+		for (var entry : players.entrySet()) {
+			UUID id = entry.getKey();
+			PlayerState playerState = entry.getValue();
 
-			playersNbtCompound.put(String.valueOf(UUID), playerStateNbt);
-		});
+			playersNbt.put(id.toString(), playerState.writeNbt(new NbtCompound()));
+		}
 
-		nbt.put(ServerStateNBTKeys.players, playersNbtCompound);
+		nbt.put(ServerStateNBTKeys.players, playersNbt);
+
+		// Server State Properties
+
 		nbt.putString(ServerStateNBTKeys.worldVersion, worldVersion);
 		nbt.putInt(ServerStateNBTKeys.season, season);
 		nbt.putInt(ServerStateNBTKeys.seasonTick, seasonTick);
@@ -73,28 +65,18 @@ public class ServerState extends PersistentState {
 
 	public static ServerState createFromNbt(NbtCompound tag) {
 		ServerState serverState = new ServerState();
-		NbtCompound playersTag = tag.getCompound("players");
 
-		playersTag.getKeys().forEach(key -> {
-			NbtCompound playerTag = playersTag.getCompound(key);
-			PlayerState playerState = new PlayerState();
+		// Player State Properties
 
-			playerState.bodyTemperature = playerTag.getDouble(PlayerStateNBTKeys.temperature);
-			playerState.temperatureRate = playerTag.getDouble(PlayerStateNBTKeys.temperatureRate);
-			playerState.ambientTemperature = playerTag.getDouble(PlayerStateNBTKeys.restingTemperature);
-			playerState.ambientMinTemperature = playerTag.getDouble(PlayerStateNBTKeys.minTemperature);
-			playerState.ambientMaxTemperature = playerTag.getDouble(PlayerStateNBTKeys.maxTemperature);
-			playerState.damageType = playerTag.getString(PlayerStateNBTKeys.damageType);
-			playerState.damageTick = playerTag.getInt(PlayerStateNBTKeys.damageTick);
-			playerState.maxDamageTick = playerTag.getInt(PlayerStateNBTKeys.maxDamageTick);
-			playerState.searchFireplaceTick = playerTag.getInt(PlayerStateNBTKeys.searchFireplaceTick);
-			playerState.baseWindTemperature = playerTag.getDouble(PlayerStateNBTKeys.baseWindTemperature);
-			playerState.windTemperature = playerTag.getDouble(PlayerStateNBTKeys.windTemperature);
-			playerState.windTurbulence = playerTag.getDouble(PlayerStateNBTKeys.windTurbulence);
+		NbtCompound playersTag = tag.getCompound(ServerStateNBTKeys.players);
 
-			UUID uuid = UUID.fromString(key);
-			serverState.players.put(uuid, playerState);
-		});
+		for (String key : playersTag.getKeys()) {
+			NbtCompound ptag = playersTag.getCompound(key);
+			PlayerState ps = PlayerState.fromNbt(ptag);
+			serverState.players.put(UUID.fromString(key), ps);
+		}
+
+		// Server State Properties
 
 		serverState.worldVersion = tag.getString(ServerStateNBTKeys.worldVersion);
 		serverState.season = tag.getInt(ServerStateNBTKeys.season);
@@ -109,26 +91,5 @@ public class ServerState extends PersistentState {
 		serverState.precipitationWindModifier = tag.getDouble(ServerStateNBTKeys.precipitationWindModifier);
 
 		return serverState;
-	}
-
-	public static ServerState getServerState(MinecraftServer server) {
-		PersistentStateManager persistentStateManager = server
-				.getWorld(World.OVERWORLD).getPersistentStateManager();
-
-		ServerState serverState = persistentStateManager.getOrCreate(
-				ServerState::createFromNbt,
-				ServerState::new,
-				ThermMod.modid);
-
-		return serverState;
-	}
-
-	public static PlayerState getPlayerState(LivingEntity player) {
-		ServerState serverState = getServerState(player.getWorld().getServer());
-
-		PlayerState playerState = serverState.players.computeIfAbsent(player.getUuid(),
-				uuid -> new PlayerState());
-
-		return playerState;
 	}
 }

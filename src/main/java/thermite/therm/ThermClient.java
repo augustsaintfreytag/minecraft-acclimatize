@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.particle.ParticleTypes;
@@ -26,13 +27,11 @@ public class ThermClient implements ClientModInitializer {
 	public static double clientStoredWindYaw = 0;
 	public static double clientStoredWindTemperature = 0;
 
-	public static boolean windParticles = false;
+	public static int temperatureUpdateTick = 0;
+	public static int temperatureUpdateTickInterval = 20;
 
-	public static int tempTickCounter = 0;
-	public static final int tempTickCount = 20;
-
-	public static boolean showGui = true;
-	private static KeyBinding showGuiKey;
+	public static boolean enableHUD = true;
+	private static KeyBinding enableHUDKeyBinding;
 
 	public static int glassShakeTick = 0;
 	public static int glassShakeTickMax = 0;
@@ -41,87 +40,61 @@ public class ThermClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		setUpKeybindings();
+		setUpNetworkingPacketRegistration();
+		setUpClientTickEventHandler();
+		setUpItemTooltipCallback();
+	}
 
-		// Keybindings
-
-		showGuiKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+	private static void setUpKeybindings() {
+		enableHUDKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 				"Toggle Temperature GUI",
 				InputUtil.Type.KEYSYM,
 				GLFW.GLFW_KEY_UNKNOWN,
 				"Thermite"));
 
-		// Network
+		if (enableHUDKeyBinding.wasPressed()) {
+			enableHUD = !enableHUD;
+		}
+	}
 
+	private static void setUpNetworkingPacketRegistration() {
 		ThermNetworkingPackets.registerS2CPackets();
+	}
 
-		// Tick
+	private static void setUpClientTickEventHandler() {
+		ClientTickEvents.START_CLIENT_TICK.register(client -> {
+			var world = client.world;
 
-		ClientTickEvents.START_CLIENT_TICK.register((client) -> {
-			if (client.world != null) {
-				if (client.world.isClient()) {
-
-					if (tempTickCounter < tempTickCount) {
-						tempTickCounter += 1;
-					} else if (tempTickCounter >= tempTickCount) {
-						boolean paused = false;
-						if (client.isInSingleplayer() && client.isPaused()) {
-							paused = true;
-							windParticles = false;
-						}
-						if (!paused && !client.player.isCreative() && !client.player.isSpectator()) {
-							ClientPlayNetworking.send(ThermNetworkingPackets.PLAYER_TEMPERATURE_TICK_C2S_PACKET_ID,
-									PacketByteBufs.create());
-							windParticles = true;
-						}
-						tempTickCounter = 0;
-					}
-
-					if (windParticles && ThermMod.CONFIG.enableWindParticles) {
-						Random rand = new Random();
-
-						int bound = 16 + (int) clientStoredWindTemperature;
-						if (bound <= 0) {
-							bound = 1;
-						}
-
-						int shouldSpawn = rand.nextInt(0, bound);
-
-						if (clientStoredWindTemperature < -3 && shouldSpawn == 0) {
-							for (int i = 0; i < 1; i++) {
-								Vec3d dir = new Vec3d((Math.cos(clientStoredWindPitch) * Math.cos(clientStoredWindYaw)),
-										(Math.sin(clientStoredWindPitch) * Math.cos(clientStoredWindYaw)),
-										Math.sin(clientStoredWindYaw));
-
-								dir = dir.negate();
-
-								double randX = rand.nextDouble(-10, 10);
-								double randY = rand.nextDouble(-5, 10);
-								double randZ = rand.nextDouble(-10, 10);
-
-								client.world.addParticle(ParticleTypes.CLOUD, client.player.getX() + randX - dir.x * 7,
-										client.player.getY() + randY, client.player.getZ() + randZ - dir.z * 7, dir.x,
-										dir.y, dir.z);
-							}
-						}
-					}
-
-				}
+			if (world == null || !world.isClient()) {
+				return;
 			}
 
-			// Keybinds
+			var isPaused = client.isInSingleplayer() && client.isPaused();
 
-			while (showGuiKey.wasPressed()) {
-				if (showGui) {
-					showGui = false;
-				} else {
-					showGui = true;
+			// Temperature Tick
+
+			if (++temperatureUpdateTick >= temperatureUpdateTickInterval) {
+				if (!isPaused && !client.player.isCreative() && !client.player.isSpectator()) {
+					ClientPlayNetworking.send(
+							ThermNetworkingPackets.PLAYER_TEMPERATURE_TICK_C2S_PACKET_ID,
+							PacketByteBufs.create());
 				}
+
+				temperatureUpdateTick = 0;
 			}
 
+			// Wind Particles
+
+			if (ThermMod.CONFIG.enableWindParticles && !isPaused) {
+				renderWindParticles(client);
+			}
 		});
+	}
 
-		ItemTooltipCallback.EVENT.register((stack, tooltipContext, list) -> {
-			if (stack == null || !stack.hasNbt()) {
+	private static void setUpItemTooltipCallback() {
+		ItemTooltipCallback.EVENT.register((stack, context, tooltip) -> {
+			if (!stack.hasNbt()) {
 				return;
 			}
 
@@ -131,10 +104,33 @@ public class ThermClient implements ClientModInitializer {
 				return;
 			}
 
-			list.add(Text.literal("§9+" + temperature + " Temperature"));
-
+			tooltip.add(Text.literal("§9+" + temperature + " Temperature"));
 		});
+	}
 
+	private static void renderWindParticles(MinecraftClient client) {
+		if (clientStoredWindTemperature >= -3) {
+			return;
+		}
+
+		var player = client.player;
+		var world = client.world;
+
+		var random = new Random();
+		var bound = Math.max(1, 16 + (int) clientStoredWindTemperature);
+
+		if (random.nextInt(bound) == 0) {
+			Vec3d dir = new Vec3d(
+					Math.cos(clientStoredWindPitch) * Math.cos(clientStoredWindYaw),
+					Math.sin(clientStoredWindPitch) * Math.cos(clientStoredWindYaw),
+					Math.sin(clientStoredWindYaw)).negate();
+
+			double x = player.getX() + random.nextDouble(-10, 10) - dir.x * 7;
+			double y = player.getY() + random.nextDouble(-5, 10);
+			double z = player.getZ() + random.nextDouble(-10, 10) - dir.z * 7;
+
+			world.addParticle(ParticleTypes.CLOUD, x, y, z, dir.x, dir.y, dir.z);
+		}
 	}
 
 }

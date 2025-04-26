@@ -1,9 +1,6 @@
 package thermite.therm.util;
 
-import java.util.Random;
-
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.biome.Biome;
@@ -41,7 +38,7 @@ public final class WindTemperatureUtil {
 			return WindTemperatureTuple.zero();
 		}
 
-		// Wind base temperature calculation
+		// Wind Base Temperature
 
 		var playerPosition = player.getBlockPos();
 		var precipitation = world.getBiome(playerPosition).value().getPrecipitation(playerPosition);
@@ -75,26 +72,30 @@ public final class WindTemperatureUtil {
 
 		// Wind Ray Calculation
 
-		Random rand = new Random();
-		int unblockedRays = ThermMod.CONFIG.windRayCount;
+		var windTurbulence = 23.0;
+		var unblockedRays = ThermMod.CONFIG.windRayCount;
+
+		var random = player.getRandom();
+
 		for (int i = 0; i < ThermMod.CONFIG.windRayCount; i++) {
 
-			double turbulence = playerState.windTurbulence * Math.PI / 180;
+			var turbulence = windTurbulence * Math.PI / 180d;
 
-			Vec3d dir = new Vec3d(
-					(Math.cos(serverState.windPitch + rand.nextDouble(-turbulence, turbulence))
-							* Math.cos(serverState.windYaw + rand.nextDouble(-turbulence, turbulence))),
-					(Math.sin(serverState.windPitch + rand.nextDouble(-turbulence, turbulence))
-							* Math.cos(serverState.windYaw + rand.nextDouble(-turbulence, turbulence))),
-					Math.sin(serverState.windYaw + rand.nextDouble(-turbulence, turbulence)));
+			var directionVector = new Vec3d(
+					(Math.cos(serverState.windPitch + random.nextTriangular(0, turbulence))
+							* Math.cos(serverState.windYaw + random.nextTriangular(0, turbulence))),
+					(Math.sin(serverState.windPitch + random.nextTriangular(0, turbulence))
+							* Math.cos(serverState.windYaw + random.nextTriangular(0, turbulence))),
+					Math.sin(serverState.windYaw + random.nextTriangular(0, turbulence)));
 
-			Vec3d startPos = new Vec3d(player.getPos().x, player.getPos().y + 1, player.getPos().z);
+			var startPosition = new Vec3d(player.getPos().x, player.getPos().y + 1, player.getPos().z);
 
-			BlockHitResult r = player.getWorld()
-					.raycast(new RaycastContext(startPos,
-							startPos.add(dir.multiply(ThermMod.CONFIG.windRayLength)),
+			var hitResult = player.getWorld()
+					.raycast(new RaycastContext(startPosition,
+							startPosition.add(directionVector.multiply(ThermMod.CONFIG.windRayLength)),
 							RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.WATER, player));
-			if (!player.getWorld().getBlockState(r.getBlockPos()).isAir()) {
+
+			if (!player.getWorld().getBlockState(hitResult.getBlockPos()).isAir()) {
 				unblockedRays -= 1;
 			}
 		}

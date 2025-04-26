@@ -21,7 +21,7 @@ public abstract class InGameHudMixin {
 
 	@Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", ordinal = 1))
 	private void mixinRenderStatusBars(DrawContext context, CallbackInfo callbackInfo) {
-		if (!ThermClient.showGui) {
+		if (!ThermClient.enableHUD) {
 			return;
 		}
 

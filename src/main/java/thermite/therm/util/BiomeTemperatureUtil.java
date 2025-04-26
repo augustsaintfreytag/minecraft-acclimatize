@@ -6,21 +6,25 @@ import thermite.therm.ThermMod;
 import thermite.therm.ThermUtil;
 import thermite.therm.library.ClimateKind;
 
-public final class AmbientTemperatureUtil {
+public final class BiomeTemperatureUtil {
+
+	// Library
 
 	public static class TemperatureRange {
-		public double minTemperature;
-		public double medTemperature;
-		public double maxTemperature;
+		public double minimum;
+		public double median;
+		public double maximum;
 
 		public TemperatureRange(double minTemperature, double medTemperature, double maxTemperature) {
-			this.minTemperature = minTemperature;
-			this.medTemperature = medTemperature;
-			this.maxTemperature = maxTemperature;
+			this.minimum = minTemperature;
+			this.median = medTemperature;
+			this.maximum = maxTemperature;
 		}
 	}
 
-	public static TemperatureRange ambientTemperatureForPlayer(ServerPlayerEntity player) {
+	// Biome
+
+	public static TemperatureRange biomeTemperatureForPlayer(ServerPlayerEntity player) {
 		var world = player.getWorld();
 		var dimension = world.getDimension();
 		var playerPos = player.getBlockPos();
@@ -31,26 +35,28 @@ public final class AmbientTemperatureUtil {
 		var ambientTemperature = biome.getTemperature();
 		var climateKind = ThermUtil.climateKindForTemperature(ambientTemperature);
 
-		var temperatureRange = ambientBaseTemperatureRangeForClimate(climateKind);
+		var temperatureRange = baseTemperatureRangeForClimate(climateKind);
 
 		// Nighttime
 
 		if (dimension.natural() && !world.isDay()) {
-			temperatureRange.medTemperature += ambientNighttimeTemperatureDeltaForClimate(climateKind);
+			temperatureRange.median += nighttimeTemperatureDeltaForClimate(climateKind);
 		}
 
 		// Precipitation
 
 		if (precipitation == Biome.Precipitation.RAIN && world.isRaining() && player.isWet()) {
-			temperatureRange.medTemperature -= 8;
+			temperatureRange.median -= 8;
 		} else if (precipitation == Biome.Precipitation.SNOW && world.isRaining()) {
-			temperatureRange.medTemperature -= 12;
+			temperatureRange.median -= 12;
 		}
 
 		return temperatureRange;
 	}
 
-	private static TemperatureRange ambientBaseTemperatureRangeForClimate(ClimateKind climateKind) {
+	// Climate
+
+	private static TemperatureRange baseTemperatureRangeForClimate(ClimateKind climateKind) {
 		switch (climateKind) {
 			case FRIGID:
 				return new TemperatureRange(0.0, ThermMod.CONFIG.frigidClimateTemperature, 80.0);
@@ -67,7 +73,7 @@ public final class AmbientTemperatureUtil {
 		}
 	}
 
-	private static double ambientNighttimeTemperatureDeltaForClimate(ClimateKind climateKind) {
+	private static double nighttimeTemperatureDeltaForClimate(ClimateKind climateKind) {
 		switch (climateKind) {
 			case FRIGID:
 				return -10;

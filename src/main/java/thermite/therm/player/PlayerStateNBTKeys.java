@@ -2,20 +2,19 @@ package thermite.therm.player;
 
 public final class PlayerStateNBTKeys {
 
-	public static final String temperature = "temperature";
+	// Temperature
+
+	public static final String bodyTemperature = "bodyTemperature";
 	public static final String temperatureRate = "temperatureRate";
-	public static final String restingTemperature = "restingTemperature";
-	public static final String minTemperature = "minTemperature";
-	public static final String maxTemperature = "maxTemperature";
-
-	public static final String damageType = "damageType";
-	public static final String damageTick = "damageTick";
-	public static final String maxDamageTick = "maxDamageTick";
-
-	public static final String searchFireplaceTick = "searchFireplaceTick";
-
-	public static final String baseWindTemperature = "baseWindTemperature";
+	public static final String ambientTemperature = "ambientTemperature";
+	public static final String biomeTemperature = "biomeTemperature";
+	public static final String blockTemperature = "blockTemperature";
+	public static final String itemTemperature = "itemTemperature";
 	public static final String windTemperature = "windTemperature";
-	public static final String windTurbulence = "windTurbulence";
+
+	// Damage
+
+	public static final String damageTick = "damageTick";
+	public static final String damageTickDuration = "damageTickDuration";
 
 }
