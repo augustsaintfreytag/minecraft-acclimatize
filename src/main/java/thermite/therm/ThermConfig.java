@@ -130,6 +130,14 @@ public class ThermConfig implements ConfigData {
 	public double blockTemperatureDistanceFalloffFactor = 0.075;
 
 	@ConfigEntry.Category("blocks")
+	@Comment("The factor applied to base acclimatization rate when close to a block heat source. (Default: 0.5)")
+	public double blockAcclimatizationBoostFactor = 2.5;
+
+	@ConfigEntry.Category("blocks")
+	@Comment("The minimum temperature at which the acclimatization boost is applied. (Default: 10.0)")
+	public double blockTemperatureAcclimatizationBoostThreshold = 10.0;
+
+	@ConfigEntry.Category("blocks")
 	@Comment("Blocks that will heat you up when near.")
 	public String heatingBlocks = String.join(", ",
 			"minecraft:fire = 5.0",

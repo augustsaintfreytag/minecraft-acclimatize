@@ -59,6 +59,8 @@
 	"text.autoconfig.therm.option.blockTemperatureAbsoluteMaximum": "Block Temperature Absolute Maximum",
 	"text.autoconfig.therm.option.blockTemperatureFalloffConstant": "Block Temperature Falloff Constant",
 	"text.autoconfig.therm.option.blockTemperatureDistanceFalloffFactor": "Block Temperature Distance Falloff Factor",
+	"text.autoconfig.therm.option.blockAcclimatizationBoostFactor": "Block Acclimatization Boost Factor",
+	"text.autoconfig.therm.option.blockTemperatureAcclimatizationBoostThreshold": "Block Temperature Acclimatization Boost Threshold",
     "text.autoconfig.therm.option.heatingBlocks": "Heating Blocks",
     "text.autoconfig.therm.option.coolingBlocks": "Cooling Blocks",
     

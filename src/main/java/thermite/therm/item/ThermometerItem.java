@@ -33,7 +33,8 @@ public class ThermometerItem extends Item {
 		var playerState = ServerStateUtil.getPlayerState(player);
 
 		user.sendMessage(Text
-				.of("♜ Body: " + playerState.bodyTemperature + " \n(☼ Ambient " + playerState.ambientTemperature
+				.of("♜ Body: " + playerState.bodyTemperature + " (↕ Acclim " + playerState.temperatureRate
+						+ ") \n(☼ Ambient " + playerState.ambientTemperature
 						+ ", ♣ Biome " + playerState.biomeTemperature + ", ☰ Wind " + playerState.windTemperature
 						+ ", ♢ Blocks " + playerState.blockTemperature
 						+ ", ☍ Items " + playerState.itemTemperature + ")"));
