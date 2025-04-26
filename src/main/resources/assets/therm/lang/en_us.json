@@ -9,7 +9,9 @@
     "block.therm.ice_box_freezing": "Freezing Ice Box",
     "block.therm.ice_box_frozen": "Frozen Ice Box",
     "block.therm.fireplace": "Brick Fireplace",
-    "effect.therm.cooling": "Cold Resistance",
+	"effect.therm.hypothermia": "Hypothermia",
+	"effect.therm.hyperthermia": "Hyperthermia",
+    "effect.therm.cold_resistance": "Cold Resistance",
 	
     "text.autoconfig.therm.title": "Thermite",
     "text.autoconfig.therm.category.seasons": "Seasons",

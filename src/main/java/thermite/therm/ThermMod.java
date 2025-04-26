@@ -99,6 +99,10 @@ public class ThermMod implements ModInitializer {
 
 		Registry.register(Registries.STATUS_EFFECT, new Identifier(modid, "cooling"),
 				ThermStatusEffects.COLD_RESISTANCE);
+		Registry.register(Registries.STATUS_EFFECT, new Identifier(modid, "hypothermia"),
+				ThermStatusEffects.HYPOTHERMIA);
+		Registry.register(Registries.STATUS_EFFECT, new Identifier(modid, "hyperthermia"),
+				ThermStatusEffects.HYPERTHERMIA);
 
 		// Items
 
