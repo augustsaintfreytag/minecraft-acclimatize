@@ -41,12 +41,18 @@ public class PlayerTemperatureUtil {
 		var bodyTemperature = playerState.bodyTemperature;
 		var acclimatizationRate = ThermMod.CONFIG.acclimatizationRate;
 
+		if (blockTemperatureDelta > ThermMod.CONFIG.blockTemperatureAcclimatizationBoostThreshold) {
+			// Boost acclimatization when heating by block.
+			acclimatizationRate *= ThermMod.CONFIG.blockAcclimatizationBoostFactor;
+		}
+
 		// Newton’s Law (discretized)
 
 		bodyTemperature += (effectiveTemperature - bodyTemperature) * acclimatizationRate;
 
 		// State
 
+		playerState.temperatureRate = acclimatizationRate;
 		playerState.bodyTemperature = roundedTemperatureValue(bodyTemperature);
 		playerState.ambientTemperature = roundedTemperatureValue(effectiveTemperature);
 
