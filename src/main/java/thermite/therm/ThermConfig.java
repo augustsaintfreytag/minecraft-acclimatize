@@ -134,6 +134,10 @@ public class ThermConfig implements ConfigData {
 	public double blockAcclimatizationBoostFactor = 2.5;
 
 	@ConfigEntry.Category("blocks")
+	@Comment("The minimum temperature at which the acclimatization boost is applied. (Default: 10.0)")
+	public double blockTemperatureAcclimatizationBoostThreshold = 10.0;
+
+	@ConfigEntry.Category("blocks")
 	@Comment("Blocks that will heat you up when near.")
 	public String heatingBlocks = String.join(", ",
 			"minecraft:fire = 5.0",
