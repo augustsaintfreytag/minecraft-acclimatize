@@ -35,12 +35,12 @@ public final class PlayerEffectsUtil {
 	public static void handlePlayerEffects(ServerPlayerEntity player, PlayerState playerState) {
 		// TODO: Check for resistance status effects or armor items.
 
-		if (playerState.damageTick < playerState.maxDamageTick) {
+		if (playerState.damageTick < playerState.damageTickDuration) {
 			playerState.damageTick++;
 			return;
 		}
 
-		if (playerState.damageTick >= playerState.maxDamageTick) {
+		if (playerState.damageTick >= playerState.damageTickDuration) {
 			playerState.damageTick = 0;
 			// May apply damage, can apply and set ticks for re-arm below.
 		}
@@ -61,21 +61,21 @@ public final class PlayerEffectsUtil {
 			}
 
 			playerState.damageTick = 0;
-			playerState.maxDamageTick = 100; // 5 seconds
+			playerState.damageTickDuration = ThermMod.CONFIG.temperatureDamageInterval;
 
 			// player.setFrozenTicks(temperatureDamageTuple.duration);
 
 		} else if (temperatureDamageTuple.kind == TemperatureDamageKind.HEAT) {
 			if (temperatureDamageTuple.intensity == TemperatureIntensityKind.MINOR) {
-				var weaknessStatusEffect = new StatusEffectInstance(StatusEffects.WEAKNESS, 100, 2);
+				var weaknessStatusEffect = new StatusEffectInstance(StatusEffects.WEAKNESS, 120, 0);
 				player.addStatusEffect(weaknessStatusEffect);
 			} else {
-				var weaknessStatusEffect = new StatusEffectInstance(StatusEffects.WEAKNESS, 100, 4);
+				var weaknessStatusEffect = new StatusEffectInstance(StatusEffects.WEAKNESS, 120, 1);
 				player.addStatusEffect(weaknessStatusEffect);
 			}
 
 			playerState.damageTick = 0;
-			playerState.maxDamageTick = 100; // 5 seconds
+			playerState.damageTickDuration = ThermMod.CONFIG.extremeTemperatureDamageInterval;
 
 			// player.setOnFireFor(temperatureDamageTuple.duration);
 		}
