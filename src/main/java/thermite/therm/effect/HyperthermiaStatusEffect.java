@@ -8,6 +8,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 
 public class HyperthermiaStatusEffect extends StatusEffect {
+
 	// Properties
 
 	private static final int color = -613060;
@@ -31,4 +32,5 @@ public class HyperthermiaStatusEffect extends StatusEffect {
 				attackWeakIntensity,
 				Operation.ADDITION);
 	}
+
 }

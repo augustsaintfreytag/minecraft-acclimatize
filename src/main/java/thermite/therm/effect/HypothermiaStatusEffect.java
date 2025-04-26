@@ -2,7 +2,6 @@ package thermite.therm.effect;
 
 import java.util.UUID;
 
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier.Operation;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
@@ -12,7 +11,7 @@ public class HypothermiaStatusEffect extends StatusEffect {
 
 	// Properties
 
-	// #4e64ca
+	// Color: #4e64ca
 	private static final int color = -11639606;
 
 	private static final UUID movementSpeedEffectId = UUID.fromString("63C5A824-8303-4DB8-B7C9-A0ED0BF22A9D");
@@ -33,25 +32,6 @@ public class HypothermiaStatusEffect extends StatusEffect {
 		this.addAttributeModifier(EntityAttributes.GENERIC_ATTACK_DAMAGE, attackWeaknessEffectId.toString(),
 				attackWeakIntensity,
 				Operation.ADDITION);
-	}
-
-	// Effects
-
-	@Override
-	public boolean canApplyUpdateEffect(int duration, int amplifier) {
-		int interval = 40 >> amplifier;
-		return interval > 0 ? duration % interval == 0 : true;
-	}
-
-	@Override
-	public void applyUpdateEffect(LivingEntity entity, int amplifier) {
-	}
-
-	private static void applyFreezeDamage(LivingEntity entity, int amplifier) {
-		var world = entity.getWorld();
-		var damageSources = world.getDamageSources();
-
-		entity.damage(damageSources.freeze(), 1.0F + amplifier * 0.5F);
 	}
 
 }
