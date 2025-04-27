@@ -95,7 +95,7 @@ public class Mod implements ModInitializer {
 
 		// Status Effects
 
-		Registry.register(Registries.STATUS_EFFECT, new Identifier(modid, "cooling"),
+		Registry.register(Registries.STATUS_EFFECT, new Identifier(modid, "cold_resistance"),
 				ModStatusEffects.COLD_RESISTANCE);
 		Registry.register(Registries.STATUS_EFFECT, new Identifier(modid, "hypothermia"),
 				ModStatusEffects.HYPOTHERMIA);
