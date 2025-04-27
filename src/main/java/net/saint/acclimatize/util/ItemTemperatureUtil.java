@@ -57,6 +57,12 @@ public final class ItemTemperatureUtil {
 		return autoTemperatureValue;
 	}
 
+	// Acclimatization Rate
+
+	public static double acclimatizationRateDeltaForItemTemperature(double temperatureDelta) {
+		return temperatureDelta * Mod.CONFIG.itemAcclimatizationRateFactor;
+	}
+
 	// Temperature (Auto-Assignment)
 
 	private static double temperatureValueForItemFromAutoAssignment(ItemStack itemStack) {
@@ -144,14 +150,7 @@ public final class ItemTemperatureUtil {
 	// Config Access
 
 	private static HashMap<String, Double> allArmorItemsFromConfig() {
-		var allArmorItems = new HashMap<String, Double>();
-
-		allArmorItems.putAll(ConfigCodingUtil.decodeTemperatureMapFromRaw(Mod.CONFIG.bootTemperatureItems));
-		allArmorItems.putAll(ConfigCodingUtil.decodeTemperatureMapFromRaw(Mod.CONFIG.helmetTemperatureItems));
-		allArmorItems.putAll(ConfigCodingUtil.decodeTemperatureMapFromRaw(Mod.CONFIG.chestplateTemperatureItems));
-		allArmorItems.putAll(ConfigCodingUtil.decodeTemperatureMapFromRaw(Mod.CONFIG.leggingTemperatureItems));
-
-		return allArmorItems;
+		return ConfigCodingUtil.decodeTemperatureMapFromRaw(Mod.CONFIG.wornTemperatureItems);
 	}
 
 	private static HashMap<String, Double> allMaterialsFromConfig() {

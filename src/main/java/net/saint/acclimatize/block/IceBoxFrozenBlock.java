@@ -13,8 +13,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.saint.acclimatize.ModBlocks;
-import net.saint.acclimatize.ModUtil;
 import net.saint.acclimatize.library.ClimateKind;
+import net.saint.acclimatize.util.BiomeTemperatureUtil;
 
 public class IceBoxFrozenBlock extends Block {
 
@@ -41,7 +41,7 @@ public class IceBoxFrozenBlock extends Block {
 
 		var biome = world.getBiome(position).value();
 		var biomeTemperature = biome.getTemperature();
-		var climateKind = ModUtil.climateKindForTemperature(biomeTemperature);
+		var climateKind = BiomeTemperatureUtil.climateKindForTemperature(biomeTemperature);
 
 		if (climateKind == ClimateKind.COLD || climateKind == ClimateKind.FRIGID) {
 			if (random.nextInt(7) == 0) {

@@ -66,8 +66,8 @@ public class ModConfig implements ConfigData {
 	public double burnThresholdMajor = 75.0;
 
 	@ConfigEntry.Category("player")
-	@Comment("How quick your body temperature absorbs or loses heat from/to the environment. (Default: 0.1)")
-	public double acclimatizationRate = 0.5;
+	@Comment("How quick your body temperature absorbs or loses heat from/to the environment. (Default: 0.05)")
+	public double acclimatizationRate = 0.05;
 
 	@ConfigEntry.Category("player")
 	@Comment("Hyperthermia damage per 5 seconds. (Default: 1.0)")
@@ -194,11 +194,7 @@ public class ModConfig implements ConfigData {
 	public double coldProtectionCoolingFactor = 1.0;
 
 	@ConfigEntry.Category("items")
-	@Comment("Duration of the cooling effect of ice water drinks in ticks. (Default: 6000)")
-	public int iceWaterEffectDuration = 6000;
-
-	@ConfigEntry.Category("items")
-	@Comment("Items that when held will change your temperature.")
+	@Comment("Item temperature values that add to body temperature calculation when actively held.")
 	public String heldTemperatureItems = String.join(", ",
 			"minecraft:torch = 2.0",
 			"minecraft:lava_bucket = 1.0",
@@ -206,23 +202,8 @@ public class ModConfig implements ConfigData {
 			"hardcore_torches:lit_lantern = 1.0");
 
 	@ConfigEntry.Category("items")
-	@Comment("Helmets that will change your temperature.")
-	public String helmetTemperatureItems = String.join(", ",
-			"");
-
-	@ConfigEntry.Category("items")
-	@Comment("Chestplates that will change your temperature.")
-	public String chestplateTemperatureItems = String.join(", ",
-			"");
-
-	@ConfigEntry.Category("items")
-	@Comment("Leggings that will change your temperature.")
-	public String leggingTemperatureItems = String.join(", ",
-			"");
-
-	@ConfigEntry.Category("items")
-	@Comment("Boots that will change your temperature.")
-	public String bootTemperatureItems = String.join(", ",
+	@Comment("Item temperature values that add to body temperature calculation when worn.")
+	public String wornTemperatureItems = String.join(", ",
 			"");
 
 	@ConfigEntry.Category("items")
@@ -252,7 +233,7 @@ public class ModConfig implements ConfigData {
 			"turtle = 1.0");
 
 	@ConfigEntry.Category("items")
-	@Comment("Temperature factor for helmets with auto-assigned material-based values. (Default: 1.0)")
+	@Comment("Temperature factor for helmets with auto-assigned material-based values. (Default: 0.5)")
 	public double helmetAutoTemperatureFactor = 0.5;
 
 	@ConfigEntry.Category("items")
@@ -260,12 +241,24 @@ public class ModConfig implements ConfigData {
 	public double leggingsAutoTemperatureFactor = 1.0;
 
 	@ConfigEntry.Category("items")
-	@Comment("Temperature factor for leggings with auto-assigned material-based values. (Default: 2.0)")
+	@Comment("Temperature factor for leggings with auto-assigned material-based values. (Default: 1.25)")
 	public double chestplateAutoTemperatureFactor = 1.25;
 
 	@ConfigEntry.Category("items")
-	@Comment("Temperature factor for boots with auto-assigned material-based values. (Default: 1.0)")
+	@Comment("Temperature factor for boots with auto-assigned material-based values. (Default: 0.5)")
 	public double bootsAutoTemperatureFactor = 0.5;
+
+	@ConfigEntry.Category("items")
+	@Comment("Factor for how much player acclimatization is affected by the temperature value of worn items. (Default: -0.01)")
+	public double itemAcclimatizationRateFactor = -0.01;
+
+	@ConfigEntry.Category("items")
+	@Comment("The lowest possible value player acclimatization rate can be lowered to with worn items. (Default: 0.025)")
+	public double itemAcclimatizationRateMinimum = 0.025;
+
+	@ConfigEntry.Category("items")
+	@Comment("Duration of the cooling effect of ice water drinks in ticks. (Default: 6000)")
+	public int iceWaterEffectDuration = 6000;
 
 	// Wind
 
@@ -278,8 +271,8 @@ public class ModConfig implements ConfigData {
 	public boolean multidimensionalWind = false;
 
 	@ConfigEntry.Category("wind")
-	@Comment("Number of rays used in wind calculation. (Default: 10)")
-	public int windRayCount = 32;
+	@Comment("Number of rays used in wind calculation. (Default: 16)")
+	public int windRayCount = 16;
 
 	@ConfigEntry.Category("wind")
 	@Comment("How many blocks long wind rays are. (Default: 32)")

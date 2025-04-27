@@ -1,29 +1,12 @@
-package net.saint.acclimatize;
+package net.saint.acclimatize.util;
 
 import java.util.ArrayList;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.saint.acclimatize.library.BlockStatePositionTuple;
-import net.saint.acclimatize.library.ClimateKind;
 
-public class ModUtil {
-
-	public static ClimateKind climateKindForTemperature(float temperature) {
-		if (temperature < 0.0) {
-			return ClimateKind.FRIGID;
-		} else if (temperature < 0.31 && temperature >= 0.0) {
-			return ClimateKind.COLD;
-		} else if (temperature < 0.9 && temperature >= 0.31) {
-			return ClimateKind.TEMPERATE;
-		} else if (temperature < 2.0 && temperature > 0.8) {
-			return ClimateKind.HOT;
-		} else if (temperature >= 2.0) {
-			return ClimateKind.ARID;
-		}
-
-		return ClimateKind.ARID;
-	}
+public class WorldSelectionUtil {
 
 	public static ArrayList<BlockStatePositionTuple> getBlockBox(World world, int x1, int y1, int z1, int x2, int y2,
 			int z2) {
