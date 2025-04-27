@@ -1,9 +1,9 @@
 package thermite.therm.util;
 
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.server.network.ServerPlayerEntity;
 import thermite.therm.ThermMod;
+import thermite.therm.effect.ThermStatusEffects;
 import thermite.therm.player.PlayerState;
 
 public final class PlayerEffectsUtil {
@@ -53,31 +53,27 @@ public final class PlayerEffectsUtil {
 
 		if (temperatureDamageTuple.kind == TemperatureDamageKind.COLD) {
 			if (temperatureDamageTuple.intensity == TemperatureIntensityKind.MINOR) {
-				var weaknessStatusEffect = new StatusEffectInstance(StatusEffects.WEAKNESS, 100, 2);
-				player.addStatusEffect(weaknessStatusEffect);
+				var hypothermiaStatusEffect = new StatusEffectInstance(ThermStatusEffects.HYPOTHERMIA, 600, 0);
+				player.addStatusEffect(hypothermiaStatusEffect);
 			} else {
-				var weaknessStatusEffect = new StatusEffectInstance(StatusEffects.WEAKNESS, 100, 4);
-				player.addStatusEffect(weaknessStatusEffect);
+				var hypothermiaStatusEffect = new StatusEffectInstance(ThermStatusEffects.HYPOTHERMIA, 600, 1);
+				player.addStatusEffect(hypothermiaStatusEffect);
 			}
 
 			playerState.damageTick = 0;
 			playerState.damageTickDuration = ThermMod.CONFIG.temperatureDamageInterval;
 
-			// player.setFrozenTicks(temperatureDamageTuple.duration);
-
 		} else if (temperatureDamageTuple.kind == TemperatureDamageKind.HEAT) {
 			if (temperatureDamageTuple.intensity == TemperatureIntensityKind.MINOR) {
-				var weaknessStatusEffect = new StatusEffectInstance(StatusEffects.WEAKNESS, 120, 0);
-				player.addStatusEffect(weaknessStatusEffect);
+				var hyperthermiaStatusEffect = new StatusEffectInstance(ThermStatusEffects.HYPERTHERMIA, 600, 0);
+				player.addStatusEffect(hyperthermiaStatusEffect);
 			} else {
-				var weaknessStatusEffect = new StatusEffectInstance(StatusEffects.WEAKNESS, 120, 1);
-				player.addStatusEffect(weaknessStatusEffect);
+				var hyperthermiaStatusEffect = new StatusEffectInstance(ThermStatusEffects.HYPERTHERMIA, 600, 1);
+				player.addStatusEffect(hyperthermiaStatusEffect);
 			}
 
 			playerState.damageTick = 0;
 			playerState.damageTickDuration = ThermMod.CONFIG.extremeTemperatureDamageInterval;
-
-			// player.setOnFireFor(temperatureDamageTuple.duration);
 		}
 
 		if (player.getHealth() <= 0.0) {
