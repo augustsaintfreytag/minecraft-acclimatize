@@ -1,3 +1,3 @@
 {
-	"parent": "therm:block/ice_box_freezing"
+	"parent": "acclimatize:block/ice_box_freezing"
 }

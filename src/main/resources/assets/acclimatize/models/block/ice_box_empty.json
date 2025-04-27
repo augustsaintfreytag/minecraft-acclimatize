@@ -1,11 +1,11 @@
 {
 	"parent": "block/cube",
 	"textures": {
-		"up": "therm:block/ice_box_empty_top",
-		"down": "therm:block/ice_box_empty_top",
-		"north": "therm:block/ice_box_empty_side",
-		"east": "therm:block/ice_box_empty_side",
-		"south": "therm:block/ice_box_empty_side",
-		"west": "therm:block/ice_box_empty_side"
+		"up": "acclimatize:block/ice_box_empty_top",
+		"down": "acclimatize:block/ice_box_empty_top",
+		"north": "acclimatize:block/ice_box_empty_side",
+		"east": "acclimatize:block/ice_box_empty_side",
+		"south": "acclimatize:block/ice_box_empty_side",
+		"west": "acclimatize:block/ice_box_empty_side"
 	}
 }

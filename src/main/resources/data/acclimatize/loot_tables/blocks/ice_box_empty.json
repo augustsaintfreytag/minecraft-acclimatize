@@ -6,7 +6,7 @@
 			"entries": [
 				{
 					"type": "minecraft:item",
-					"name": "therm:ice_box_empty_item"
+					"name": "acclimatize:ice_box_empty_item"
 				}
 			],
 			"conditions": [

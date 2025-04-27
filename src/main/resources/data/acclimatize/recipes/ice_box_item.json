@@ -20,7 +20,7 @@
 		}
 	},
 	"result": {
-		"item": "therm:ice_box_empty_item",
+		"item": "acclimatize:ice_box_empty_item",
 		"count": 1
 	}
 }

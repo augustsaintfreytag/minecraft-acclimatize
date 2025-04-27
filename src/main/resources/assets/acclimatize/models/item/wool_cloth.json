@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "therm:item/wool_cloth"
+		"layer0": "acclimatize:item/wool_cloth"
 	}
 }
