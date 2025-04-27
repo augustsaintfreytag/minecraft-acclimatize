@@ -1,29 +1,29 @@
 {
 	"schemaVersion": 1,
-	"id": "therm",
+	"id": "acclimatize",
 	"version": "${version}",
-	"name": "Thermite",
-	"description": "A mod that adds a comprehensive but enjoyable temperature system.",
+	"name": "Acclimatize",
+	"description": "A highly configurable body temperature system with broad compatibility with modded blocks and items.",
 	"authors": [
 		"Saint",
 		"sparkierkan7"
 	],
 	"contact": {
-		"homepage": "https://github.com/augustsaintfreytag/minecraft-thermite",
-		"sources": "https://github.com/augustsaintfreytag/minecraft-thermite"
+		"homepage": "https://github.com/augustsaintfreytag/minecraft-acclimatize",
+		"sources": "https://github.com/augustsaintfreytag/minecraft-acclimatize"
 	},
 	"license": "MIT",
 	"icon": "assets/therm/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"thermite.therm.ThermMod"
+			"net.saint.acclimatize.AcclimatizeMod"
 		],
 		"client": [
-			"thermite.therm.ThermClient"
+			"net.saint.acclimatize.AcclimatizeClient"
 		],
 		"modmenu": [
-			"thermite.therm.ThermModMenu"
+			"net.saint.acclimatize.AcclimatizeModMenu"
 		]
 	},
 	"mixins": [
