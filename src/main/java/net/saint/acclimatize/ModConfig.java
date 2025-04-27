@@ -194,11 +194,7 @@ public class ModConfig implements ConfigData {
 	public double coldProtectionCoolingFactor = 1.0;
 
 	@ConfigEntry.Category("items")
-	@Comment("Duration of the cooling effect of ice water drinks in ticks. (Default: 6000)")
-	public int iceWaterEffectDuration = 6000;
-
-	@ConfigEntry.Category("items")
-	@Comment("Items that when held will change your temperature.")
+	@Comment("Item temperature values that add to body temperature calculation when actively held.")
 	public String heldTemperatureItems = String.join(", ",
 			"minecraft:torch = 2.0",
 			"minecraft:lava_bucket = 1.0",
@@ -206,23 +202,8 @@ public class ModConfig implements ConfigData {
 			"hardcore_torches:lit_lantern = 1.0");
 
 	@ConfigEntry.Category("items")
-	@Comment("Helmets that will change your temperature.")
-	public String helmetTemperatureItems = String.join(", ",
-			"");
-
-	@ConfigEntry.Category("items")
-	@Comment("Chestplates that will change your temperature.")
-	public String chestplateTemperatureItems = String.join(", ",
-			"");
-
-	@ConfigEntry.Category("items")
-	@Comment("Leggings that will change your temperature.")
-	public String leggingTemperatureItems = String.join(", ",
-			"");
-
-	@ConfigEntry.Category("items")
-	@Comment("Boots that will change your temperature.")
-	public String bootTemperatureItems = String.join(", ",
+	@Comment("Item temperature values that add to body temperature calculation when worn.")
+	public String wornTemperatureItems = String.join(", ",
 			"");
 
 	@ConfigEntry.Category("items")
@@ -266,6 +247,11 @@ public class ModConfig implements ConfigData {
 	@ConfigEntry.Category("items")
 	@Comment("Temperature factor for boots with auto-assigned material-based values. (Default: 1.0)")
 	public double bootsAutoTemperatureFactor = 0.5;
+
+
+	@ConfigEntry.Category("items")
+	@Comment("Duration of the cooling effect of ice water drinks in ticks. (Default: 6000)")
+	public int iceWaterEffectDuration = 6000;
 
 	// Wind
 
