@@ -234,27 +234,31 @@ public class ModConfig implements ConfigData {
 
 	@ConfigEntry.Category("items")
 	@Comment("Temperature factor for helmets with auto-assigned material-based values. (Default: 0.5)")
-	public double helmetAutoTemperatureFactor = 0.5;
+	public double helmetAutoTemperatureFactor = 1.0;
 
 	@ConfigEntry.Category("items")
 	@Comment("Temperature factor for chestplates with auto-assigned material-based values. (Default: 1.0)")
-	public double leggingsAutoTemperatureFactor = 1.0;
+	public double leggingsAutoTemperatureFactor = 2.0;
 
 	@ConfigEntry.Category("items")
 	@Comment("Temperature factor for leggings with auto-assigned material-based values. (Default: 1.25)")
-	public double chestplateAutoTemperatureFactor = 1.25;
+	public double chestplateAutoTemperatureFactor = 3.0;
 
 	@ConfigEntry.Category("items")
-	@Comment("Temperature factor for boots with auto-assigned material-based values. (Default: 0.5)")
-	public double bootsAutoTemperatureFactor = 0.5;
+	@Comment("Temperature factor for boots with auto-assigned material-based values. (Default: 1.0)")
+	public double bootsAutoTemperatureFactor = 1;
 
 	@ConfigEntry.Category("items")
-	@Comment("Factor for how much player acclimatization is affected by the temperature value of worn items. (Default: -0.01)")
-	public double itemAcclimatizationRateFactor = -0.01;
+	@Comment("The factor for how much the raw temperature value of worn items adds to player temperature. (Default: 0.35)")
+	public double itemTemperatureFactor = 0.35;
 
 	@ConfigEntry.Category("items")
-	@Comment("The lowest possible value player acclimatization rate can be lowered to with worn items. (Default: 0.025)")
-	public double itemAcclimatizationRateMinimum = 0.025;
+	@Comment("Factor for how much player acclimatization is affected by the temperature value of worn items. (Default: -0.005)")
+	public double itemAcclimatizationRateFactor = -0.005;
+
+	@ConfigEntry.Category("items")
+	@Comment("The lowest possible value player acclimatization rate can be lowered to with worn items. (Default: 0.001)")
+	public double itemAcclimatizationRateMinimum = 0.001;
 
 	@ConfigEntry.Category("items")
 	@Comment("Duration of the cooling effect of ice water drinks in ticks. (Default: 6000)")
