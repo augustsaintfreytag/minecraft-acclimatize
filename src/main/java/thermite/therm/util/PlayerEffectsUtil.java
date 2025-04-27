@@ -53,10 +53,10 @@ public final class PlayerEffectsUtil {
 
 		if (temperatureDamageTuple.kind == TemperatureDamageKind.COLD) {
 			if (temperatureDamageTuple.intensity == TemperatureIntensityKind.MINOR) {
-				var hypothermiaStatusEffect = new StatusEffectInstance(ThermStatusEffects.HYPOTHERMIA, 300, 0);
+				var hypothermiaStatusEffect = new StatusEffectInstance(ThermStatusEffects.HYPOTHERMIA, 600, 0);
 				player.addStatusEffect(hypothermiaStatusEffect);
 			} else {
-				var hypothermiaStatusEffect = new StatusEffectInstance(ThermStatusEffects.HYPOTHERMIA, 300, 1);
+				var hypothermiaStatusEffect = new StatusEffectInstance(ThermStatusEffects.HYPOTHERMIA, 600, 1);
 				player.addStatusEffect(hypothermiaStatusEffect);
 			}
 
@@ -65,17 +65,15 @@ public final class PlayerEffectsUtil {
 
 		} else if (temperatureDamageTuple.kind == TemperatureDamageKind.HEAT) {
 			if (temperatureDamageTuple.intensity == TemperatureIntensityKind.MINOR) {
-				var hyperthermiaStatusEffect = new StatusEffectInstance(ThermStatusEffects.HYPERTHERMIA, 300, 0);
+				var hyperthermiaStatusEffect = new StatusEffectInstance(ThermStatusEffects.HYPERTHERMIA, 600, 0);
 				player.addStatusEffect(hyperthermiaStatusEffect);
 			} else {
-				var hyperthermiaStatusEffect = new StatusEffectInstance(ThermStatusEffects.HYPERTHERMIA, 300, 1);
+				var hyperthermiaStatusEffect = new StatusEffectInstance(ThermStatusEffects.HYPERTHERMIA, 600, 1);
 				player.addStatusEffect(hyperthermiaStatusEffect);
 			}
 
 			playerState.damageTick = 0;
 			playerState.damageTickDuration = ThermMod.CONFIG.extremeTemperatureDamageInterval;
-
-			// player.setOnFireFor(temperatureDamageTuple.duration);
 		}
 
 		if (player.getHealth() <= 0.0) {
