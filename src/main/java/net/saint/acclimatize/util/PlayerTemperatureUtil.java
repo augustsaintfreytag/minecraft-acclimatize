@@ -40,8 +40,9 @@ public class PlayerTemperatureUtil {
 
 		var acclimatizationRate = Mod.CONFIG.acclimatizationRate;
 
-		if (blockTemperatureDelta > Mod.CONFIG.blockTemperatureAcclimatizationBoostThreshold) {
-			// Boost acclimatization when heating by block.
+		if (blockTemperatureDelta > Mod.CONFIG.blockTemperatureAcclimatizationBoostThreshold
+				|| blockTemperatureDelta < -Mod.CONFIG.blockTemperatureAcclimatizationBoostThreshold) {
+			// Boost acclimatization when excessively heated or cooled by blocks.
 			acclimatizationRate *= Mod.CONFIG.blockAcclimatizationBoostFactor;
 		} else {
 			// Reduce acclimatization when wearing items.
