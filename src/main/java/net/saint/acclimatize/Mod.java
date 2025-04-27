@@ -40,8 +40,8 @@ import net.saint.acclimatize.util.ItemTemperatureUtil;
 import net.saint.acclimatize.util.ServerStateUtil;
 
 public class Mod implements ModInitializer {
-	public static final Logger LOGGER = LoggerFactory.getLogger("therm");
-	public static final String modid = "therm";
+	public static final Logger LOGGER = LoggerFactory.getLogger("acclimatize");
+	public static final String modid = "acclimatize";
 	public static final String modVersion = "6.0.0";
 
 	// Items
@@ -104,9 +104,9 @@ public class Mod implements ModInitializer {
 
 		// Items
 
+		Registry.register(Registries.ITEM, new Identifier(modid, "thermometer"), THERMOMETER_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modid, "golden_sweet_berries"), GOLDEN_SWEET_BERRIES_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modid, "ice_water"), ICE_WATER_ITEM);
-		Registry.register(Registries.ITEM, new Identifier(modid, "thermometer"), THERMOMETER_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modid, "wool_cloth"), WOOL_CLOTH_ITEM);
 
 		// Blocks
