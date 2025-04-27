@@ -248,6 +248,13 @@ public class ModConfig implements ConfigData {
 	@Comment("Temperature factor for boots with auto-assigned material-based values. (Default: 0.5)")
 	public double bootsAutoTemperatureFactor = 0.5;
 
+	@ConfigEntry.Category("items")
+	@Comment("Factor for how much player acclimatization is affected by the temperature value of worn items. (Default: -0.01)")
+	public double itemAcclimatizationRateFactor = -0.01;
+
+	@ConfigEntry.Category("items")
+	@Comment("The lowest possible value player acclimatization rate can be lowered to with worn items. (Default: 0.025)")
+	public double itemAcclimatizationRateMinimum = 0.025;
 
 	@ConfigEntry.Category("items")
 	@Comment("Duration of the cooling effect of ice water drinks in ticks. (Default: 6000)")
