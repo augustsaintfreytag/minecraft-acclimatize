@@ -36,18 +36,23 @@ public class PlayerTemperatureUtil {
 		var effectsTemperatureDelta = StatusEffectsTemperatureUtil.temperatureDeltaForItemsAndStatusEffects(player);
 		effectiveTemperature += effectsTemperatureDelta;
 
-		// State Changes
+		// Acclimatization Rate
 
-		var bodyTemperature = playerState.bodyTemperature;
 		var acclimatizationRate = Mod.CONFIG.acclimatizationRate;
 
 		if (blockTemperatureDelta > Mod.CONFIG.blockTemperatureAcclimatizationBoostThreshold) {
 			// Boost acclimatization when heating by block.
 			acclimatizationRate *= Mod.CONFIG.blockAcclimatizationBoostFactor;
+		} else {
+			// Reduce acclimatization when wearing items.
+			acclimatizationRate += ItemTemperatureUtil.acclimatizationRateDeltaForItemTemperature(itemTemperatureDelta);
 		}
 
-		// Newton’s Law (discretized)
+		acclimatizationRate = Math.max(Mod.CONFIG.itemAcclimatizationRateMinimum, acclimatizationRate);
 
+		// Player Temperature
+
+		var bodyTemperature = playerState.bodyTemperature;
 		bodyTemperature += (effectiveTemperature - bodyTemperature) * acclimatizationRate;
 
 		// State

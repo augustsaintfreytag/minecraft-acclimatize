@@ -57,6 +57,12 @@ public final class ItemTemperatureUtil {
 		return autoTemperatureValue;
 	}
 
+	// Acclimatization Rate
+
+	public static double acclimatizationRateDeltaForItemTemperature(double temperatureDelta) {
+		return temperatureDelta * Mod.CONFIG.itemAcclimatizationRateFactor;
+	}
+
 	// Temperature (Auto-Assignment)
 
 	private static double temperatureValueForItemFromAutoAssignment(ItemStack itemStack) {
