@@ -3,7 +3,6 @@ package net.saint.acclimatize.util;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.biome.Biome;
 import net.saint.acclimatize.Mod;
-import net.saint.acclimatize.ModUtil;
 import net.saint.acclimatize.library.ClimateKind;
 
 public final class BiomeTemperatureUtil {
@@ -33,7 +32,7 @@ public final class BiomeTemperatureUtil {
 		var precipitation = biome.getPrecipitation(player.getBlockPos());
 
 		var ambientTemperature = biome.getTemperature();
-		var climateKind = ModUtil.climateKindForTemperature(ambientTemperature);
+		var climateKind = climateKindForTemperature(ambientTemperature);
 
 		var temperatureRange = baseTemperatureRangeForClimate(climateKind);
 
@@ -55,6 +54,22 @@ public final class BiomeTemperatureUtil {
 	}
 
 	// Climate
+
+	public static ClimateKind climateKindForTemperature(float temperature) {
+		if (temperature < 0.0) {
+			return ClimateKind.FRIGID;
+		} else if (temperature < 0.31 && temperature >= 0.0) {
+			return ClimateKind.COLD;
+		} else if (temperature < 0.9 && temperature >= 0.31) {
+			return ClimateKind.TEMPERATE;
+		} else if (temperature < 2.0 && temperature > 0.8) {
+			return ClimateKind.HOT;
+		} else if (temperature >= 2.0) {
+			return ClimateKind.ARID;
+		}
+
+		return ClimateKind.ARID;
+	}
 
 	private static TemperatureRange baseTemperatureRangeForClimate(ClimateKind climateKind) {
 		switch (climateKind) {
