@@ -66,8 +66,8 @@ public class ModConfig implements ConfigData {
 	public double burnThresholdMajor = 75.0;
 
 	@ConfigEntry.Category("player")
-	@Comment("How quick your body temperature absorbs or loses heat from/to the environment. (Default: 0.1)")
-	public double acclimatizationRate = 0.5;
+	@Comment("How quick your body temperature absorbs or loses heat from/to the environment. (Default: 0.05)")
+	public double acclimatizationRate = 0.05;
 
 	@ConfigEntry.Category("player")
 	@Comment("Hyperthermia damage per 5 seconds. (Default: 1.0)")
@@ -233,7 +233,7 @@ public class ModConfig implements ConfigData {
 			"turtle = 1.0");
 
 	@ConfigEntry.Category("items")
-	@Comment("Temperature factor for helmets with auto-assigned material-based values. (Default: 1.0)")
+	@Comment("Temperature factor for helmets with auto-assigned material-based values. (Default: 0.5)")
 	public double helmetAutoTemperatureFactor = 0.5;
 
 	@ConfigEntry.Category("items")
@@ -241,11 +241,11 @@ public class ModConfig implements ConfigData {
 	public double leggingsAutoTemperatureFactor = 1.0;
 
 	@ConfigEntry.Category("items")
-	@Comment("Temperature factor for leggings with auto-assigned material-based values. (Default: 2.0)")
+	@Comment("Temperature factor for leggings with auto-assigned material-based values. (Default: 1.25)")
 	public double chestplateAutoTemperatureFactor = 1.25;
 
 	@ConfigEntry.Category("items")
-	@Comment("Temperature factor for boots with auto-assigned material-based values. (Default: 1.0)")
+	@Comment("Temperature factor for boots with auto-assigned material-based values. (Default: 0.5)")
 	public double bootsAutoTemperatureFactor = 0.5;
 
 
@@ -264,8 +264,8 @@ public class ModConfig implements ConfigData {
 	public boolean multidimensionalWind = false;
 
 	@ConfigEntry.Category("wind")
-	@Comment("Number of rays used in wind calculation. (Default: 10)")
-	public int windRayCount = 32;
+	@Comment("Number of rays used in wind calculation. (Default: 16)")
+	public int windRayCount = 16;
 
 	@ConfigEntry.Category("wind")
 	@Comment("How many blocks long wind rays are. (Default: 32)")
