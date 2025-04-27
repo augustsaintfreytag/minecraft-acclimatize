@@ -1,0 +1,7 @@
+{
+	"variants": {
+		"": {
+			"model": "therm:block/ice_box_empty"
+		}
+	}
+}

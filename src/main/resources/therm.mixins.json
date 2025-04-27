@@ -1,12 +1,11 @@
 {
 	"required": true,
-	"package": "thermite.therm.mixin",
+	"package": "net.saint.acclimatize.mixin",
 	"compatibilityLevel": "JAVA_17",
+	"mixins": [],
 	"client": [
-		"InGameHudMixin"
-	],
-	"mixins": [
-		"ExampleMixin"
+		"InGameHudMixin",
+		"PlayerStatusEffectsMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

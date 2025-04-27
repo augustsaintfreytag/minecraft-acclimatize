@@ -1,0 +1,20 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"WW ",
+		"SS ",
+		"   "
+	],
+	"key": {
+		"W": {
+			"tag": "minecraft:wool"
+		},
+		"S": {
+			"item": "minecraft:string"
+		}
+	},
+	"result": {
+		"item": "therm:wool_cloth",
+		"count": 1
+	}
+}

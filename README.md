@@ -1,81 +1,79 @@
-### License
-This mod is available under the MIT license.
+# Minecraft Acclimatize
 
-### Dependencies for Latest Version
-[Fabric Api](https://modrinth.com/mod/fabric-api/version/0.83.1+1.20.1) >=0.83.1 for mc 1.20.1
+A comprehensive and highly-configurable body temperature system for Minecraft. This mod adds realistic temperature mechanics to the game, challenging players to manage their body heat in different environments. Originally forked from [*Thermite*](https://github.com/Sparkierkan7/thermite_mod) by [Sparkierkan7](https://github.com/Sparkierkan7), *Acclimatize* expands on its foundation with extended configurability, rewritten block and item handling, and drastically increased compatibility with other mods.
 
-[CompleteConfig](https://modrinth.com/mod/completeconfig/version/2.4.0) >=2.4.0 for mc 1.20.1
+## Features
 
-[Roughly Enough Items](https://modrinth.com/mod/rei/version/12.0.625+fabric) (Recommended)
+### Core Temperature System
+- **Body Temperature Mechanics**: Experience a realistic temperature system that requires balancing your heat level
+- **Variable Acclimatization**: The rate of temperature gain around a heat source can be higher than walking out in the open for improved player enjoyment
+- **Environmental Effects**: Temperature changes based on biomes, time of day, and weather, even including indoor/outdoor detection
+- **Temperature-Based Effects**: Suffer from hypothermia in cold environments or hyperthermia in hot ones through status effects (not just basic player damage)
+- **Status Effects**: Cold and heat resistance effects to temporarily protect against temperature extremes
 
-# Description
-This is a fabric mod that adds a body temperature system based on what biome you are in, the time of day, weather conditions and what blocks are around you. If you get too cold or hot you will start to take damage, but there are ways to maintain a good temperature.
+### Temperature Sources
+- **Biome Temperature**: Each biome has a base temperature affecting the player
+- **Block Temperature**: Heating blocks (fireplaces, lava, campfires) and cooling blocks (ice, snow) affect nearby players
+- **Temperature Falloff**: Heat sources have configurable falloff based on distance
+- **Thermal Clothing**: Wear different materials to insulate against cold or heat
+- **Customizable Wool Lining**: Add wool to leather armor for additional insulation (ported from *Thermite*)
 
+### Items and Blocks
+- **Thermometer**: Check your current temperature and environmental factors
+- **Ice Water**: Drinkable item that provides temporary cold resistance
+- **Golden Sweet Berries**: Food with temperature-related effects
+- **Wool Cloth**: Crafting material to improve armor insulation
+- **Brick Fireplace**: Decorative heating block to warm your home
+- **Ice Box**: A cooling block with three stages (empty, freezing, frozen)
 
-In vanilla minecraft, biomes have there own built in temperature.
-This mod takes that temperature and determines how cold or hot you should feel.
-So it should work with any modded biome as long as its biome temperature is set appropriately.
+### Weather and Seasons
+- **Wind System**: Configurable wind that affects temperature and can be visualized with particles
+- **Optional Seasons**: Seasonal temperature variations with configurable duration
+- **Weather Integration**: Option for season-dependent weather patterns
 
-### Heating
-Heat making blocks will slowly increase your temperature if you are less than 3 blocks away.
-Torches increase temperature by 3, fire also 3, lava 8 and campfires 16.
-You can also increase your temperature by wearing leather armor. Boots increase by 1, leggings 2,  chestplate 3 and helmet 1.
+### HUD and Visual Feedback
+- **Temperature Display**: Configurable HUD element showing current body temperature
+- **Temperature Vignette**: Visual effects indicating when you're too hot or cold
+- **Wind Particles**: Optional particles showing wind direction and intensity
+- **Glass Thermometer**: Visual representation of your current temperature
 
-### Cooling
-Cold making blocks do the opposite of heat making blocks and cool you down but within a shorter range (2 blocks). Ice decreases by 1, packed ice decreases by 3 and blue ice decreases by 6. This is useful if you are in a hot climate since you can just put some ice under your floor and that will cool you down, or in the nether if you don't have fire resistance.
+## Configuration
 
-You will also become colder if it rains, snows, its nighttime or if you get in water.
-Fire resistance will stop you from taking any damage from high temperature.
-So if you are too hot drink fire resistance or make ice juice. (use [REI](https://modrinth.com/mod/rei/version/12.0.625+fabric) to see ice juice recipe). Ice juice is very useful in the nether before you get fire resistance.
+The mod offers extensive configuration options through a user-friendly in-game interface (requires Cloth Config and Mod Menu) or via `/<root>/configs/acclimatize.json5` in the game directory.
 
+- **Temperature Thresholds**: Set your own thresholds for hypothermia and hyperthermia
+- **Damage Settings**: Configure how much damage temperature extremes cause
+- **Block Temperature**: Add or modify blocks that affect temperature
+- **Item Temperature**: Configure how armor and held items affect temperature
+- **Material Properties**: Set temperature values for different armor materials
+- **HUD Customization**: Adjust the position and style of temperature display
+- **Environmental Factors**: Configure wind, seasons, and biome temperatures
 
-### Ice Box Mechanics
-The ice box is a new block added that can be used to get ice easier before getting silk touch. First craft an empty ice box (use [REI](https://modrinth.com/mod/rei/version/12.0.625+fabric) for recipe). Then you can right click it with a water bottle to fill it with water. For it to make ice it needs to be in a cold or frigid climate (taiga biomes and snowy biomes will be fine). When you have filled it and it is in a cold or frigid climate you just have to wait and it will freeze. Once it has frozen you can right click it and it will give you 3 ice and turn back into an empty ice box.
+## Mod Compatibility
 
-When it is in a frozen state it will act like packed ice and cool you down by 3 if you are near enough. But it will slowly melt and turn back into its unfrozen state in biomes than are not cold or frigid. The hotter the biome the faster it melts.
+*Acclimatize* is designed to be compatible with many other mods:
 
-### Brick Fireplace Mechanics
-The brick fireplace block, when lit, will heat you up by 16 in a large radius. You can light it by right clicking it with fuel items. Coal and charcoal fuel it for 100 seconds, coal blocks 900 seconds and sticks 10 seconds.
+- **Block Auto-Detection**: The mod can automatically handle modded blocks with heat or cold properties
+- **Material Auto-Assignment**: Temperature values can be automatically assigned to armor from other mods
+- **Configurable Compatibility**: Add specific modded items and blocks to the temperature system via configs
+- **Built-in Support**: Default configuration includes support for:
+  - Hardcore Torches
+  - Farmer's Delight
+  - Refurbished Furniture
+  - Various armor material mods
 
-Putting brick walls, cobblestone walls or stone brick walls above the fireplace cause the smoke it makes to come out above the walls like a chimney.
+## Requirements
 
-### UI and Thermometer
-The UI is a gauge on your bottom left. The black slider will slide left when you get cold and right when you get hot. The range is 0 - 100 where 50 is your preferred temperature.
+- Minecraft 1.20.1
+- Fabric API 0.91.0+
+- Cloth Config 11.1.136+
+- Fabric Loader 0.16.10+
+- Java 17+
 
-If you hold a thermometer item in your offhand a display will pop up next to the gauge showing your exact temperature as a number:
+## License and Credits
 
-<img src="https://cdn-raw.modrinth.com/data/ggmtYNuc/images/d7174e2fc4a91741f75495a9c9cf50f4167ae4d2.png"  width="50%" height="50%">
+This project is available under the MIT License, which permits free use, modification, and distribution under the condition that the original copyright notice and permission notice are included in all copies or substantial portions of the software.
 
+*Acclimatize* is built upon the foundation of *Thermite*, originally created by Sparkierkan7. This fork is developed and maintained by Saint, with extensions and re-interpretations to the original concept including configurability, block and item handling, and player acclimatization.
 
-
-
-#### Direction Icon
-The direction icon is the icon in the middle of the gauge. is a white ball when your temperature is not changing, a flame when you are getting warmer and a snowflake when you are getting colder. It basically shows the direction your temperature is headed.
-
-
-
-
-#### Temperature staying still:
-<img src="https://cdn-raw.modrinth.com/data/ggmtYNuc/images/03253f060bf747c8251438e3e28e50085e0c177e.png"  width="50%" height="50%">
-
-
-
-#### Temperature warming up:
-<img src="https://cdn-raw.modrinth.com/data/ggmtYNuc/images/2856cec8c24c1063d3adad1ac2bdab23fc1a4456.png"  width="50%" height="50%">
-
-
-
-
-#### Temperature cooling down:
-<img src="https://cdn-raw.modrinth.com/data/ggmtYNuc/images/fe9742ccde814a169dbff4c9a89dca2ff65e4866.png"  width="50%" height="50%">
-
-
-
-
-&emsp;
-&emsp;
-### Season System (Disabled By Default)
-When enabled your temperature will be affected by the current season. Its main purpose is for mod compatibility but you can turn it on by itself. For example if you have a season mod installed then you would want your temperature to change with that mods seasons. You don't need to turn this on for [Fabric Seasons](https://modrinth.com/mod/fabric-seasons) because it already affects your temperature by changing the biome temperature.
-
-### Config
-Config file path is "config/therm.conf", if you want something added to the config create an issue on github.
+Copyright © 2025 Saint
