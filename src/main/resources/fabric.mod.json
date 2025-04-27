@@ -13,21 +13,21 @@
 		"sources": "https://github.com/augustsaintfreytag/minecraft-acclimatize"
 	},
 	"license": "MIT",
-	"icon": "assets/therm/icon.png",
+	"icon": "assets/acclimatize/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"net.saint.acclimatize.AcclimatizeMod"
+			"net.saint.acclimatize.Mod"
 		],
 		"client": [
-			"net.saint.acclimatize.AcclimatizeClient"
+			"net.saint.acclimatize.ModClient"
 		],
 		"modmenu": [
-			"net.saint.acclimatize.AcclimatizeModMenu"
+			"net.saint.acclimatize.ModMenu"
 		]
 	},
 	"mixins": [
-		"therm.mixins.json"
+		"acclimatize.mixins.json"
 	],
 	"depends": {
 		"java": ">=17",
