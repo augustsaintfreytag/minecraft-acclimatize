@@ -10,14 +10,14 @@
 			"item": "minecraft:glass_bottle"
 		},
 		"B": {
-			"item": "therm:gold_sweet_berries"
+			"item": "acclimatize:gold_sweet_berries"
 		},
 		"S": {
 			"item": "minecraft:sugar"
 		}
 	},
 	"result": {
-		"item": "therm:ice_juice",
+		"item": "acclimatize:ice_water",
 		"count": 1
 	}
 }

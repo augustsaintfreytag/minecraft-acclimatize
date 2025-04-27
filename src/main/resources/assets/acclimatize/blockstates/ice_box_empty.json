@@ -1,7 +1,7 @@
 {
 	"variants": {
 		"": {
-			"model": "therm:block/ice_box_empty"
+			"model": "acclimatize:block/ice_box_empty"
 		}
 	}
 }
