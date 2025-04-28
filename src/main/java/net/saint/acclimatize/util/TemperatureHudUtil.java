@@ -48,21 +48,21 @@ public final class TemperatureHudUtil {
 	public static void renderGaugeThermometerHud(DrawContext context) {
 		MinecraftClient client = MinecraftClient.getInstance();
 
-		float temperature = ModClient.clientStoredTemperature;
-		float temperatureDifference = ModClient.clientStoredTemperatureDifference;
+		var temperature = ModClient.cachedBodyTemperature;
+		var temperatureDifference = ModClient.cachedTemperatureDifference;
 
 		if (temperature == 0.0) {
 			return;
 		}
 
-		int xOffset = Mod.CONFIG.temperatureXOffset;
-		int yOffset = Mod.CONFIG.temperatureYOffset;
+		var xOffset = Mod.CONFIG.temperatureXOffset;
+		var yOffset = Mod.CONFIG.temperatureYOffset;
 
-		int x = (client.getWindow().getScaledWidth() / 2) + xOffset;
-		int y = client.getWindow().getScaledHeight() + yOffset;
+		var x = (client.getWindow().getScaledWidth() / 2) + xOffset;
+		var y = client.getWindow().getScaledHeight() + yOffset;
 
-		float spacingFactor = 1.5f;
-		float temperatureFraction = ((temperature / 100f) * Math.round(40 * spacingFactor));
+		var spacingFactor = 1.5f;
+		var temperatureFraction = ((temperature / 100f) * Math.round(40 * spacingFactor));
 
 		if (((temperature / 100f) * Math.round(40 * spacingFactor)) > 59.0f) {
 			temperatureFraction = ((97 / 100f) * Math.round(40 * spacingFactor));
@@ -80,7 +80,7 @@ public final class TemperatureHudUtil {
 				y - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1), 0, 0,
 				Math.round(1), Math.round(9 * spacingFactor), Math.round(1), Math.round(9 * spacingFactor));
 
-		int frameY = y - (Math.round(13 * spacingFactor) + 1);
+		var frameY = y - (Math.round(13 * spacingFactor) + 1);
 
 		context.drawTexture(THERMOMETER_FRAME, x - (44 + 149), frameY, 0, 0,
 				Math.round(44 * spacingFactor), Math.round(13 * spacingFactor),
@@ -128,26 +128,26 @@ public final class TemperatureHudUtil {
 	public static void renderGlassThermometerHud(DrawContext context) {
 		MinecraftClient client = MinecraftClient.getInstance();
 
-		int xOffset = Mod.CONFIG.temperatureXOffset;
-		int yOffset = Mod.CONFIG.temperatureYOffset;
+		var xOffset = Mod.CONFIG.temperatureXOffset;
+		var yOffset = Mod.CONFIG.temperatureYOffset;
 
-		int tx = (client.getWindow().getScaledWidth() / 2) + xOffset;
-		int ty = client.getWindow().getScaledHeight() + yOffset;
+		var tx = (client.getWindow().getScaledWidth() / 2) + xOffset;
+		var ty = client.getWindow().getScaledHeight() + yOffset;
 
-		int x = (client.getWindow().getScaledWidth() / 2) + xOffset;
-		int y = (client.getWindow().getScaledHeight() - 48) + yOffset;
+		var x = (client.getWindow().getScaledWidth() / 2) + xOffset;
+		var y = (client.getWindow().getScaledHeight() - 48) + yOffset;
 
-		double temperature = ModClient.clientStoredTemperature;
-		double temperatureDifference = ModClient.clientStoredTemperatureDifference;
+		var temperature = ModClient.cachedBodyTemperature;
+		var temperatureDifference = ModClient.cachedTemperatureDifference;
 
 		if (temperature == 0.0) {
 			return;
 		}
 
-		double burnThresholdMinor = Mod.CONFIG.burnThresholdMinor;
-		double burnThresholdMajor = Mod.CONFIG.burnThresholdMajor;
-		double freezeThresholdMinor = Mod.CONFIG.freezeThresholdMinor;
-		double freezeThresholdMajor = Mod.CONFIG.freezeThresholdMajor;
+		var burnThresholdMinor = Mod.CONFIG.hyperthermiaThresholdMinor;
+		var burnThresholdMajor = Mod.CONFIG.hyperthermiaThresholdMajor;
+		var freezeThresholdMinor = Mod.CONFIG.hypothermiaThresholdMinor;
+		var freezeThresholdMajor = Mod.CONFIG.hypothermiaThresholdMajor;
 
 		if (!client.player.isSpectator() && !client.player.isCreative()) {
 			if (temperature < freezeThresholdMinor + 1

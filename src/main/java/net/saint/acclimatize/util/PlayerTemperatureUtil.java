@@ -50,13 +50,12 @@ public class PlayerTemperatureUtil {
 			acclimatizationRate *= Mod.CONFIG.blockAcclimatizationBoostFactor;
 		} else {
 			// Reduce acclimatization when wearing items.
-			acclimatizationRate += ItemTemperatureUtil
-					.acclimatizationRateDeltaForItemTemperature(itemTemperatureDelta / 100);
+			acclimatizationRate += ItemTemperatureUtil.acclimatizationRateDeltaForItemTemperature(itemTemperatureDelta);
 		}
 
 		if (player.isWet()) {
 			// Increase acclimatization rate when wet.
-			acclimatizationRate *= 3.5;
+			acclimatizationRate *= 3.0;
 		}
 
 		acclimatizationRate = MathUtil.clamp(acclimatizationRate, Mod.CONFIG.itemAcclimatizationRateMinimum, 1.0);
@@ -70,7 +69,13 @@ public class PlayerTemperatureUtil {
 
 		playerState.isInInterior = isInInterior;
 		playerState.acclimatizationRate = acclimatizationRate;
-		playerState.bodyTemperature = bodyTemperature;
+
+		if (playerState.bodyTemperature == 0.0) {
+			// First tick, set body temperature to effective temperature.
+			bodyTemperature = effectiveTemperature;
+		} else {
+			playerState.bodyTemperature = bodyTemperature;
+		}
 
 		playerState.ambientTemperature = effectiveTemperature;
 		playerState.biomeTemperature = biomeTemperature.median;

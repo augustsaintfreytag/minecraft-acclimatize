@@ -32,12 +32,10 @@ public class PlayerTemperatureTickC2SPacket {
 
 		// Finalization
 
-		var temperatureDifference = (short) (playerState.ambientTemperature - playerState.bodyTemperature);
-
 		PacketByteBuf sendingdata = PacketByteBufs.create();
 
 		sendingdata.writeDouble(playerState.bodyTemperature);
-		sendingdata.writeShort(temperatureDifference);
+		sendingdata.writeDouble(playerState.ambientTemperature);
 		sendingdata.writeDouble(serverState.windPitch);
 		sendingdata.writeDouble(serverState.windYaw);
 		sendingdata.writeDouble(playerState.windTemperature);

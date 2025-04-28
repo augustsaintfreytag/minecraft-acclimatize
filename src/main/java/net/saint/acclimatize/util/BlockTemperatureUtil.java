@@ -90,7 +90,11 @@ public final class BlockTemperatureUtil {
 			return 0.0;
 		}
 
-		if ((blockId.contains("lamp") || blockId.contains("light"))
+		if (blockId.contains(":stove") && blockState.getLuminance() == 0) {
+			return 0.0;
+		}
+
+		if ((blockId.contains("_lamp") || blockId.contains("_light"))
 				&& (!blockState.contains(Properties.POWERED) || blockState.getLuminance() == 0)) {
 			return 0.0;
 		}

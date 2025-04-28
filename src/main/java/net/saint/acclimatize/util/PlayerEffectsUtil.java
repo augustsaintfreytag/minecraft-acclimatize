@@ -8,6 +8,11 @@ import net.saint.acclimatize.player.PlayerState;
 
 public final class PlayerEffectsUtil {
 
+	private static final int EFFECT_DURATION = 420; // 20+1 seconds
+	private static final int EFFECT_TICK_INTERVAL = 10; // 10 seconds
+
+	private static int effectTick = -1;
+
 	// Library
 
 	public static enum TemperatureDamageKind {
@@ -31,31 +36,37 @@ public final class PlayerEffectsUtil {
 	// Handling
 
 	public static void handlePlayerEffects(ServerPlayerEntity player, PlayerState playerState) {
-		// TODO: Check for resistance status effects or armor items.
+		effectTick++;
 
+		if (effectTick != 0 && effectTick < EFFECT_TICK_INTERVAL) {
 			return;
 		}
 
 		var temperatureDamageTuple = temperatureDamageTupleForPlayerState(playerState);
 
 		if (temperatureDamageTuple == null) {
+			effectTick = -1;
 			return;
 		}
 
 		if (temperatureDamageTuple.kind == TemperatureDamageKind.COLD) {
 			if (temperatureDamageTuple.intensity == TemperatureIntensityKind.MINOR) {
-				var hypothermiaStatusEffect = new StatusEffectInstance(ModStatusEffects.HYPOTHERMIA, 600, 0);
+				var hypothermiaStatusEffect = new StatusEffectInstance(
+						ModStatusEffects.HYPOTHERMIA, EFFECT_DURATION, 0);
 				player.addStatusEffect(hypothermiaStatusEffect);
 			} else {
-				var hypothermiaStatusEffect = new StatusEffectInstance(ModStatusEffects.HYPOTHERMIA, 600, 1);
+				var hypothermiaStatusEffect = new StatusEffectInstance(
+						ModStatusEffects.HYPOTHERMIA, EFFECT_DURATION, 1);
 				player.addStatusEffect(hypothermiaStatusEffect);
 			}
 		} else if (temperatureDamageTuple.kind == TemperatureDamageKind.HEAT) {
 			if (temperatureDamageTuple.intensity == TemperatureIntensityKind.MINOR) {
-				var hyperthermiaStatusEffect = new StatusEffectInstance(ModStatusEffects.HYPERTHERMIA, 600, 0);
+				var hyperthermiaStatusEffect = new StatusEffectInstance(
+						ModStatusEffects.HYPERTHERMIA, EFFECT_DURATION, 0);
 				player.addStatusEffect(hyperthermiaStatusEffect);
 			} else {
-				var hyperthermiaStatusEffect = new StatusEffectInstance(ModStatusEffects.HYPERTHERMIA, 600, 1);
+				var hyperthermiaStatusEffect = new StatusEffectInstance(
+						ModStatusEffects.HYPERTHERMIA, EFFECT_DURATION, 1);
 				player.addStatusEffect(hyperthermiaStatusEffect);
 			}
 		}
@@ -64,26 +75,28 @@ public final class PlayerEffectsUtil {
 			playerState.bodyTemperature = 50;
 			playerState.damageTick = 0;
 		}
+
+		effectTick = 0;
 	}
 
 	private static TemperatureDamageTuple temperatureDamageTupleForPlayerState(PlayerState playerState) {
 		var bodyTemperature = playerState.bodyTemperature;
 
-		if (bodyTemperature <= Mod.CONFIG.freezeThresholdMinor
-				&& bodyTemperature > Mod.CONFIG.freezeThresholdMajor) {
+		if (bodyTemperature <= Mod.CONFIG.hypothermiaThresholdMinor
+				&& bodyTemperature > Mod.CONFIG.hypothermiaThresholdMajor) {
 			return new TemperatureDamageTuple(TemperatureDamageKind.COLD, TemperatureIntensityKind.MINOR);
 		}
 
-		if (bodyTemperature <= Mod.CONFIG.freezeThresholdMajor) {
+		if (bodyTemperature <= Mod.CONFIG.hypothermiaThresholdMajor) {
 			return new TemperatureDamageTuple(TemperatureDamageKind.COLD, TemperatureIntensityKind.MAJOR);
 		}
 
-		if (bodyTemperature >= Mod.CONFIG.burnThresholdMinor
-				&& bodyTemperature < Mod.CONFIG.burnThresholdMajor) {
+		if (bodyTemperature >= Mod.CONFIG.hyperthermiaThresholdMinor
+				&& bodyTemperature < Mod.CONFIG.hyperthermiaThresholdMajor) {
 			return new TemperatureDamageTuple(TemperatureDamageKind.HEAT, TemperatureIntensityKind.MINOR);
 		}
 
-		if (bodyTemperature >= Mod.CONFIG.burnThresholdMajor) {
+		if (bodyTemperature >= Mod.CONFIG.hyperthermiaThresholdMajor) {
 			return new TemperatureDamageTuple(TemperatureDamageKind.HEAT, TemperatureIntensityKind.MAJOR);
 		}
 
