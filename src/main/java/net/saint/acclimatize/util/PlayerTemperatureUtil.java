@@ -12,9 +12,10 @@ public class PlayerTemperatureUtil {
 		// Prerequisites
 
 		var isInInterior = SpaceUtil.checkPlayerIsInInterior(player);
+
 		// Biome Temperature
 
-		var biomeTemperature = BiomeTemperatureUtil.biomeTemperatureForPlayer(player);
+		var biomeTemperature = BiomeTemperatureUtil.biomeTemperatureForPlayer(player, isInInterior);
 		var effectiveTemperature = biomeTemperature.median;
 
 		// Item Temperature (Wearables)
