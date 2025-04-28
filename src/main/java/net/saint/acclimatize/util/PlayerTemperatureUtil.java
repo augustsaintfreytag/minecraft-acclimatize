@@ -50,8 +50,7 @@ public class PlayerTemperatureUtil {
 			acclimatizationRate *= Mod.CONFIG.blockAcclimatizationBoostFactor;
 		} else {
 			// Reduce acclimatization when wearing items.
-			acclimatizationRate += ItemTemperatureUtil
-					.acclimatizationRateDeltaForItemTemperature(itemTemperatureDelta / 100);
+			acclimatizationRate += ItemTemperatureUtil.acclimatizationRateDeltaForItemTemperature(itemTemperatureDelta);
 		}
 
 		if (player.isWet()) {
