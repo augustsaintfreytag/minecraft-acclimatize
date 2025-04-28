@@ -69,7 +69,13 @@ public class PlayerTemperatureUtil {
 
 		playerState.isInInterior = isInInterior;
 		playerState.acclimatizationRate = acclimatizationRate;
-		playerState.bodyTemperature = bodyTemperature;
+
+		if (playerState.bodyTemperature == 0.0) {
+			// First tick, set body temperature to effective temperature.
+			bodyTemperature = effectiveTemperature;
+		} else {
+			playerState.bodyTemperature = bodyTemperature;
+		}
 
 		playerState.ambientTemperature = effectiveTemperature;
 		playerState.biomeTemperature = biomeTemperature.median;
