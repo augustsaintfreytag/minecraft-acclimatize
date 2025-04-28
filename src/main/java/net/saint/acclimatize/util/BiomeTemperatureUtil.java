@@ -47,12 +47,10 @@ public final class BiomeTemperatureUtil {
 
 		// Precipitation
 
-		if (!isInInterior) {
-			if (precipitation == Biome.Precipitation.RAIN && world.isRaining()) {
-				temperatureRange.median += Mod.CONFIG.rainTemperatureDelta;
-			} else if (precipitation == Biome.Precipitation.SNOW && world.isRaining()) {
-				temperatureRange.median += Mod.CONFIG.snowTemperatureDelta;
-			}
+		if (precipitation == Biome.Precipitation.RAIN && world.isRaining()) {
+			temperatureRange.median += Mod.CONFIG.rainTemperatureDelta;
+		} else if (precipitation == Biome.Precipitation.SNOW && world.isRaining()) {
+			temperatureRange.median += Mod.CONFIG.snowTemperatureDelta;
 		}
 
 		return temperatureRange;
