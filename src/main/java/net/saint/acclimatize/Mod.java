@@ -182,6 +182,19 @@ public class Mod implements ModInitializer {
 		// Commands
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
+				.register(literal("acclimatize:reset_temperature").requires(source -> source.hasPermissionLevel(4))
+						.then(argument("player", EntityArgumentType.player())
+								.executes(context -> {
+
+									var player = EntityArgumentType.getPlayer(context, "player");
+									var playerState = ServerStateUtil.getPlayerState(player);
+
+									playerState.bodyTemperature = 50.0;
+
+									return 1;
+								}))));
+
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
 				.register(literal("acclimatize:randomize_wind").requires(source -> source.hasPermissionLevel(4))
 						.then(argument("player", EntityArgumentType.player())
 								.executes(context -> {
