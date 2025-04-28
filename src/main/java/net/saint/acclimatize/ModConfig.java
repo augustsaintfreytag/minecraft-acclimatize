@@ -276,11 +276,15 @@ public class ModConfig implements ConfigData {
 
 	@ConfigEntry.Category("wind")
 	@Comment("Disables or enables wind. (Default: true)")
-	public boolean enableWind = false;
+	public boolean enableWind = true;
 
 	@ConfigEntry.Category("wind")
 	@Comment("If disabled, wind will only be applied in the overworld. (Default: false)")
 	public boolean multidimensionalWind = false;
+
+	@ConfigEntry.Category("wind")
+	@Comment("The factor for how much wind exposure affects ambient temperature. (Default: 1.0)")
+	public double windChillFactor = 1.0;
 
 	@ConfigEntry.Category("wind")
 	@Comment("Number of rays used in wind calculation. (Default: 16)")

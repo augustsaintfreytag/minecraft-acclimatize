@@ -76,6 +76,7 @@
     
     "text.autoconfig.acclimatize.option.enableWind": "Enable Wind",
     "text.autoconfig.acclimatize.option.multidimensionalWind": "Multidimensional Wind",
+	"text.autoconfig.acclimatize.option.windChillFactor": "Wind Chill Factor",
     "text.autoconfig.acclimatize.option.windRayCount": "Wind Ray Count",
     "text.autoconfig.acclimatize.option.windRayLength": "Wind Ray Length",
 	    
