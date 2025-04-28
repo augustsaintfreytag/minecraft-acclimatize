@@ -7,8 +7,10 @@ public class PlayerState extends PersistentState {
 
 	// Properties
 
+	public boolean isInInterior = false;
+
 	public double bodyTemperature = 0;
-	public double temperatureRate = 0;
+	public double acclimatizationRate = 0;
 	public double ambientTemperature = 0;
 
 	public double biomeTemperature = 0;
@@ -23,8 +25,9 @@ public class PlayerState extends PersistentState {
 
 	@Override
 	public NbtCompound writeNbt(NbtCompound nbt) {
+		nbt.putBoolean(PlayerStateNBTKeys.isInInterior, isInInterior);
 		nbt.putDouble(PlayerStateNBTKeys.bodyTemperature, bodyTemperature);
-		nbt.putDouble(PlayerStateNBTKeys.temperatureRate, temperatureRate);
+		nbt.putDouble(PlayerStateNBTKeys.acclimatizationRate, acclimatizationRate);
 		nbt.putDouble(PlayerStateNBTKeys.ambientTemperature, ambientTemperature);
 		nbt.putDouble(PlayerStateNBTKeys.biomeTemperature, biomeTemperature);
 		nbt.putDouble(PlayerStateNBTKeys.blockTemperature, blockTemperature);
@@ -40,8 +43,9 @@ public class PlayerState extends PersistentState {
 	public static PlayerState fromNbt(NbtCompound nbt) {
 		PlayerState playerState = new PlayerState();
 
+		playerState.isInInterior = nbt.getBoolean(PlayerStateNBTKeys.isInInterior);
 		playerState.bodyTemperature = nbt.getDouble(PlayerStateNBTKeys.bodyTemperature);
-		playerState.temperatureRate = nbt.getDouble(PlayerStateNBTKeys.temperatureRate);
+		playerState.acclimatizationRate = nbt.getDouble(PlayerStateNBTKeys.acclimatizationRate);
 		playerState.ambientTemperature = nbt.getDouble(PlayerStateNBTKeys.ambientTemperature);
 		playerState.biomeTemperature = nbt.getDouble(PlayerStateNBTKeys.biomeTemperature);
 		playerState.blockTemperature = nbt.getDouble(PlayerStateNBTKeys.blockTemperature);

@@ -167,7 +167,7 @@ public class Mod implements ModInitializer {
 
 				serverState.windPitch = 360 * Math.PI / 180;
 				serverState.windYaw = random.nextDouble() * 360 * Math.PI / 180;
-				serverState.windTemperatureModifier = -serverState.windTemperatureModifierRange
+				serverState.windTemperature = -serverState.windTemperatureModifierRange
 						+ random.nextDouble() * serverState.windTemperatureModifierRange * 2;
 				serverState.precipitationWindModifier = -serverState.windTemperatureModifierRange
 						+ random.nextDouble() * -serverState.windTemperatureModifierRange;
@@ -195,7 +195,7 @@ public class Mod implements ModInitializer {
 
 									serverState.windPitch = 360 * Math.PI / 180;
 									serverState.windYaw = random.nextDouble() * 360 * Math.PI / 180;
-									serverState.windTemperatureModifier = -serverState.windTemperatureModifierRange
+									serverState.windTemperature = -serverState.windTemperatureModifierRange
 											+ random.nextDouble() * serverState.windTemperatureModifierRange * 2;
 									serverState.precipitationWindModifier = -serverState.windTemperatureModifierRange
 											+ random.nextDouble() * -serverState.windTemperatureModifierRange;
@@ -207,7 +207,7 @@ public class Mod implements ModInitializer {
 											Text.literal("Wind Yaw: " + serverState.windYaw * 180 / Math.PI));
 									context.getSource().sendMessage(
 											Text.literal("Wind Temperature Modifier: "
-													+ serverState.windTemperatureModifier));
+													+ serverState.windTemperature));
 									context.getSource().sendMessage(Text.literal(
 											"Precipitation Modifier: " + serverState.precipitationWindModifier));
 
@@ -242,7 +242,7 @@ public class Mod implements ModInitializer {
 									.sendMessage(Text.literal("§eWind Yaw: §6" + serverState.windYaw * 180 / Math.PI));
 							context.getSource().sendMessage(
 									Text.literal(
-											"§eWind Temperature Modifier: §6" + serverState.windTemperatureModifier));
+											"§eWind Temperature Modifier: §6" + serverState.windTemperature));
 							context.getSource().sendMessage(Text
 									.literal("§ePrecipitation Modifier: §6" + serverState.precipitationWindModifier));
 							context.getSource().sendMessage(

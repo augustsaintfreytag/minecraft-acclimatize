@@ -23,12 +23,12 @@ public final class BiomeTemperatureUtil {
 
 	// Biome
 
-	public static TemperatureRange biomeTemperatureForPlayer(ServerPlayerEntity player) {
+	public static TemperatureRange biomeTemperatureForPlayer(ServerPlayerEntity player, boolean isInInterior) {
 		var world = player.getWorld();
 		var dimension = world.getDimension();
-		var playerPos = player.getBlockPos();
+		var position = player.getBlockPos();
 
-		var biome = world.getBiome(playerPos).value();
+		var biome = world.getBiome(position).value();
 		var precipitation = biome.getPrecipitation(player.getBlockPos());
 
 		var ambientTemperature = biome.getTemperature();
@@ -44,10 +44,12 @@ public final class BiomeTemperatureUtil {
 
 		// Precipitation
 
-		if (precipitation == Biome.Precipitation.RAIN && world.isRaining() && player.isWet()) {
-			temperatureRange.median -= 8;
-		} else if (precipitation == Biome.Precipitation.SNOW && world.isRaining()) {
-			temperatureRange.median -= 12;
+		if (!isInInterior) {
+			if (precipitation == Biome.Precipitation.RAIN && world.isRaining()) {
+				temperatureRange.median += Mod.CONFIG.rainTemperatureDelta;
+			} else if (precipitation == Biome.Precipitation.SNOW && world.isRaining()) {
+				temperatureRange.median += Mod.CONFIG.snowTemperatureDelta;
+			}
 		}
 
 		return temperatureRange;

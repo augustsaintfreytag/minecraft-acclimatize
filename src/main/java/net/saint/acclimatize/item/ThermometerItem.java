@@ -34,12 +34,13 @@ public class ThermometerItem extends Item {
 
 		user.sendMessage(Text
 				.of("♜ Body: " + formattedValue(playerState.bodyTemperature) + " (↕ Acclim "
-						+ formattedValue(playerState.temperatureRate)
+						+ formattedValue(playerState.acclimatizationRate)
 						+ ") \n(☼ Ambient " + formattedValue(playerState.ambientTemperature)
 						+ ", ♣ Biome " + formattedValue(playerState.biomeTemperature) + ", ☰ Wind "
 						+ formattedValue(playerState.windTemperature)
 						+ ", ♢ Blocks " + formattedValue(playerState.blockTemperature)
-						+ ", ☍ Items " + formattedValue(playerState.itemTemperature) + ")"));
+						+ ", ☍ Items " + formattedValue(playerState.itemTemperature) + ", ☈ Interior "
+						+ formattedValue(playerState.isInInterior) + ")"));
 
 		return TypedActionResult.success(itemStack);
 	}
@@ -47,6 +48,14 @@ public class ThermometerItem extends Item {
 	@Override
 	public UseAction getUseAction(ItemStack stack) {
 		return UseAction.BLOCK;
+	}
+
+	private static String formattedValue(boolean value) {
+		if (value) {
+			return "Yes";
+		} else {
+			return "No";
+		}
 	}
 
 	private static String formattedValue(double value) {

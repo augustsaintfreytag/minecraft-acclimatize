@@ -107,6 +107,14 @@ public class ModConfig implements ConfigData {
 	@Comment("Base temperature for arid climates. (Default: 70.0)")
 	public double aridClimateTemperature = 70.0;
 
+	@ConfigEntry.Category("environment")
+	@Comment("The temperature delta applied when the player is exposed to rainfall. (Default: -5.0)")
+	public double rainTemperatureDelta = -5.0;
+
+	@ConfigEntry.Category("environment")
+	@Comment("The temperature delta applied when the player is exposed to snowfall. (Default: -10.0)")
+	public double snowTemperatureDelta = -10.0;
+
 	// Blocks
 
 	@ConfigEntry.Category("blocks")
@@ -268,11 +276,15 @@ public class ModConfig implements ConfigData {
 
 	@ConfigEntry.Category("wind")
 	@Comment("Disables or enables wind. (Default: true)")
-	public boolean enableWind = false;
+	public boolean enableWind = true;
 
 	@ConfigEntry.Category("wind")
 	@Comment("If disabled, wind will only be applied in the overworld. (Default: false)")
 	public boolean multidimensionalWind = false;
+
+	@ConfigEntry.Category("wind")
+	@Comment("The factor for how much wind exposure affects ambient temperature. (Default: 1.0)")
+	public double windChillFactor = 1.0;
 
 	@ConfigEntry.Category("wind")
 	@Comment("Number of rays used in wind calculation. (Default: 16)")

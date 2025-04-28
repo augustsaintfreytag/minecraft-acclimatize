@@ -9,9 +9,13 @@ public class PlayerTemperatureUtil {
 
 	public static void tickPlayerTemperature(ServerPlayerEntity player, ServerState serverState,
 			PlayerState playerState) {
+		// Prerequisites
+
+		var isInInterior = SpaceUtil.checkPlayerIsInInterior(player);
+
 		// Biome Temperature
 
-		var biomeTemperature = BiomeTemperatureUtil.biomeTemperatureForPlayer(player);
+		var biomeTemperature = BiomeTemperatureUtil.biomeTemperatureForPlayer(player, isInInterior);
 		var effectiveTemperature = biomeTemperature.median;
 
 		// Item Temperature (Wearables)
@@ -26,7 +30,7 @@ public class PlayerTemperatureUtil {
 
 		// Wind
 
-		var windTemperatureTuple = WindTemperatureUtil.windTemperatureForEnvironment(player, playerState, serverState);
+		var windTemperatureTuple = WindTemperatureUtil.windTemperatureForEnvironment(serverState, player, isInInterior);
 		var windTemperatureDelta = windTemperatureTuple.temperature * windTemperatureTuple.windChillFactor;
 
 		effectiveTemperature += windTemperatureDelta;
@@ -50,7 +54,12 @@ public class PlayerTemperatureUtil {
 					.acclimatizationRateDeltaForItemTemperature(itemTemperatureDelta / 100);
 		}
 
-		acclimatizationRate = Math.max(Mod.CONFIG.itemAcclimatizationRateMinimum, acclimatizationRate);
+		if (player.isWet()) {
+			// Increase acclimatization rate when wet.
+			acclimatizationRate *= 3.5;
+		}
+
+		acclimatizationRate = MathUtil.clamp(acclimatizationRate, Mod.CONFIG.itemAcclimatizationRateMinimum, 1.0);
 
 		// Player Temperature
 
@@ -59,10 +68,11 @@ public class PlayerTemperatureUtil {
 
 		// State
 
-		playerState.temperatureRate = acclimatizationRate;
+		playerState.isInInterior = isInInterior;
+		playerState.acclimatizationRate = acclimatizationRate;
 		playerState.bodyTemperature = bodyTemperature;
-		playerState.ambientTemperature = effectiveTemperature;
 
+		playerState.ambientTemperature = effectiveTemperature;
 		playerState.biomeTemperature = biomeTemperature.median;
 		playerState.blockTemperature = blockTemperatureDelta;
 		playerState.itemTemperature = itemTemperatureDelta;
