@@ -108,11 +108,11 @@ public class ModConfig implements ConfigData {
 	public double snowTemperatureDelta = -10.0;
 
 	@ConfigEntry.Category("world")
-	@Comment("The number of ticks in a single day that the sun is out (dawn to dusk).")
+	@Comment("The number of ticks in a single day that the sun is out (dawn to dusk). Default is vanilla. (Default: 12000)")
 	public int daylightTicks = 12000;
 
 	@ConfigEntry.Category("world")
-	@Comment("The number of ticks in a single day that the moon is out (dusk to dawn).")
+	@Comment("The number of ticks in a single day that the moon is out (dusk to dawn). Default is vanilla. (Default: 12000)")
 	public int nighttimeTicks = 12000;
 
 	// Blocks

@@ -39,8 +39,8 @@ public final class BiomeTemperatureUtil {
 		// Daylight/Nighttime
 
 		if (dimension.natural()) {
-			var serverTicks = world.getTime();
-			var dayNightTemperatureDelta = dayNightTemperatureDeltaForTime(climateKind, serverTicks);
+			var dayTick = world.getTimeOfDay();
+			var dayNightTemperatureDelta = dayNightTemperatureDeltaForTime(climateKind, dayTick);
 
 			temperatureRange.median += dayNightTemperatureDelta;
 		}
@@ -91,6 +91,34 @@ public final class BiomeTemperatureUtil {
 		}
 	}
 
+	public static double dayNightTemperatureDeltaForTime(ClimateKind climateKind, long dayTick) {
+		// Get cycle lengths and calc transition periods
+		final long dayLength = Mod.CONFIG.daylightTicks;
+		final long nightLength = Mod.CONFIG.nighttimeTicks;
+		final long totalLength = dayLength + nightLength;
+
+		final long dayTickInCycle = dayTick % totalLength;
+
+		// Calculate transition period (15% of shorter period)
+		final long transitionLength = (long) (Math.min(dayLength, nightLength) * 0.2);
+
+		if (dayTickInCycle < transitionLength) {
+			// Night -> Day transition (dawn)
+			double t = (double) dayTickInCycle / transitionLength;
+			return MathUtil.lerp(nighttimeTemperatureDeltaForClimate(climateKind), 0, t);
+		} else if (dayTickInCycle >= dayLength && dayTickInCycle < dayLength + transitionLength) {
+			// Day -> Night transition (dusk)
+			double t = (double) (dayTickInCycle - dayLength) / transitionLength;
+			return MathUtil.lerp(0, nighttimeTemperatureDeltaForClimate(climateKind), t);
+		} else if (dayTickInCycle >= dayLength) {
+			// Full night
+			return nighttimeTemperatureDeltaForClimate(climateKind);
+		} else {
+			// Full day
+			return 0.0;
+		}
+	}
+
 	private static double nighttimeTemperatureDeltaForClimate(ClimateKind climateKind) {
 		switch (climateKind) {
 			case FRIGID:
@@ -105,35 +133,6 @@ public final class BiomeTemperatureUtil {
 				return -15;
 			default:
 				return 0;
-		}
-	}
-
-	private static double dayNightTemperatureDeltaForTime(ClimateKind climateKind, long ticks) {
-		// Get cycle lengths and calc transition periods
-		final long dayLength = Mod.CONFIG.daylightTicks;
-		final long nightLength = Mod.CONFIG.nighttimeTicks;
-		final long fullCycle = dayLength + nightLength;
-
-		// Position in current day (0 to fullCycle-1)
-		long dayCycleTick = ticks % fullCycle;
-
-		// Calculate transition period (15% of shorter period)
-		long transitionLength = (long) (Math.min(dayLength, nightLength) * 0.2);
-
-		if (dayCycleTick < transitionLength) {
-			// Night -> Day transition (dawn)
-			double t = (double) dayCycleTick / transitionLength;
-			return MathUtil.lerp(nighttimeTemperatureDeltaForClimate(climateKind), 0, t);
-		} else if (dayCycleTick >= dayLength && dayCycleTick < dayLength + transitionLength) {
-			// Day -> Night transition (dusk)
-			double t = (double) (dayCycleTick - dayLength) / transitionLength;
-			return MathUtil.lerp(0, nighttimeTemperatureDeltaForClimate(climateKind), t);
-		} else if (dayCycleTick >= dayLength) {
-			// Full night
-			return nighttimeTemperatureDeltaForClimate(climateKind);
-		} else {
-			// Full day
-			return 0.0;
 		}
 	}
 
