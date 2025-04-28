@@ -69,21 +69,21 @@ public final class PlayerEffectsUtil {
 	private static TemperatureDamageTuple temperatureDamageTupleForPlayerState(PlayerState playerState) {
 		var bodyTemperature = playerState.bodyTemperature;
 
-		if (bodyTemperature <= Mod.CONFIG.freezeThresholdMinor
-				&& bodyTemperature > Mod.CONFIG.freezeThresholdMajor) {
+		if (bodyTemperature <= Mod.CONFIG.hypothermiaThresholdMinor
+				&& bodyTemperature > Mod.CONFIG.hypothermiaThresholdMajor) {
 			return new TemperatureDamageTuple(TemperatureDamageKind.COLD, TemperatureIntensityKind.MINOR);
 		}
 
-		if (bodyTemperature <= Mod.CONFIG.freezeThresholdMajor) {
+		if (bodyTemperature <= Mod.CONFIG.hypothermiaThresholdMajor) {
 			return new TemperatureDamageTuple(TemperatureDamageKind.COLD, TemperatureIntensityKind.MAJOR);
 		}
 
-		if (bodyTemperature >= Mod.CONFIG.burnThresholdMinor
-				&& bodyTemperature < Mod.CONFIG.burnThresholdMajor) {
+		if (bodyTemperature >= Mod.CONFIG.hyperthermiaThresholdMinor
+				&& bodyTemperature < Mod.CONFIG.hyperthermiaThresholdMajor) {
 			return new TemperatureDamageTuple(TemperatureDamageKind.HEAT, TemperatureIntensityKind.MINOR);
 		}
 
-		if (bodyTemperature >= Mod.CONFIG.burnThresholdMajor) {
+		if (bodyTemperature >= Mod.CONFIG.hyperthermiaThresholdMajor) {
 			return new TemperatureDamageTuple(TemperatureDamageKind.HEAT, TemperatureIntensityKind.MAJOR);
 		}
 

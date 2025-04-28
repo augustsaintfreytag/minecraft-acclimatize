@@ -50,32 +50,24 @@ public class ModConfig implements ConfigData {
 	// Player
 
 	@ConfigEntry.Category("player")
+	@Comment("How quick your body temperature absorbs or loses heat from/to the environment. (Default: 0.025)")
+	public double acclimatizationRate = 0.025;
+
+	@ConfigEntry.Category("player")
 	@Comment("First threshold for hypothermia, being below this you will start to freeze (Default: 35.0)")
-	public double freezeThresholdMinor = 35.0;
+	public double hypothermiaThresholdMinor = 35.0;
 
 	@ConfigEntry.Category("player")
 	@Comment("Second threshold for hypothermia, being below this you will freeze faster. (Default: 20.0)")
-	public double freezeThresholdMajor = 20.0;
+	public double hypothermiaThresholdMajor = 20.0;
 
 	@ConfigEntry.Category("player")
 	@Comment("First threshold for hyperthermia, being above this you will start to burn (Default: 65.0)")
-	public double burnThresholdMinor = 65.0;
+	public double hyperthermiaThresholdMinor = 65.0;
 
 	@ConfigEntry.Category("player")
 	@Comment("Second threshold for hyperthermia, being above this you will burn faster (Default: 75.0)")
-	public double burnThresholdMajor = 75.0;
-
-	@ConfigEntry.Category("player")
-	@Comment("How quick your body temperature absorbs or loses heat from/to the environment. (Default: 0.05)")
-	public double acclimatizationRate = 0.05;
-
-	@ConfigEntry.Category("player")
-	@Comment("Hyperthermia damage per 5 seconds. (Default: 1.0)")
-	public double hyperthermiaDamage = 1.0;
-
-	@ConfigEntry.Category("player")
-	@Comment("Hypothermia damage per 5 seconds. (Default: 1.0)")
-	public double hypothermiaDamage = 1.0;
+	public double hyperthermiaThresholdMajor = 75.0;
 
 	// World
 
@@ -138,8 +130,8 @@ public class ModConfig implements ConfigData {
 	public double blockTemperatureDistanceFalloffFactor = 0.075;
 
 	@ConfigEntry.Category("blocks")
-	@Comment("The factor applied to base acclimatization rate when close to a block heat source. (Default: 0.5)")
-	public double blockAcclimatizationBoostFactor = 2.5;
+	@Comment("The factor applied to base acclimatization rate when close to a block heat source. (Default: 5.0)")
+	public double blockAcclimatizationBoostFactor = 5.0;
 
 	@ConfigEntry.Category("blocks")
 	@Comment("The minimum temperature at which the acclimatization boost is applied. (Default: 10.0)")
@@ -158,13 +150,13 @@ public class ModConfig implements ConfigData {
 			"minecraft:soul_campfire = 20.0",
 			"minecraft:lava_cauldron = 5.0",
 			"minecraft:furnace = 15.0",
-			"minecraft:blast_furnace = 15.0",
-			"minecraft:smoker = 15.0",
+			"minecraft:blast_furnace = 12.0",
+			"minecraft:smoker = 12.0",
 			"minecraft:redstone_lamp = 2.0",
 			"hardcore_torches:lit_torch = 2.0",
 			"hardcore_torches:lit_wall_torch = 2.0",
 			"hardcore_torches:lit_lantern = 1.0",
-			"farmersdelight:stove = 15.0",
+			"farmersdelight:stove = 20.0",
 			"refurbished_furniture:light_ceiling_light = 10.0",
 			"refurbished_furniture:dark_ceiling_light = 10.0",
 			"refurbished_furniture:black_lamp = 10.0",
@@ -254,15 +246,15 @@ public class ModConfig implements ConfigData {
 
 	@ConfigEntry.Category("items")
 	@Comment("Temperature factor for boots with auto-assigned material-based values. (Default: 1.0)")
-	public double bootsAutoTemperatureFactor = 1;
+	public double bootsAutoTemperatureFactor = 1.0;
 
 	@ConfigEntry.Category("items")
 	@Comment("The factor for how much the raw temperature value of worn items adds to player temperature. (Default: 0.35)")
 	public double itemTemperatureFactor = 0.35;
 
 	@ConfigEntry.Category("items")
-	@Comment("Factor for how much player acclimatization is affected by the temperature value of worn items. (Default: -0.005)")
-	public double itemAcclimatizationRateFactor = -0.005;
+	@Comment("Factor for how much player acclimatization is affected by the temperature value of worn items. (Default: -0.0025)")
+	public double itemAcclimatizationRateFactor = -0.25;
 
 	@ConfigEntry.Category("items")
 	@Comment("The lowest possible value player acclimatization rate can be lowered to with worn items. (Default: 0.001)")
@@ -287,12 +279,12 @@ public class ModConfig implements ConfigData {
 	public double windChillFactor = 1.0;
 
 	@ConfigEntry.Category("wind")
-	@Comment("Number of rays used in wind calculation. (Default: 16)")
-	public int windRayCount = 16;
+	@Comment("Number of rays used in wind calculation. Increase for more precise wind simulation. (Default: 8)")
+	public int windRayCount = 8;
 
 	@ConfigEntry.Category("wind")
-	@Comment("How many blocks long wind rays are. (Default: 32)")
-	public int windRayLength = 32;
+	@Comment("How many blocks long wind rays are. Increase for larger spaces. (Default: 16)")
+	public int windRayLength = 16;
 
 	// Seasons
 
