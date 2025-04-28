@@ -71,6 +71,8 @@
     "text.autoconfig.acclimatize.option.temperateClimateTemperature": "Temperate Climate Temperature",
     "text.autoconfig.acclimatize.option.hotClimateTemperature": "Hot Climate Temperature",
     "text.autoconfig.acclimatize.option.aridClimateTemperature": "Arid Climate Temperature",
+	"text.autoconfig.acclimatize.option.rainTemperatureDelta": "Rain Temperature Delta",
+	"text.autoconfig.acclimatize.option.snowTemperatureDelta": "Snow Temperature Delta",
     
     "text.autoconfig.acclimatize.option.enableWind": "Enable Wind",
     "text.autoconfig.acclimatize.option.multidimensionalWind": "Multidimensional Wind",

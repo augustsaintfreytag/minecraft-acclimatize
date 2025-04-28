@@ -107,6 +107,14 @@ public class ModConfig implements ConfigData {
 	@Comment("Base temperature for arid climates. (Default: 70.0)")
 	public double aridClimateTemperature = 70.0;
 
+	@ConfigEntry.Category("environment")
+	@Comment("The temperature delta applied when the player is exposed to rainfall. (Default: -5.0)")
+	public double rainTemperatureDelta = -5.0;
+
+	@ConfigEntry.Category("environment")
+	@Comment("The temperature delta applied when the player is exposed to snowfall. (Default: -10.0)")
+	public double snowTemperatureDelta = -10.0;
+
 	// Blocks
 
 	@ConfigEntry.Category("blocks")
