@@ -55,7 +55,7 @@ public class PlayerTemperatureUtil {
 
 		if (player.isWet()) {
 			// Increase acclimatization rate when wet.
-			acclimatizationRate *= 3.5;
+			acclimatizationRate *= 3.0;
 		}
 
 		acclimatizationRate = MathUtil.clamp(acclimatizationRate, Mod.CONFIG.itemAcclimatizationRateMinimum, 1.0);
