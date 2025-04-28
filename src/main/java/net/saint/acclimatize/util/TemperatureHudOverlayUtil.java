@@ -37,33 +37,33 @@ public final class TemperatureHudOverlayUtil {
 
 			boolean isExtreme = false;
 
-			if (ModClient.clientStoredTemperature < 41 && ModClient.clientStoredTemperature > 35) {
+			if (ModClient.cachedBodyTemperature < 41 && ModClient.cachedBodyTemperature > 35) {
 				r = 0.25f;
 				g = 0.5f;
 				b = 0.8f;
 				a = 0.5f;
-			} else if (ModClient.clientStoredTemperature < 36 && ModClient.clientStoredTemperature > 25) {
+			} else if (ModClient.cachedBodyTemperature < 36 && ModClient.cachedBodyTemperature > 25) {
 				r = 0.25f;
 				g = 0.5f;
 				b = 0.8f;
 				a = 1f;
-			} else if (ModClient.clientStoredTemperature < 26) {
+			} else if (ModClient.cachedBodyTemperature < 26) {
 				r = 0.60f;
 				g = 0.75f;
 				b = 1.0f;
 				a = 2.5f;
 				// extreme = true;
-			} else if (ModClient.clientStoredTemperature > 59 && ModClient.clientStoredTemperature < 65) {
+			} else if (ModClient.cachedBodyTemperature > 59 && ModClient.cachedBodyTemperature < 65) {
 				r = 0.8f;
 				g = 0.3f;
 				b = 0.15f;
 				a = 0.5f;
-			} else if (ModClient.clientStoredTemperature > 64 && ModClient.clientStoredTemperature < 75) {
+			} else if (ModClient.cachedBodyTemperature > 64 && ModClient.cachedBodyTemperature < 75) {
 				r = 0.8f;
 				g = 0.3f;
 				b = 0.15f;
 				a = 1f;
-			} else if (ModClient.clientStoredTemperature > 74) {
+			} else if (ModClient.cachedBodyTemperature > 74) {
 				r = 0.9f;
 				g = 0.4f;
 				b = 0.15f;
