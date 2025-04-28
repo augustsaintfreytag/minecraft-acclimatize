@@ -4,6 +4,7 @@ public final class PlayerStateNBTKeys {
 
 	// Temperature
 
+	public static final String isInInterior = "isInInterior";
 	public static final String bodyTemperature = "bodyTemperature";
 	public static final String acclimatizationRate = "acclimatizationRate";
 	public static final String ambientTemperature = "ambientTemperature";
