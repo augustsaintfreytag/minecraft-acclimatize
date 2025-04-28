@@ -100,12 +100,12 @@ public class ModConfig implements ConfigData {
 	public double aridClimateTemperature = 70.0;
 
 	@ConfigEntry.Category("world")
-	@Comment("The temperature delta applied when the player is exposed to rainfall. (Default: -5.0)")
-	public double rainTemperatureDelta = -5.0;
+	@Comment("The temperature delta applied when the player is exposed to rainfall. (Default: -4.0)")
+	public double rainTemperatureDelta = -4.0;
 
 	@ConfigEntry.Category("world")
-	@Comment("The temperature delta applied when the player is exposed to snowfall. (Default: -10.0)")
-	public double snowTemperatureDelta = -10.0;
+	@Comment("The temperature delta applied when the player is exposed to snowfall. (Default: -6.0)")
+	public double snowTemperatureDelta = -6.0;
 
 	@ConfigEntry.Category("world")
 	@Comment("The number of ticks in a single day that the sun is out (dawn to dusk). Default is vanilla. (Default: 12000)")
