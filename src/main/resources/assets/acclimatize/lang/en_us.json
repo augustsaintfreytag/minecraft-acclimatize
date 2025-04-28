@@ -51,6 +51,7 @@
 	"text.autoconfig.acclimatize.option.leggingsAutoTemperatureFactor": "Leggings Auto-Assigned Temperature Factor",
 	"text.autoconfig.acclimatize.option.chestplateAutoTemperatureFactor": "Chestplate Auto-Assigned Temperature Factor",
 	"text.autoconfig.acclimatize.option.bootsAutoTemperatureFactor": "Boots Auto-Assigned Temperature Factor",
+	"text.autoconfig.acclimatize.option.itemTemperatureFactor": "Item Temperature Factor",
 	"text.autoconfig.acclimatize.option.itemAcclimatizationRateFactor": "Item Acclimatization Rate Factor",
 	"text.autoconfig.acclimatize.option.itemAcclimatizationRateMinimum": "Item Acclimatization Rate Minimum",
 	"text.autoconfig.acclimatize.option.iceWaterEffectDuration": "Ice Water Effect Duration",

@@ -31,6 +31,8 @@ public final class ItemTemperatureUtil {
 
 		for (var itemStack : player.getArmorItems()) {
 			var temperatureValue = temperatureValueForItem(itemStack);
+
+			temperatureValue *= Mod.CONFIG.itemTemperatureFactor;
 			temperature += temperatureValue;
 		}
 

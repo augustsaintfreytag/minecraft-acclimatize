@@ -33,11 +33,13 @@ public class ThermometerItem extends Item {
 		var playerState = ServerStateUtil.getPlayerState(player);
 
 		user.sendMessage(Text
-				.of("♜ Body: " + playerState.bodyTemperature + " (↕ Acclim " + playerState.temperatureRate
-						+ ") \n(☼ Ambient " + playerState.ambientTemperature
-						+ ", ♣ Biome " + playerState.biomeTemperature + ", ☰ Wind " + playerState.windTemperature
-						+ ", ♢ Blocks " + playerState.blockTemperature
-						+ ", ☍ Items " + playerState.itemTemperature + ")"));
+				.of("♜ Body: " + formattedValue(playerState.bodyTemperature) + " (↕ Acclim "
+						+ formattedValue(playerState.temperatureRate)
+						+ ") \n(☼ Ambient " + formattedValue(playerState.ambientTemperature)
+						+ ", ♣ Biome " + formattedValue(playerState.biomeTemperature) + ", ☰ Wind "
+						+ formattedValue(playerState.windTemperature)
+						+ ", ♢ Blocks " + formattedValue(playerState.blockTemperature)
+						+ ", ☍ Items " + formattedValue(playerState.itemTemperature) + ")"));
 
 		return TypedActionResult.success(itemStack);
 	}
@@ -45,6 +47,10 @@ public class ThermometerItem extends Item {
 	@Override
 	public UseAction getUseAction(ItemStack stack) {
 		return UseAction.BLOCK;
+	}
+
+	private static String formattedValue(double value) {
+		return String.format("%.3f", value);
 	}
 
 }

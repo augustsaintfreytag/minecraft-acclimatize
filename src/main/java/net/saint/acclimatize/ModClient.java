@@ -98,7 +98,7 @@ public class ModClient implements ClientModInitializer {
 				return;
 			}
 
-			var temperature = ItemTemperatureUtil.temperatureValueForItem(stack);
+			var temperature = Math.round(ItemTemperatureUtil.temperatureValueForItem(stack));
 
 			if (temperature == 0) {
 				return;

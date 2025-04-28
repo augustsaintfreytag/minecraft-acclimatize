@@ -46,7 +46,8 @@ public class PlayerTemperatureUtil {
 			acclimatizationRate *= Mod.CONFIG.blockAcclimatizationBoostFactor;
 		} else {
 			// Reduce acclimatization when wearing items.
-			acclimatizationRate += ItemTemperatureUtil.acclimatizationRateDeltaForItemTemperature(itemTemperatureDelta);
+			acclimatizationRate += ItemTemperatureUtil
+					.acclimatizationRateDeltaForItemTemperature(itemTemperatureDelta / 100);
 		}
 
 		acclimatizationRate = Math.max(Mod.CONFIG.itemAcclimatizationRateMinimum, acclimatizationRate);
@@ -59,17 +60,13 @@ public class PlayerTemperatureUtil {
 		// State
 
 		playerState.temperatureRate = acclimatizationRate;
-		playerState.bodyTemperature = roundedTemperatureValue(bodyTemperature);
-		playerState.ambientTemperature = roundedTemperatureValue(effectiveTemperature);
+		playerState.bodyTemperature = bodyTemperature;
+		playerState.ambientTemperature = effectiveTemperature;
 
-		playerState.biomeTemperature = roundedTemperatureValue(biomeTemperature.median);
-		playerState.blockTemperature = roundedTemperatureValue(blockTemperatureDelta);
-		playerState.itemTemperature = roundedTemperatureValue(itemTemperatureDelta);
-		playerState.windTemperature = roundedTemperatureValue(windTemperatureDelta);
-	}
-
-	private static double roundedTemperatureValue(double value) {
-		return Math.round(value * 100.0) / 100.0;
+		playerState.biomeTemperature = biomeTemperature.median;
+		playerState.blockTemperature = blockTemperatureDelta;
+		playerState.itemTemperature = itemTemperatureDelta;
+		playerState.windTemperature = windTemperatureDelta;
 	}
 
 }
