@@ -59,7 +59,7 @@ public class PlayerTemperatureUtil {
 
 		// State
 
-		playerState.temperatureRate = acclimatizationRate;
+		playerState.acclimatizationRate = acclimatizationRate;
 		playerState.bodyTemperature = bodyTemperature;
 		playerState.ambientTemperature = effectiveTemperature;
 
