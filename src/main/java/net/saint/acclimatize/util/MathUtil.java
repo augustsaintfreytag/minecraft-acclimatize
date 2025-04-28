@@ -3,7 +3,18 @@ package net.saint.acclimatize.util;
 public final class MathUtil {
 
 	public static double approximateSin(double x) {
-		// range‐reduced to [‑π,π], then:
+		// Range reduction to [-π, π]
+		x = x % (2 * Math.PI);
+
+		if (x > Math.PI) {
+			x -= 2 * Math.PI;
+		}
+
+		if (x < -Math.PI) {
+			x += 2 * Math.PI;
+		}
+
+		// Bhaskara I's approximation
 		return 1.27323954 * x - 0.405284735 * x * Math.abs(x);
 	}
 
