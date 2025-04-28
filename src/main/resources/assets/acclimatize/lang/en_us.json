@@ -19,6 +19,7 @@
     "text.autoconfig.acclimatize.category.player": "Player",
     "text.autoconfig.acclimatize.category.items": "Items",
     "text.autoconfig.acclimatize.category.blocks": "Blocks",
+	"text.autoconfig.acclimatize.category.world": "World",
     "text.autoconfig.acclimatize.category.environment": "Environment",
     "text.autoconfig.acclimatize.category.wind": "Wind",
     
