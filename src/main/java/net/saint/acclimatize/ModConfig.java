@@ -77,43 +77,43 @@ public class ModConfig implements ConfigData {
 	@Comment("Hypothermia damage per 5 seconds. (Default: 1.0)")
 	public double hypothermiaDamage = 1.0;
 
-	@ConfigEntry.Category("player")
-	@Comment("Damage interval for hypothermia and hyperthermia in network ticks (Default: 10)")
-	public int temperatureDamageInterval = 10;
+	// World
 
-	@ConfigEntry.Category("player")
-	@Comment("Damage interval for extreme hypothermia and hyperthermia in network ticks (Default: 10)")
-	public int extremeTemperatureDamageInterval = 10;
-
-	// Ambient Temperatures
-
-	@ConfigEntry.Category("environment")
+	@ConfigEntry.Category("world")
 	@Comment("Base temperature for frigid climates. (Default: 15.0)")
 	public double frigidClimateTemperature = 15.0;
 
-	@ConfigEntry.Category("environment")
+	@ConfigEntry.Category("world")
 	@Comment("Base temperature for cold climates. (Default: 30.0)")
 	public double coldClimateTemperature = 30.0;
 
-	@ConfigEntry.Category("environment")
+	@ConfigEntry.Category("world")
 	@Comment("Base temperature for temperate climates. (Default: 50.0)")
 	public double temperateClimateTemperature = 50.0;
 
-	@ConfigEntry.Category("environment")
+	@ConfigEntry.Category("world")
 	@Comment("Base temperature for hot climates. (Default: 55.0)")
 	public double hotClimateTemperature = 55.0;
 
-	@ConfigEntry.Category("environment")
+	@ConfigEntry.Category("world")
 	@Comment("Base temperature for arid climates. (Default: 70.0)")
 	public double aridClimateTemperature = 70.0;
 
-	@ConfigEntry.Category("environment")
-	@Comment("The temperature delta applied when the player is exposed to rainfall. (Default: -5.0)")
-	public double rainTemperatureDelta = -5.0;
+	@ConfigEntry.Category("world")
+	@Comment("The temperature delta applied when the player is exposed to rainfall. (Default: -4.0)")
+	public double rainTemperatureDelta = -4.0;
 
-	@ConfigEntry.Category("environment")
-	@Comment("The temperature delta applied when the player is exposed to snowfall. (Default: -10.0)")
-	public double snowTemperatureDelta = -10.0;
+	@ConfigEntry.Category("world")
+	@Comment("The temperature delta applied when the player is exposed to snowfall. (Default: -6.0)")
+	public double snowTemperatureDelta = -6.0;
+
+	@ConfigEntry.Category("world")
+	@Comment("The number of ticks in a single day that the sun is out (dawn to dusk). Default is vanilla. (Default: 12000)")
+	public int daylightTicks = 12000;
+
+	@ConfigEntry.Category("world")
+	@Comment("The number of ticks in a single day that the moon is out (dusk to dawn). Default is vanilla. (Default: 12000)")
+	public int nighttimeTicks = 12000;
 
 	// Blocks
 

@@ -25,9 +25,9 @@ public final class BiomeTemperatureUtil {
 
 	public static TemperatureRange biomeTemperatureForPlayer(ServerPlayerEntity player, boolean isInInterior) {
 		var world = player.getWorld();
-		var dimension = world.getDimension();
 		var position = player.getBlockPos();
 
+		var dimension = world.getDimension();
 		var biome = world.getBiome(position).value();
 		var precipitation = biome.getPrecipitation(player.getBlockPos());
 
@@ -36,20 +36,21 @@ public final class BiomeTemperatureUtil {
 
 		var temperatureRange = baseTemperatureRangeForClimate(climateKind);
 
-		// Nighttime
+		// Daylight/Nighttime
 
-		if (dimension.natural() && !world.isDay()) {
-			temperatureRange.median += nighttimeTemperatureDeltaForClimate(climateKind);
+		if (dimension.natural()) {
+			var dayTick = world.getTimeOfDay();
+			var dayNightTemperatureDelta = dayNightTemperatureDeltaForTime(climateKind, dayTick);
+
+			temperatureRange.median += dayNightTemperatureDelta;
 		}
 
 		// Precipitation
 
-		if (!isInInterior) {
-			if (precipitation == Biome.Precipitation.RAIN && world.isRaining()) {
-				temperatureRange.median += Mod.CONFIG.rainTemperatureDelta;
-			} else if (precipitation == Biome.Precipitation.SNOW && world.isRaining()) {
-				temperatureRange.median += Mod.CONFIG.snowTemperatureDelta;
-			}
+		if (precipitation == Biome.Precipitation.RAIN && world.isRaining()) {
+			temperatureRange.median += Mod.CONFIG.rainTemperatureDelta;
+		} else if (precipitation == Biome.Precipitation.SNOW && world.isRaining()) {
+			temperatureRange.median += Mod.CONFIG.snowTemperatureDelta;
 		}
 
 		return temperatureRange;
@@ -87,6 +88,34 @@ public final class BiomeTemperatureUtil {
 				return new TemperatureRange(40.0, Mod.CONFIG.aridClimateTemperature, 120.0);
 			default:
 				return new TemperatureRange(40.0, Mod.CONFIG.aridClimateTemperature, 120.0);
+		}
+	}
+
+	public static double dayNightTemperatureDeltaForTime(ClimateKind climateKind, long dayTick) {
+		// Get cycle lengths and calc transition periods
+		final long dayLength = Mod.CONFIG.daylightTicks;
+		final long nightLength = Mod.CONFIG.nighttimeTicks;
+		final long totalLength = dayLength + nightLength;
+
+		final long dayTickInCycle = dayTick % totalLength;
+
+		// Calculate transition period (15% of shorter period)
+		final long transitionLength = (long) (Math.min(dayLength, nightLength) * 0.2);
+
+		if (dayTickInCycle < transitionLength) {
+			// Night -> Day transition (dawn)
+			double t = (double) dayTickInCycle / transitionLength;
+			return MathUtil.lerp(nighttimeTemperatureDeltaForClimate(climateKind), 0, t);
+		} else if (dayTickInCycle >= dayLength && dayTickInCycle < dayLength + transitionLength) {
+			// Day -> Night transition (dusk)
+			double t = (double) (dayTickInCycle - dayLength) / transitionLength;
+			return MathUtil.lerp(0, nighttimeTemperatureDeltaForClimate(climateKind), t);
+		} else if (dayTickInCycle >= dayLength) {
+			// Full night
+			return nighttimeTemperatureDeltaForClimate(climateKind);
+		} else {
+			// Full day
+			return 0.0;
 		}
 	}
 

@@ -21,12 +21,10 @@ public final class PlayerEffectsUtil {
 	public static class TemperatureDamageTuple {
 		public TemperatureDamageKind kind;
 		public TemperatureIntensityKind intensity;
-		public int duration;
 
-		public TemperatureDamageTuple(TemperatureDamageKind kind, TemperatureIntensityKind intensity, int duration) {
+		public TemperatureDamageTuple(TemperatureDamageKind kind, TemperatureIntensityKind intensity) {
 			this.kind = kind;
 			this.intensity = intensity;
-			this.duration = duration;
 		}
 	}
 
@@ -35,14 +33,7 @@ public final class PlayerEffectsUtil {
 	public static void handlePlayerEffects(ServerPlayerEntity player, PlayerState playerState) {
 		// TODO: Check for resistance status effects or armor items.
 
-		if (playerState.damageTick < playerState.damageTickDuration) {
-			playerState.damageTick++;
 			return;
-		}
-
-		if (playerState.damageTick >= playerState.damageTickDuration) {
-			playerState.damageTick = 0;
-			// May apply damage, can apply and set ticks for re-arm below.
 		}
 
 		var temperatureDamageTuple = temperatureDamageTupleForPlayerState(playerState);
@@ -59,10 +50,6 @@ public final class PlayerEffectsUtil {
 				var hypothermiaStatusEffect = new StatusEffectInstance(ModStatusEffects.HYPOTHERMIA, 600, 1);
 				player.addStatusEffect(hypothermiaStatusEffect);
 			}
-
-			playerState.damageTick = 0;
-			playerState.damageTickDuration = Mod.CONFIG.temperatureDamageInterval;
-
 		} else if (temperatureDamageTuple.kind == TemperatureDamageKind.HEAT) {
 			if (temperatureDamageTuple.intensity == TemperatureIntensityKind.MINOR) {
 				var hyperthermiaStatusEffect = new StatusEffectInstance(ModStatusEffects.HYPERTHERMIA, 600, 0);
@@ -71,9 +58,6 @@ public final class PlayerEffectsUtil {
 				var hyperthermiaStatusEffect = new StatusEffectInstance(ModStatusEffects.HYPERTHERMIA, 600, 1);
 				player.addStatusEffect(hyperthermiaStatusEffect);
 			}
-
-			playerState.damageTick = 0;
-			playerState.damageTickDuration = Mod.CONFIG.extremeTemperatureDamageInterval;
 		}
 
 		if (player.getHealth() <= 0.0) {
@@ -87,24 +71,20 @@ public final class PlayerEffectsUtil {
 
 		if (bodyTemperature <= Mod.CONFIG.freezeThresholdMinor
 				&& bodyTemperature > Mod.CONFIG.freezeThresholdMajor) {
-			return new TemperatureDamageTuple(TemperatureDamageKind.COLD, TemperatureIntensityKind.MINOR,
-					Mod.CONFIG.temperatureDamageInterval);
+			return new TemperatureDamageTuple(TemperatureDamageKind.COLD, TemperatureIntensityKind.MINOR);
 		}
 
 		if (bodyTemperature <= Mod.CONFIG.freezeThresholdMajor) {
-			return new TemperatureDamageTuple(TemperatureDamageKind.COLD, TemperatureIntensityKind.MAJOR,
-					Mod.CONFIG.extremeTemperatureDamageInterval);
+			return new TemperatureDamageTuple(TemperatureDamageKind.COLD, TemperatureIntensityKind.MAJOR);
 		}
 
 		if (bodyTemperature >= Mod.CONFIG.burnThresholdMinor
 				&& bodyTemperature < Mod.CONFIG.burnThresholdMajor) {
-			return new TemperatureDamageTuple(TemperatureDamageKind.HEAT, TemperatureIntensityKind.MINOR,
-					Mod.CONFIG.temperatureDamageInterval);
+			return new TemperatureDamageTuple(TemperatureDamageKind.HEAT, TemperatureIntensityKind.MINOR);
 		}
 
 		if (bodyTemperature >= Mod.CONFIG.burnThresholdMajor) {
-			return new TemperatureDamageTuple(TemperatureDamageKind.HEAT, TemperatureIntensityKind.MAJOR,
-					Mod.CONFIG.extremeTemperatureDamageInterval);
+			return new TemperatureDamageTuple(TemperatureDamageKind.HEAT, TemperatureIntensityKind.MAJOR);
 		}
 
 		return null;
