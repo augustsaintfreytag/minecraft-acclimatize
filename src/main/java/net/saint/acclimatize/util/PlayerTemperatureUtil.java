@@ -30,7 +30,7 @@ public class PlayerTemperatureUtil {
 
 		// Wind
 
-		var windTemperatureTuple = WindTemperatureUtil.windTemperatureForEnvironment(player, playerState, serverState);
+		var windTemperatureTuple = WindTemperatureUtil.windTemperatureForEnvironment(serverState, player, isInInterior);
 		var windTemperatureDelta = windTemperatureTuple.temperature * windTemperatureTuple.windChillFactor;
 
 		effectiveTemperature += windTemperatureDelta;
