@@ -54,7 +54,12 @@ public class PlayerTemperatureUtil {
 					.acclimatizationRateDeltaForItemTemperature(itemTemperatureDelta / 100);
 		}
 
-		acclimatizationRate = Math.max(Mod.CONFIG.itemAcclimatizationRateMinimum, acclimatizationRate);
+		if (player.isWet()) {
+			// Increase acclimatization rate when wet.
+			acclimatizationRate *= 3.5;
+		}
+
+		acclimatizationRate = MathUtil.clamp(acclimatizationRate, Mod.CONFIG.itemAcclimatizationRateMinimum, 1.0);
 
 		// Player Temperature
 
