@@ -182,7 +182,7 @@ public class Mod implements ModInitializer {
 		// Commands
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("thermiteRandomizeWind").requires(source -> source.hasPermissionLevel(4))
+				.register(literal("acclimatize:randomize_wind").requires(source -> source.hasPermissionLevel(4))
 						.then(argument("player", EntityArgumentType.player())
 								.executes(context -> {
 
@@ -215,7 +215,7 @@ public class Mod implements ModInitializer {
 								}))));
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("thermiteShowWind").requires(source -> source.hasPermissionLevel(4))
+				.register(literal("acclimatize:show_wind").requires(source -> source.hasPermissionLevel(4))
 						.executes(context -> {
 
 							ServerState serverState = ServerStateUtil.getServerState(context.getSource().getServer());
@@ -232,7 +232,7 @@ public class Mod implements ModInitializer {
 						})));
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("thermiteWindInfo").requires(source -> source.hasPermissionLevel(4))
+				.register(literal("acclimatize:log_wind_info").requires(source -> source.hasPermissionLevel(4))
 						.executes(context -> {
 
 							ServerState serverState = ServerStateUtil.getServerState(context.getSource().getServer());
