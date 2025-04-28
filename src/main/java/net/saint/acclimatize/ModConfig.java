@@ -72,6 +72,10 @@ public class ModConfig implements ConfigData {
 	// World
 
 	@ConfigEntry.Category("world")
+	@Comment("The number of ticks between temperature updates. (Default: 20)")
+	public int temperatureTickInterval = 20;
+
+	@ConfigEntry.Category("world")
 	@Comment("Base temperature for frigid climates. (Default: 15.0)")
 	public double frigidClimateTemperature = 15.0;
 

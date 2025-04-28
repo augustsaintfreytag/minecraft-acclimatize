@@ -63,6 +63,7 @@
     "text.autoconfig.acclimatize.option.heatingBlocks": "Heating Blocks",
     "text.autoconfig.acclimatize.option.coolingBlocks": "Cooling Blocks",
     
+	"text.autoconfig.acclimatize.option.temperatureTickInterval": "Temperature Tick Interval",
     "text.autoconfig.acclimatize.option.frigidClimateTemperature": "Frigid Climate Temperature",
     "text.autoconfig.acclimatize.option.coldClimateTemperature": "Cold Climate Temperature",
     "text.autoconfig.acclimatize.option.temperateClimateTemperature": "Temperate Climate Temperature",
