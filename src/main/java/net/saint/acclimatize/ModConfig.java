@@ -107,6 +107,14 @@ public class ModConfig implements ConfigData {
 	@Comment("The temperature delta applied when the player is exposed to snowfall. (Default: -10.0)")
 	public double snowTemperatureDelta = -10.0;
 
+	@ConfigEntry.Category("world")
+	@Comment("The number of ticks in a single day that the sun is out (dawn to dusk).")
+	public int daylightTicks = 12000;
+
+	@ConfigEntry.Category("world")
+	@Comment("The number of ticks in a single day that the moon is out (dusk to dawn).")
+	public int nighttimeTicks = 12000;
+
 	// Blocks
 
 	@ConfigEntry.Category("blocks")
