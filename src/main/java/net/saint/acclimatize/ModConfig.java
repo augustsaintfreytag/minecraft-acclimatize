@@ -77,13 +77,6 @@ public class ModConfig implements ConfigData {
 	@Comment("Hypothermia damage per 5 seconds. (Default: 1.0)")
 	public double hypothermiaDamage = 1.0;
 
-	@ConfigEntry.Category("player")
-	@Comment("Damage interval for hypothermia and hyperthermia in network ticks (Default: 10)")
-	public int temperatureDamageInterval = 10;
-
-	@ConfigEntry.Category("player")
-	@Comment("Damage interval for extreme hypothermia and hyperthermia in network ticks (Default: 10)")
-	public int extremeTemperatureDamageInterval = 10;
 	// World
 
 	@ConfigEntry.Category("world")
