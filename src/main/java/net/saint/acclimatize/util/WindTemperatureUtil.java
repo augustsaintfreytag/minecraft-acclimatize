@@ -1,19 +1,28 @@
 package net.saint.acclimatize.util;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.world.RaycastContext;
-import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.server.ServerState;
 
 public final class WindTemperatureUtil {
 
+	// Configuration
+
 	private static final double windBaseTurbulence = 23.0;
 	private static final double windTurbulence = windBaseTurbulence * Math.PI / 180d;
+
+	// State
+
+	private static final Map<UUID, boolean[]> playerWindBuffers = new HashMap<>();
+	private static final Map<UUID, Integer> playerBufferIndices = new HashMap<>();
 
 	// Library
 
@@ -39,6 +48,7 @@ public final class WindTemperatureUtil {
 		var dimension = world.getDimension();
 
 		if (!Mod.CONFIG.enableWind || isInInterior || (!Mod.CONFIG.multidimensionalWind && !dimension.natural())) {
+			cleanUpPlayerData(player);
 			return WindTemperatureTuple.zero();
 		}
 
@@ -54,7 +64,7 @@ public final class WindTemperatureUtil {
 
 		// Wind Ray Calculation
 
-		var numberOfUnblockedRays = checkUnblockedWindRaysForPlayer(serverState, player);
+		var numberOfUnblockedRays = getUnblockedWindRaysForPlayer(serverState, player);
 		var windChillTemperatureFactor = ((double) numberOfUnblockedRays / Mod.CONFIG.windRayCount)
 				* Mod.CONFIG.windChillFactor;
 
@@ -100,31 +110,53 @@ public final class WindTemperatureUtil {
 		return MathUtil.clamp(delta, lowerBound, upperBound);
 	}
 
-	private static int checkUnblockedWindRaysForPlayer(ServerState serverState, ServerPlayerEntity player) {
+	private static int getUnblockedWindRaysForPlayer(ServerState serverState, ServerPlayerEntity player) {
+		var playerId = player.getUuid();
+
+		// Initialize buffer for this player if needed
+		if (!playerWindBuffers.containsKey(playerId)) {
+			playerWindBuffers.put(playerId, new boolean[Mod.CONFIG.windRayCount]);
+			playerBufferIndices.put(playerId, 0);
+		}
+
+		var buffer = playerWindBuffers.get(playerId);
+		var currentIndex = playerBufferIndices.get(playerId);
+
+		// Profile Start Time
+		var profile = Mod.PROFILER.begin("wind");
+
+		// Perform only a single raycast and store the result
+		buffer[currentIndex] = performSingleWindRaycast(serverState, player);
+
+		// Update index for next call
+		currentIndex = (currentIndex + 1) % Mod.CONFIG.windRayCount;
+		playerBufferIndices.put(playerId, currentIndex);
+
+		// Count unblocked rays in the buffer
+		var numberOfUnblockedRays = 0;
+
+		for (boolean isUnblocked : buffer) {
+			if (isUnblocked) {
+				numberOfUnblockedRays++;
+			}
+		}
+
+		profile.end();
+
+		if (Mod.CONFIG.enableLogging) {
+			Mod.LOGGER.info("Wind raycast, " + numberOfUnblockedRays + " unblocked ray(s), duration: "
+					+ profile.getDescription());
+		}
+
+		return numberOfUnblockedRays;
+	}
+
+	private static boolean performSingleWindRaycast(ServerState serverState, ServerPlayerEntity player) {
 		var windYaw = serverState.windYaw;
 		var windPitch = serverState.windPitch;
 		var world = player.getWorld();
 		var random = world.getRandom();
 
-		var numberOfUnblockedRays = 0;
-
-		// Profile Start Time
-		var profile = Mod.PROFILER.begin("wind");
-
-		for (int i = 0; i < Mod.CONFIG.windRayCount; i++) {
-			if (performSingleWindRaycast(world, player, random, windYaw, windPitch)) {
-				numberOfUnblockedRays += 1;
-			}
-		}
-
-		profile.end();
-		Mod.LOGGER.info("Wind raycast duration: " + profile.getDescription());
-
-		return numberOfUnblockedRays;
-	}
-
-	private static boolean performSingleWindRaycast(World world, ServerPlayerEntity player, Random random,
-			double windYaw, double windPitch) {
 		var directionVector = new Vec3d(
 				(MathUtil.approximateCos(windPitch + random.nextTriangular(0, windTurbulence))
 						* MathUtil.approximateCos(windYaw + random.nextTriangular(0, windTurbulence))),
@@ -142,6 +174,14 @@ public final class WindTemperatureUtil {
 
 		// Return true if ray is unblocked (missed all blocks)
 		return hitResult.getType() == HitResult.Type.MISS;
+	}
+
+	// Buffer
+
+	public static void cleanUpPlayerData(ServerPlayerEntity player) {
+		var playerId = player.getUuid();
+		playerWindBuffers.remove(playerId);
+		playerBufferIndices.remove(playerId);
 	}
 
 }
