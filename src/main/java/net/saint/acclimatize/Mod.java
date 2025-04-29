@@ -3,8 +3,6 @@ package net.saint.acclimatize;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-import java.util.Objects;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,13 +37,15 @@ import net.saint.acclimatize.server.ServerState;
 import net.saint.acclimatize.util.BlockTemperatureUtil;
 import net.saint.acclimatize.util.ItemTemperatureUtil;
 import net.saint.acclimatize.util.ServerStateUtil;
+import net.saint.acclimatize.util.SpaceUtil;
+import net.saint.acclimatize.util.WindTemperatureUtil;
 
 public class Mod implements ModInitializer {
-	public static final Logger LOGGER = LoggerFactory.getLogger("acclimatize");
-	public static final Profiler PROFILER = Profiler.getProfiler("acclimatize");
-
 	public static final String modid = "acclimatize";
 	public static final String modVersion = "6.0.0";
+
+	public static final Logger LOGGER = LoggerFactory.getLogger("acclimatize");
+	public static final Profiler PROFILER = Profiler.getProfiler("acclimatize");
 
 	// Items
 
@@ -78,7 +78,6 @@ public class Mod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-
 		// Config
 
 		AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
@@ -157,7 +156,12 @@ public class Mod implements ModInitializer {
 
 				serverState.markDirty();
 			}
+		});
 
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+			var player = handler.player;
+			SpaceUtil.cleanUpPlayerData(player);
+			WindTemperatureUtil.cleanUpPlayerData(player);
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register((server) -> {
@@ -193,6 +197,7 @@ public class Mod implements ModInitializer {
 									var playerState = ServerStateUtil.getPlayerState(player);
 
 									playerState.bodyTemperature = 50.0;
+									playerState.markDirty();
 
 									return 1;
 								}))));
