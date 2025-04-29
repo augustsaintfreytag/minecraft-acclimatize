@@ -146,15 +146,22 @@ public class Mod implements ModInitializer {
 		// Events
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			var serverState = ServerStateUtil.getServerState(server);
 
-			ServerState serverState = ServerStateUtil.getServerState(handler.player.getWorld().getServer());
-
-			if (!Objects.equals(serverState.worldVersion, modVersion)) {
+			if (!modVersion.equals(serverState.worldVersion)) {
 				serverState.windRandomizeTick = 24000;
 				serverState.windTemperatureModifierRange = 8;
 				serverState.worldVersion = modVersion;
 
 				serverState.markDirty();
+			}
+
+			var player = handler.player;
+			var playerState = ServerStateUtil.getPlayerState(player);
+
+			if (playerState.bodyTemperature == 0.0) {
+				playerState.bodyTemperature = 50.0;
+				playerState.markDirty();
 			}
 		});
 
@@ -192,7 +199,6 @@ public class Mod implements ModInitializer {
 				.register(literal("acclimatize:reset_temperature").requires(source -> source.hasPermissionLevel(4))
 						.then(argument("player", EntityArgumentType.player())
 								.executes(context -> {
-
 									var player = EntityArgumentType.getPlayer(context, "player");
 									var playerState = ServerStateUtil.getPlayerState(player);
 

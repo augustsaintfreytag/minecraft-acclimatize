@@ -6,5 +6,6 @@
 		<setting id="org.eclipse.jdt.core.formatter.blank_lines_between_import_groups" value="1"/>
         <setting id="org.eclipse.jdt.core.formatter.sort_imports_alphabetically" value="true"/>
         <setting id="org.eclipse.jdt.core.formatter.sort_imports_on_save" value="true"/>
+		<setting id="org.eclipse.jdt.core.formatter.lineSplit" value="160"/>
 	</profile>
 </profiles>

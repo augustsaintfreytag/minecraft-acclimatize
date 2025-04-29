@@ -1,19 +1,16 @@
 {
 	"type": "minecraft:crafting_shaped",
 	"pattern": [
-		" B ",
-		"SBS",
+		"sss",
+		"sss",
 		" W "
 	],
 	"key": {
+		"s": {
+			"item": "minecraft:snowball"
+		},
 		"W": {
 			"item": "minecraft:glass_bottle"
-		},
-		"B": {
-			"item": "acclimatize:gold_sweet_berries"
-		},
-		"S": {
-			"item": "minecraft:sugar"
 		}
 	},
 	"result": {
