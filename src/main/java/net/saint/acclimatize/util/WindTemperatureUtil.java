@@ -107,7 +107,7 @@ public final class WindTemperatureUtil {
 		var numberOfUnblockedRays = 0;
 
 		// Profile Start Time
-		var raycastStart = System.currentTimeMillis();
+		var profile = Mod.PROFILER.begin("wind");
 
 		for (int i = 0; i < Mod.CONFIG.windRayCount; i++) {
 			var directionVector = new Vec3d(
@@ -128,10 +128,8 @@ public final class WindTemperatureUtil {
 			}
 		}
 
-		var raycastEnd = System.currentTimeMillis();
-		var raycastDuration = raycastEnd - raycastStart;
-
-		Mod.LOGGER.info("Raycast duration: " + raycastDuration + "ms");
+		profile.end();
+		Mod.LOGGER.info("Wind raycast duration: " + profile.getDescription());
 
 		return numberOfUnblockedRays;
 	}
