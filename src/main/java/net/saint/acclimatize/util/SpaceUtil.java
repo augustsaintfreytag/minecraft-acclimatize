@@ -1,5 +1,9 @@
 package net.saint.acclimatize.util;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
@@ -9,36 +13,62 @@ import net.saint.acclimatize.Mod;
 
 public final class SpaceUtil {
 
+	// Configuration
+
 	private static final double CONE_ANGLE = Math.toRadians(45);
 	private static final double BASE_COS_ANGLE = MathUtil.approximateCos(CONE_ANGLE);
 	private static final double BASE_SIN_ANGLE = MathUtil.approximateSin(CONE_ANGLE);
+
+	// State
+
+	private static final Map<UUID, boolean[]> playerSpaceBuffers = new HashMap<>();
+	private static final Map<UUID, Boolean> playerLastSpacePreCheck = new HashMap<>();
+	private static final Map<UUID, Integer> playerSpaceIndices = new HashMap<>();
 
 	// Checks
 
 	public static boolean checkPlayerIsInInterior(ServerPlayerEntity player) {
 		var profile = Mod.PROFILER.begin("space_check");
-
+		var playerId = player.getUuid();
 		var world = player.getWorld();
 
 		// Pre-check by raycasting once straight up from player position.
-		if (!preCheckRaycastForPositionInInterior(world, player)) {
-			// Ray hit a block, assume indoors.
+		var lastPreCheckResult = playerLastSpacePreCheck.computeIfAbsent(playerId, k -> false).booleanValue();
+		var preCheckResult = preCheckRaycastForPositionInInterior(world, player);
+		playerLastSpacePreCheck.put(playerId, preCheckResult);
+
+		if (!preCheckResult) {
+			// Ray hit the sky, assume outdoors.
+			cleanUpPlayerData(player);
 			profile.end();
-			Mod.LOGGER.info("Space check raycast (hit sky, pre-check only): " + profile.getDescription());
+
+			if (Mod.CONFIG.enableLogging) {
+				Mod.LOGGER.info("Space check raycast (hit sky, pre-check), duration: " + profile.getDescription());
+			}
+
 			return false;
+		}
+
+		if (lastPreCheckResult) {
+			cleanUpPlayerData(player);
 		}
 
 		if (!getRaycastResultForPositionInInterior(world, player)) {
 			// Ray sequence hit a block, assume indoors.
 			profile.end();
-			Mod.LOGGER.info(
-					"Space check raycast (hit sky, extended check), duration: " + profile.getDescription());
+
+			if (Mod.CONFIG.enableLogging) {
+				Mod.LOGGER.info("Space check raycast (hit sky, extended check), duration: " + profile.getDescription());
+			}
 			return false;
 		}
 
 		profile.end();
-		Mod.LOGGER.info(
-				"Space check raycast (hit block, extended check), duration: " + profile.getDescription());
+		if (Mod.CONFIG.enableLogging) {
+			Mod.LOGGER.info(
+					"Space check raycast (hit block, extended check), duration: " + profile.getDescription());
+		}
+
 		return true;
 	}
 
@@ -63,15 +93,36 @@ public final class SpaceUtil {
 	}
 
 	private static boolean getRaycastResultForPositionInInterior(World world, ServerPlayerEntity player) {
-		var numberOfRays = Mod.CONFIG.spaceNumberOfRays;
+		var playerId = player.getUuid();
 
-		for (int i = 0; i < numberOfRays; i++) {
-			if (performSingleSpaceRaycast(world, player, i)) {
-				// Ray hit a block, assume indoors.
+		// Initialize buffer for this player if needed
+		if (!playerSpaceBuffers.containsKey(playerId)) {
+			playerSpaceBuffers.put(playerId, new boolean[Mod.CONFIG.spaceNumberOfRays]);
+			playerSpaceIndices.put(playerId, 0);
+		}
+
+		var buffer = playerSpaceBuffers.get(playerId);
+		var currentIndex = playerSpaceIndices.get(playerId);
+
+		// Calculate ray offset for this check
+		var rayOffset = currentIndex % Mod.CONFIG.spaceNumberOfRays;
+
+		// Perform single raycast and store result (true = ray hit sky)
+		buffer[currentIndex] = performSingleSpaceRaycast(world, player, rayOffset);
+
+		// Update index for next call
+		currentIndex = (currentIndex + 1) % Mod.CONFIG.spaceNumberOfRays;
+		playerSpaceIndices.put(playerId, currentIndex);
+
+		// Count rays that hit sky - any hit means we're outside
+		for (boolean hitSky : buffer) {
+			if (hitSky) {
+				// Found a ray that hit sky, player is outdoors
 				return false;
 			}
 		}
 
+		// All rays hit blocks, player is indoors
 		return true;
 	}
 
@@ -91,6 +142,16 @@ public final class SpaceUtil {
 				player));
 
 		return hitResult.getType() == HitResult.Type.MISS;
+	}
+
+	// Buffer
+
+	public static void cleanUpPlayerData(ServerPlayerEntity player) {
+		var playerId = player.getUuid();
+
+		playerSpaceBuffers.remove(playerId);
+		playerSpaceIndices.remove(playerId);
+		playerLastSpacePreCheck.remove(playerId);
 	}
 
 }
