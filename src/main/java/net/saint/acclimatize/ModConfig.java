@@ -104,6 +104,14 @@ public class ModConfig implements ConfigData {
 	public double snowTemperatureDelta = -6.0;
 
 	@ConfigEntry.Category("world")
+	@Comment("The number of rays cast in a cone shape around the player to check for an interior space. Higher number means more precision but higher cost. (Default: 8)")
+	public int spaceNumberOfRays = 8;
+
+	@ConfigEntry.Category("world")
+	@Comment("The length of the rays cast around the player to check for an interior space. Higher means more coverage but higher cost. (Default: 32)")
+	public int spaceRayLength = 32;
+
+	@ConfigEntry.Category("world")
 	@Comment("The number of ticks in a single day that the sun is out (dawn to dusk). Default is vanilla. (Default: 12000)")
 	public int daylightTicks = 12000;
 
@@ -146,7 +154,7 @@ public class ModConfig implements ConfigData {
 	public String heatingBlocks = String.join(", ",
 			"minecraft:fire = 5.0",
 			"minecraft:lava = 8.0",
-			"minecraft:campfire = 20.0",
+			"minecraft:campfire = 18.0",
 			"minecraft:torch = 2.0",
 			"minecraft:wall_torch = 2.0",
 			"minecraft:soul_torch = 2.0",
@@ -160,7 +168,7 @@ public class ModConfig implements ConfigData {
 			"hardcore_torches:lit_torch = 2.0",
 			"hardcore_torches:lit_wall_torch = 2.0",
 			"hardcore_torches:lit_lantern = 1.0",
-			"farmersdelight:stove = 20.0",
+			"farmersdelight:stove = 18.0",
 			"refurbished_furniture:light_ceiling_light = 10.0",
 			"refurbished_furniture:dark_ceiling_light = 10.0",
 			"refurbished_furniture:black_lamp = 10.0",
@@ -257,8 +265,8 @@ public class ModConfig implements ConfigData {
 	public double itemTemperatureFactor = 0.35;
 
 	@ConfigEntry.Category("items")
-	@Comment("Factor for how much player acclimatization is affected by the temperature value of worn items. (Default: -0.0025)")
-	public double itemAcclimatizationRateFactor = -0.25;
+	@Comment("Factor for how much player acclimatization is affected by the temperature value of worn items. (Default: -0.005)")
+	public double itemAcclimatizationRateFactor = -0.005;
 
 	@ConfigEntry.Category("items")
 	@Comment("The lowest possible value player acclimatization rate can be lowered to with worn items. (Default: 0.001)")
@@ -279,16 +287,16 @@ public class ModConfig implements ConfigData {
 	public boolean multidimensionalWind = false;
 
 	@ConfigEntry.Category("wind")
-	@Comment("The factor for how much wind exposure affects ambient temperature. (Default: 1.0)")
-	public double windChillFactor = 1.0;
+	@Comment("The factor for how much wind exposure affects ambient temperature. (Default: 1.25)")
+	public double windChillFactor = 1.25;
 
 	@ConfigEntry.Category("wind")
-	@Comment("Number of rays used in wind calculation. Increase for more precise wind simulation. (Default: 8)")
-	public int windRayCount = 8;
+	@Comment("Number of rays used in wind calculation. Increase for more precise wind simulation. (Default: 6)")
+	public int windRayCount = 6;
 
 	@ConfigEntry.Category("wind")
-	@Comment("How many blocks long wind rays are. Increase for larger spaces. (Default: 16)")
-	public int windRayLength = 16;
+	@Comment("How many blocks long wind rays are. Increase for larger spaces. (Default: 10)")
+	public int windRayLength = 10;
 
 	// Seasons
 
