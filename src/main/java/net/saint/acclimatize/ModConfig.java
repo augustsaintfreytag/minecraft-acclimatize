@@ -54,8 +54,8 @@ public class ModConfig implements ConfigData {
 	// Player
 
 	@ConfigEntry.Category("player")
-	@Comment("How quick your body temperature absorbs or loses heat from/to the environment. (Default: 0.025)")
-	public double acclimatizationRate = 0.025;
+	@Comment("How quick your body temperature absorbs or loses heat from/to the environment. (Default: 0.02)")
+	public double acclimatizationRate = 0.02;
 
 	@ConfigEntry.Category("player")
 	@Comment("The factor by which player acclimatization rate is boosted when wet. (Default: 5.0)")
