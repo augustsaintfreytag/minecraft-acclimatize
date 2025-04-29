@@ -50,11 +50,16 @@ public class ModConfig implements ConfigData {
 	@ConfigEntry.Category("hud")
 	@Comment("Enables debug logging and performance profiling to the console. (Default: false)")
 	public boolean enableLogging = false;
+
 	// Player
 
 	@ConfigEntry.Category("player")
 	@Comment("How quick your body temperature absorbs or loses heat from/to the environment. (Default: 0.025)")
 	public double acclimatizationRate = 0.025;
+
+	@ConfigEntry.Category("player")
+	@Comment("The factor by which player acclimatization rate is boosted when wet. (Default: 5.0)")
+	public double wetAcclimatizationRateBoostFactor = 5.0;
 
 	@ConfigEntry.Category("player")
 	@Comment("First threshold for hypothermia, being below this you will start to freeze (Default: 35.0)")
