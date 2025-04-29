@@ -77,6 +77,7 @@
 	"text.autoconfig.acclimatize.option.blockTemperatureAcclimatizationBoostThreshold": "Block Temperature Acclimatization Boost Threshold",
     "text.autoconfig.acclimatize.option.heatingBlocks": "Heating Blocks",
     "text.autoconfig.acclimatize.option.coolingBlocks": "Cooling Blocks",
+	"text.autoconfig.acclimatize.option.waterBlockTemperature": "Water Block Temperature",
     
     "text.autoconfig.acclimatize.option.enableWind": "Enable Wind",
     "text.autoconfig.acclimatize.option.multidimensionalWind": "Multidimensional Wind",
