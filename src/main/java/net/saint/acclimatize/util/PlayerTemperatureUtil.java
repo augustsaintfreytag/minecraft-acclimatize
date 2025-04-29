@@ -58,6 +58,10 @@ public class PlayerTemperatureUtil {
 			acclimatizationRate *= Mod.CONFIG.wetAcclimatizationRateBoostFactor;
 		}
 
+		if (player.isSubmergedInWater()) {
+			blockTemperatureDelta += Mod.CONFIG.waterBlockTemperature;
+		}
+
 		acclimatizationRate = MathUtil.clamp(acclimatizationRate, Mod.CONFIG.itemAcclimatizationRateMinimum, 1.0);
 
 		// Player Temperature
