@@ -155,6 +155,14 @@ public class Mod implements ModInitializer {
 
 				serverState.markDirty();
 			}
+
+			var player = handler.player;
+			var playerState = ServerStateUtil.getPlayerState(player);
+
+			if (playerState.bodyTemperature == 0.0) {
+				playerState.bodyTemperature = 50.0;
+				playerState.markDirty();
+			}
 		});
 
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
@@ -191,7 +199,6 @@ public class Mod implements ModInitializer {
 				.register(literal("acclimatize:reset_temperature").requires(source -> source.hasPermissionLevel(4))
 						.then(argument("player", EntityArgumentType.player())
 								.executes(context -> {
-
 									var player = EntityArgumentType.getPlayer(context, "player");
 									var playerState = ServerStateUtil.getPlayerState(player);
 
