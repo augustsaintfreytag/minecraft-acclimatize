@@ -48,6 +48,7 @@
 	"text.autoconfig.acclimatize.option.nighttimeTicks": "Nighttime Ticks",
     
 	"text.autoconfig.acclimatize.option.acclimatizationRate": "Acclimatization Rate",
+	"text.autoconfig.acclimatize.option.wetAcclimatizationRateBoostFactor": "Wetness Acclimatization Rate Boost Factor",
     "text.autoconfig.acclimatize.option.hypothermiaThresholdMinor": "Minor Freeze Threshold",
     "text.autoconfig.acclimatize.option.hypothermiaThresholdMajor": "Major Freeze Threshold",
     "text.autoconfig.acclimatize.option.hyperthermiaThresholdMinor": "Minor Burn Threshold",
