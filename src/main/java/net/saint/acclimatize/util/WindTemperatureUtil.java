@@ -3,18 +3,23 @@ package net.saint.acclimatize.util;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.RaycastContext;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.server.ServerState;
 
 public final class WindTemperatureUtil {
 
+	private static final double windBaseTurbulence = 23.0;
+	private static final double windTurbulence = windBaseTurbulence * Math.PI / 180d;
+
 	// Library
 
 	public static class WindTemperatureTuple {
-		public double temperature;
-		public double windChillFactor;
+		public final double temperature;
+		public final double windChillFactor;
 
 		public WindTemperatureTuple(double windTemperature, double windChillFactor) {
 			this.temperature = windTemperature;
@@ -96,11 +101,8 @@ public final class WindTemperatureUtil {
 	}
 
 	private static int checkUnblockedWindRaysForPlayer(ServerState serverState, ServerPlayerEntity player) {
-		var windBaseTurbulence = 23.0;
-		var windTurbulence = windBaseTurbulence * Math.PI / 180d;
 		var windYaw = serverState.windYaw;
 		var windPitch = serverState.windPitch;
-
 		var world = player.getWorld();
 		var random = world.getRandom();
 
@@ -110,20 +112,7 @@ public final class WindTemperatureUtil {
 		var profile = Mod.PROFILER.begin("wind");
 
 		for (int i = 0; i < Mod.CONFIG.windRayCount; i++) {
-			var directionVector = new Vec3d(
-					(MathUtil.approximateCos(windPitch + random.nextTriangular(0, windTurbulence))
-							* MathUtil.approximateCos(windYaw + random.nextTriangular(0, windTurbulence))),
-					(MathUtil.approximateSin(windPitch + random.nextTriangular(0, windTurbulence))
-							* MathUtil.approximateCos(windYaw + random.nextTriangular(0, windTurbulence))),
-					MathUtil.approximateSin(windYaw + random.nextTriangular(0, windTurbulence)));
-
-			var startVector = new Vec3d(player.getPos().x, player.getPos().y + 1, player.getPos().z);
-			var endVector = startVector.add(directionVector.multiply(Mod.CONFIG.windRayLength));
-
-			var hitResult = world.raycast(new RaycastContext(startVector, endVector, RaycastContext.ShapeType.COLLIDER,
-					RaycastContext.FluidHandling.NONE, player));
-
-			if (hitResult.getType() == HitResult.Type.MISS) {
+			if (performSingleWindRaycast(world, player, random, windYaw, windPitch)) {
 				numberOfUnblockedRays += 1;
 			}
 		}
@@ -132,6 +121,27 @@ public final class WindTemperatureUtil {
 		Mod.LOGGER.info("Wind raycast duration: " + profile.getDescription());
 
 		return numberOfUnblockedRays;
+	}
+
+	private static boolean performSingleWindRaycast(World world, ServerPlayerEntity player, Random random,
+			double windYaw, double windPitch) {
+		var directionVector = new Vec3d(
+				(MathUtil.approximateCos(windPitch + random.nextTriangular(0, windTurbulence))
+						* MathUtil.approximateCos(windYaw + random.nextTriangular(0, windTurbulence))),
+				(MathUtil.approximateSin(windPitch + random.nextTriangular(0, windTurbulence))
+						* MathUtil.approximateCos(windYaw + random.nextTriangular(0, windTurbulence))),
+				MathUtil.approximateSin(windYaw + random.nextTriangular(0, windTurbulence)));
+
+		var startVector = new Vec3d(player.getPos().x, player.getPos().y + 1, player.getPos().z);
+		var endVector = startVector.add(directionVector.multiply(Mod.CONFIG.windRayLength));
+
+		var hitResult = world.raycast(new RaycastContext(startVector, endVector,
+				RaycastContext.ShapeType.COLLIDER,
+				RaycastContext.FluidHandling.NONE,
+				player));
+
+		// Return true if ray is unblocked (missed all blocks)
+		return hitResult.getType() == HitResult.Type.MISS;
 	}
 
 }
