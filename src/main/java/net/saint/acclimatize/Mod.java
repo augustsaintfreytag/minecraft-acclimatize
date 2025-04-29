@@ -33,6 +33,7 @@ import net.saint.acclimatize.item.IceWaterItem;
 import net.saint.acclimatize.item.ThermometerItem;
 import net.saint.acclimatize.item.WoolClothItem;
 import net.saint.acclimatize.networking.TemperaturePackets;
+import net.saint.acclimatize.profiler.Profiler;
 import net.saint.acclimatize.recipe.LeatherArmorWoolRecipe;
 import net.saint.acclimatize.server.ServerState;
 import net.saint.acclimatize.util.BlockTemperatureUtil;
@@ -41,6 +42,8 @@ import net.saint.acclimatize.util.ServerStateUtil;
 
 public class Mod implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("acclimatize");
+	public static final Profiler PROFILER = Profiler.getProfiler("acclimatize");
+
 	public static final String modid = "acclimatize";
 	public static final String modVersion = "6.0.0";
 
