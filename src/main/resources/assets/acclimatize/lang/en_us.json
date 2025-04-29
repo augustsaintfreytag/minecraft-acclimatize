@@ -23,6 +23,7 @@
     "text.autoconfig.acclimatize.category.environment": "Environment",
     "text.autoconfig.acclimatize.category.wind": "Wind",
     
+	"text.autoconfig.acclimatize.option.enableLogging": "Enable Logging",
     "text.autoconfig.acclimatize.option.temperatureXOffset": "Temperature HUD X Offset",
     "text.autoconfig.acclimatize.option.temperatureYOffset": "Temperature HUD Y Offset",
     "text.autoconfig.acclimatize.option.thermometerXOffset": "Thermometer X Offset",
