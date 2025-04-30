@@ -12,10 +12,10 @@ import net.saint.acclimatize.ModClient;
 
 public final class TemperatureHudOverlayUtil {
 
-	public static final Identifier HIGH_TEMPERATURE_OVERLAY = new Identifier(Mod.modid,
+	public static final Identifier HIGH_TEMPERATURE_OVERLAY = new Identifier(Mod.modId,
 			"textures/overlay/high_temperature_overlay.png");
 
-	public static final Identifier EXTREME_TEMPERATURE_OVERLAY = new Identifier(Mod.modid,
+	public static final Identifier EXTREME_TEMPERATURE_OVERLAY = new Identifier(Mod.modId,
 			"textures/overlay/extreme_temperature_overlay.png");
 
 	public static void renderVignetteHudOverlay(DrawContext context, Entity entity) {

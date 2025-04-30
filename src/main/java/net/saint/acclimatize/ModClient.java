@@ -50,7 +50,7 @@ public class ModClient implements ClientModInitializer {
 				"Toggle Temperature GUI",
 				InputUtil.Type.KEYSYM,
 				GLFW.GLFW_KEY_UNKNOWN,
-				"Thermite"));
+				"Acclimatize"));
 
 		if (enableHUDKeyBinding.wasPressed()) {
 			enableHUD = !enableHUD;

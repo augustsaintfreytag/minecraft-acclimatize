@@ -8,41 +8,41 @@ import net.saint.acclimatize.ModClient;
 
 public final class TemperatureHudUtil {
 
-	private static final Identifier THERMOMETER_FRAME = new Identifier(Mod.modid,
+	private static final Identifier THERMOMETER_FRAME = new Identifier(Mod.modId,
 			"textures/thermometer/thermometer_frame.png");
-	private static final Identifier THERMOMETER_GAUGE = new Identifier(Mod.modid,
+	private static final Identifier THERMOMETER_GAUGE = new Identifier(Mod.modId,
 			"textures/thermometer/thermometer_gauge_fix_1.png");
-	private static final Identifier THERMOMETER_HAND = new Identifier(Mod.modid,
+	private static final Identifier THERMOMETER_HAND = new Identifier(Mod.modId,
 			"textures/thermometer/thermometer_hand.png");
-	private static final Identifier THERMOMETER_SNOWFLAKE = new Identifier(Mod.modid,
+	private static final Identifier THERMOMETER_SNOWFLAKE = new Identifier(Mod.modId,
 			"textures/thermometer/snowflake_icon_8x8.png");
-	private static final Identifier THERMOMETER_FLAME = new Identifier(Mod.modid,
+	private static final Identifier THERMOMETER_FLAME = new Identifier(Mod.modId,
 			"textures/thermometer/flame_icon_8x8.png");
-	private static final Identifier THERMOMETER_STILL = new Identifier(Mod.modid,
+	private static final Identifier THERMOMETER_STILL = new Identifier(Mod.modId,
 			"textures/thermometer/temperate_icon.png");
 
-	private static final Identifier THERMOMETER_DISPLAY = new Identifier(Mod.modid,
+	private static final Identifier THERMOMETER_DISPLAY = new Identifier(Mod.modId,
 			"textures/thermometer/thermometer_display.png");
 
 	// glass thermometer
-	private static final Identifier TEMPERATE_GLASS = new Identifier(Mod.modid,
+	private static final Identifier TEMPERATE_GLASS = new Identifier(Mod.modId,
 			"textures/glass_thermometer/temperate_glass.png");
-	private static final Identifier COLD_GLASS = new Identifier(Mod.modid,
+	private static final Identifier COLD_GLASS = new Identifier(Mod.modId,
 			"textures/glass_thermometer/cold_glass.png");
-	private static final Identifier FROZEN_GLASS = new Identifier(Mod.modid,
+	private static final Identifier FROZEN_GLASS = new Identifier(Mod.modId,
 			"textures/glass_thermometer/frozen_glass.png");
-	private static final Identifier HOT_GLASS = new Identifier(Mod.modid,
+	private static final Identifier HOT_GLASS = new Identifier(Mod.modId,
 			"textures/glass_thermometer/hot_glass.png");
-	private static final Identifier BLAZING_GLASS = new Identifier(Mod.modid,
+	private static final Identifier BLAZING_GLASS = new Identifier(Mod.modId,
 			"textures/glass_thermometer/blazing_glass.png");
 
-	private static final Identifier COOLING_OUTLINE = new Identifier(Mod.modid,
+	private static final Identifier COOLING_OUTLINE = new Identifier(Mod.modId,
 			"textures/glass_thermometer/cooling_outline.png");
-	private static final Identifier COOLING_OUTLINE_SMALL = new Identifier(Mod.modid,
+	private static final Identifier COOLING_OUTLINE_SMALL = new Identifier(Mod.modId,
 			"textures/glass_thermometer/cooling_small_outline.png");
-	private static final Identifier HEATING_OUTLINE = new Identifier(Mod.modid,
+	private static final Identifier HEATING_OUTLINE = new Identifier(Mod.modId,
 			"textures/glass_thermometer/heating_outline.png");
-	private static final Identifier HEATING_OUTLINE_SMALL = new Identifier(Mod.modid,
+	private static final Identifier HEATING_OUTLINE_SMALL = new Identifier(Mod.modId,
 			"textures/glass_thermometer/heating_small_outline.png");
 
 	public static void renderGaugeThermometerHud(DrawContext context) {

@@ -17,7 +17,7 @@ public class ServerStateUtil {
 		return manager.getOrCreate(
 				ServerState::createFromNbt,
 				ServerState::new,
-				Mod.modid);
+				Mod.modId);
 	}
 
 	public static PlayerState getPlayerState(LivingEntity player) {

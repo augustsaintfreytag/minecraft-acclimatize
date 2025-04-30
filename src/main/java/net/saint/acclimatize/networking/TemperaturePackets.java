@@ -11,12 +11,12 @@ public class TemperaturePackets {
 
 	// Client to Server
 
-	public static final Identifier PLAYER_TEMPERATURE_TICK_C2S_PACKET_ID = new Identifier(Mod.modid,
+	public static final Identifier PLAYER_TEMPERATURE_TICK_C2S_PACKET_ID = new Identifier(Mod.modId,
 			"player_temperature_tick_c2s_packet");
 
 	// Server to Client
 
-	public static final Identifier SEND_TEMPERATURE_PLAYERSTATE_S2C_PACKET_ID = new Identifier(Mod.modid,
+	public static final Identifier SEND_TEMPERATURE_PLAYERSTATE_S2C_PACKET_ID = new Identifier(Mod.modId,
 			"send_temperature_playerstate_s2c_packet");
 
 	public static void registerC2SPackets() {

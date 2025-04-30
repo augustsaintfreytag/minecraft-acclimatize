@@ -13,7 +13,7 @@
 	"effect.acclimatize.hyperthermia": "Hyperthermia",
     "effect.acclimatize.cold_resistance": "Cold Resistance",
 	
-    "text.autoconfig.acclimatize.title": "Thermite",
+    "text.autoconfig.acclimatize.title": "Acclimatize",
     "text.autoconfig.acclimatize.category.seasons": "Seasons",
     "text.autoconfig.acclimatize.category.hud": "HUD",
     "text.autoconfig.acclimatize.category.player": "Player",
