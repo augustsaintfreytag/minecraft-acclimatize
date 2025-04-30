@@ -1,7 +1,10 @@
 package net.saint.acclimatize.util;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.ModStatusEffects;
 import net.saint.acclimatize.player.PlayerState;
@@ -50,25 +53,9 @@ public final class PlayerEffectsUtil {
 		}
 
 		if (temperatureDamageTuple.kind == TemperatureDamageKind.COLD) {
-			if (temperatureDamageTuple.intensity == TemperatureIntensityKind.MINOR) {
-				var hypothermiaStatusEffect = new StatusEffectInstance(
-						ModStatusEffects.HYPOTHERMIA, EFFECT_DURATION, 0);
-				player.addStatusEffect(hypothermiaStatusEffect);
-			} else {
-				var hypothermiaStatusEffect = new StatusEffectInstance(
-						ModStatusEffects.HYPOTHERMIA, EFFECT_DURATION, 1);
-				player.addStatusEffect(hypothermiaStatusEffect);
-			}
+			applyHypothermiaStatusEffects(player, temperatureDamageTuple.intensity);
 		} else if (temperatureDamageTuple.kind == TemperatureDamageKind.HEAT) {
-			if (temperatureDamageTuple.intensity == TemperatureIntensityKind.MINOR) {
-				var hyperthermiaStatusEffect = new StatusEffectInstance(
-						ModStatusEffects.HYPERTHERMIA, EFFECT_DURATION, 0);
-				player.addStatusEffect(hyperthermiaStatusEffect);
-			} else {
-				var hyperthermiaStatusEffect = new StatusEffectInstance(
-						ModStatusEffects.HYPERTHERMIA, EFFECT_DURATION, 1);
-				player.addStatusEffect(hyperthermiaStatusEffect);
-			}
+			applyHyperthermiaStatusEffects(player, temperatureDamageTuple.intensity);
 		}
 
 		if (player.getHealth() <= 0.0) {
@@ -78,6 +65,49 @@ public final class PlayerEffectsUtil {
 
 		effectTick = 0;
 	}
+
+	private static void applyHypothermiaStatusEffects(ServerPlayerEntity player, TemperatureIntensityKind intensity) {
+		if (intensity == TemperatureIntensityKind.MINOR) {
+			applyHypothermiaStatusEffect(player, 0);
+		} else {
+			applyHypothermiaStatusEffect(player, 1);
+		}
+	}
+
+	private static void applyHyperthermiaStatusEffects(ServerPlayerEntity player, TemperatureIntensityKind intensity) {
+		if (intensity == TemperatureIntensityKind.MINOR) {
+			applyHyperthermiaStatusEffect(player, 0);
+			applyThirstStatusEffect(player, 0);
+		} else {
+			applyHyperthermiaStatusEffect(player, 1);
+			applyThirstStatusEffect(player, 1);
+		}
+	}
+
+	private static void applyHypothermiaStatusEffect(ServerPlayerEntity player, int amplifier) {
+		var hypothermiaStatusEffect = new StatusEffectInstance(ModStatusEffects.HYPOTHERMIA, EFFECT_DURATION,
+				amplifier);
+		player.addStatusEffect(hypothermiaStatusEffect);
+	}
+
+	private static void applyHyperthermiaStatusEffect(ServerPlayerEntity player, int amplifier) {
+		var hyperthermiaStatusEffect = new StatusEffectInstance(ModStatusEffects.HYPERTHERMIA, EFFECT_DURATION,
+				amplifier);
+		player.addStatusEffect(hyperthermiaStatusEffect);
+	}
+
+	private static void applyThirstStatusEffect(ServerPlayerEntity player, int amplifier) {
+		if (!FabricLoader.getInstance().isModLoaded("dehydration")) {
+			return;
+		}
+
+		var thirstStatusEffectId = new Identifier("dehydration", "thirst_effect");
+		var thirstStatusEffectType = Registries.STATUS_EFFECT.get(thirstStatusEffectId);
+		var thirstStatusEffect = new StatusEffectInstance(thirstStatusEffectType, EFFECT_DURATION, amplifier);
+		player.addStatusEffect(thirstStatusEffect);
+	}
+
+	// Damage
 
 	private static TemperatureDamageTuple temperatureDamageTupleForPlayerState(PlayerState playerState) {
 		var bodyTemperature = playerState.bodyTemperature;

@@ -11,20 +11,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.saint.acclimatize.ModStatusEffects;
+import net.saint.acclimatize.util.StatusEffectsUtil;
 
 @Mixin(LivingEntity.class)
 public abstract class PlayerStatusEffectsMixin extends Entity {
+
+	// Init
 
 	private PlayerStatusEffectsMixin() {
 		super(null, null);
 	}
 
+	// Injection
+
 	@Inject(method = "setSprinting", at = @At("HEAD"), cancellable = true)
 	private void setSprintingMixin(boolean sprinting, CallbackInfo callbackInfo) {
 		withPlayerEntity(player -> {
 			// Check for extreme body temperature status effects and disable sprinting.
-			if (!entityHasTemperatureStatusEffects(player)) {
+			if (!StatusEffectsUtil.entityHasAnyTemperatureStatusEffects(player)) {
 				return;
 			}
 
@@ -42,13 +46,15 @@ public abstract class PlayerStatusEffectsMixin extends Entity {
 	 * never spawns any particles.
 	 */
 	@Inject(method = "updatePotionVisibility", at = @At("TAIL"))
-	private void disableSwirlsForHypothermia(CallbackInfo ci) {
+	private void mixinUpdatePotionVisibility(CallbackInfo ci) {
 		withPlayerEntity(player -> {
-			if (entityHasOnlyTemperatureStatusEffects(player)) {
+			if (StatusEffectsUtil.entityHasOnlyBlacklistedStatusEffects(player)) {
 				clearPotionSwirls();
 			}
 		});
 	}
+
+	// Effects Analysis
 
 	// Utility
 
@@ -60,25 +66,6 @@ public abstract class PlayerStatusEffectsMixin extends Entity {
 		}
 
 		block.accept((PlayerEntity) entity);
-	}
-
-	private static boolean entityHasTemperatureStatusEffects(PlayerEntity player) {
-		if (player.hasStatusEffect(ModStatusEffects.HYPOTHERMIA)
-				|| player.hasStatusEffect(ModStatusEffects.HYPERTHERMIA)) {
-			return true;
-		}
-
-		return false;
-	}
-
-	private static boolean entityHasOnlyTemperatureStatusEffects(PlayerEntity player) {
-		var numberOfStatusEffects = player.getStatusEffects().size();
-
-		if (entityHasTemperatureStatusEffects(player) && numberOfStatusEffects == 1) {
-			return true;
-		}
-
-		return false;
 	}
 
 }

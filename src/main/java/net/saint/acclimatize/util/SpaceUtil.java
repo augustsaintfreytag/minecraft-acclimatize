@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
@@ -34,7 +36,7 @@ public final class SpaceUtil {
 
 		// Pre-check by raycasting once straight up from player position.
 		var lastPreCheckResult = playerLastSpacePreCheck.computeIfAbsent(playerId, k -> false).booleanValue();
-		var preCheckResult = preCheckRaycastForPositionInInterior(world, player);
+		var preCheckResult = performStandaloneRaycastForPositionInInterior(world, player);
 		playerLastSpacePreCheck.put(playerId, preCheckResult);
 
 		if (!preCheckResult) {
@@ -53,7 +55,7 @@ public final class SpaceUtil {
 			cleanUpPlayerData(player);
 		}
 
-		if (!getRaycastResultForPositionInInterior(world, player)) {
+		if (!performAccumulativeRaycastForPositionInInterior(world, player)) {
 			// Ray sequence hit a block, assume indoors.
 			profile.end();
 
@@ -64,6 +66,7 @@ public final class SpaceUtil {
 		}
 
 		profile.end();
+
 		if (Mod.CONFIG.enableLogging) {
 			Mod.LOGGER.info(
 					"Space check raycast (hit block, extended check), duration: " + profile.getDescription());
@@ -72,27 +75,22 @@ public final class SpaceUtil {
 		return true;
 	}
 
-	private static boolean preCheckRaycastForPositionInInterior(World world, ServerPlayerEntity player) {
+	private static boolean performStandaloneRaycastForPositionInInterior(World world, ServerPlayerEntity player) {
 		var origin = player.getPos();
 		var rayLength = Mod.CONFIG.spaceRayLength;
 		var direction = new Vec3d(0, 1, 0);
 		var target = origin.add(direction.multiply(rayLength));
 
-		var preCheckHitResult = world.raycast(new RaycastContext(
+		var hitResult = world.raycast(new RaycastContext(
 				origin, target,
 				RaycastContext.ShapeType.COLLIDER,
 				RaycastContext.FluidHandling.NONE,
 				player));
 
-		if (preCheckHitResult.getType() == HitResult.Type.MISS) {
-			// Straight up ray hit the sky, assume outdoors.
-			return false;
-		}
-
-		return true;
+		return !raycastResultHitVoid(world, hitResult);
 	}
 
-	private static boolean getRaycastResultForPositionInInterior(World world, ServerPlayerEntity player) {
+	private static boolean performAccumulativeRaycastForPositionInInterior(World world, ServerPlayerEntity player) {
 		var playerId = player.getUuid();
 
 		// Initialize buffer for this player if needed
@@ -141,7 +139,26 @@ public final class SpaceUtil {
 				RaycastContext.FluidHandling.NONE,
 				player));
 
-		return hitResult.getType() == HitResult.Type.MISS;
+		return raycastResultHitVoid(world, hitResult);
+	}
+
+	private static boolean raycastResultHitVoid(World world, HitResult hitResult) {
+		if (hitResult.getType() == HitResult.Type.MISS) {
+			return true;
+		}
+
+		var hitPosition = BlockPos.ofFloored(hitResult.getPos());
+		var hitBlock = world.getBlockState(hitPosition).getBlock();
+		var hitBlockId = Registries.BLOCK.getId(hitBlock).toString();
+
+		// Check if hit block is leaves or other outdoors block.
+		if (hitBlockId.contains("leaves") || hitBlockId.contains("grass")
+				|| hitBlockId.contains("crop") || hitBlockId.contains("sugar")) {
+			// Hit a block that is outdoors, return true (presume hit sky)
+			return true;
+		}
+
+		return false;
 	}
 
 	// Buffer
