@@ -23,7 +23,7 @@ public final class BiomeTemperatureUtil {
 
 	// Biome
 
-	public static TemperatureRange biomeTemperatureForPlayer(ServerPlayerEntity player, boolean isInInterior) {
+	public static double biomeTemperatureForPlayer(ServerPlayerEntity player, boolean isInInterior) {
 		var world = player.getWorld();
 		var position = player.getBlockPos();
 
@@ -31,10 +31,10 @@ public final class BiomeTemperatureUtil {
 		var biome = world.getBiome(position).value();
 		var precipitation = biome.getPrecipitation(player.getBlockPos());
 
-		var ambientTemperature = biome.getTemperature();
-		var climateKind = climateKindForTemperature(ambientTemperature);
+		var internalTemperatureValue = biome.getTemperature();
+		var climateKind = climateKindForTemperature(internalTemperatureValue);
 
-		var temperatureRange = baseTemperatureRangeForClimate(climateKind);
+		var biomeTemperature = baseTemperatureForClimate(climateKind);
 
 		// Daylight/Nighttime
 
@@ -42,18 +42,18 @@ public final class BiomeTemperatureUtil {
 			var dayTick = world.getTimeOfDay();
 			var dayNightTemperatureDelta = dayNightTemperatureDeltaForTime(climateKind, dayTick);
 
-			temperatureRange.median += dayNightTemperatureDelta;
+			biomeTemperature += dayNightTemperatureDelta;
 		}
 
 		// Precipitation
 
 		if (precipitation == Biome.Precipitation.RAIN && world.isRaining()) {
-			temperatureRange.median += Mod.CONFIG.rainTemperatureDelta;
+			biomeTemperature += Mod.CONFIG.rainTemperatureDelta;
 		} else if (precipitation == Biome.Precipitation.SNOW && world.isRaining()) {
-			temperatureRange.median += Mod.CONFIG.snowTemperatureDelta;
+			biomeTemperature += Mod.CONFIG.snowTemperatureDelta;
 		}
 
-		return temperatureRange;
+		return biomeTemperature;
 	}
 
 	// Climate
@@ -74,20 +74,20 @@ public final class BiomeTemperatureUtil {
 		return ClimateKind.ARID;
 	}
 
-	private static TemperatureRange baseTemperatureRangeForClimate(ClimateKind climateKind) {
+	private static double baseTemperatureForClimate(ClimateKind climateKind) {
 		switch (climateKind) {
 			case FRIGID:
-				return new TemperatureRange(0.0, Mod.CONFIG.frigidClimateTemperature, 80.0);
+				return Mod.CONFIG.frigidClimateTemperature;
 			case COLD:
-				return new TemperatureRange(0.0, Mod.CONFIG.coldClimateTemperature, 100.0);
+				return Mod.CONFIG.coldClimateTemperature;
 			case TEMPERATE:
-				return new TemperatureRange(0.0, Mod.CONFIG.temperateClimateTemperature, 100.0);
+				return Mod.CONFIG.temperateClimateTemperature;
 			case HOT:
-				return new TemperatureRange(40.0, Mod.CONFIG.hotClimateTemperature, 120.0);
+				return Mod.CONFIG.hotClimateTemperature;
 			case ARID:
-				return new TemperatureRange(40.0, Mod.CONFIG.aridClimateTemperature, 120.0);
+				return Mod.CONFIG.aridClimateTemperature;
 			default:
-				return new TemperatureRange(40.0, Mod.CONFIG.aridClimateTemperature, 120.0);
+				return Mod.CONFIG.aridClimateTemperature;
 		}
 	}
 
