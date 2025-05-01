@@ -92,47 +92,40 @@ public final class BiomeTemperatureUtil {
 	}
 
 	public static double dayNightTemperatureDeltaForTime(ClimateKind climateKind, long dayTick) {
-		// Get cycle lengths and calc transition periods
-		final long dayLength = Mod.CONFIG.daylightTicks;
-		final long nightLength = Mod.CONFIG.nighttimeTicks;
-		final long totalLength = dayLength + nightLength;
+		var phaseValue = phaseValueForAsymmetricTime(dayTick);
+		var plateau = 1.5;
 
-		final long dayTickInCycle = dayTick % totalLength;
+		var dropFactor = 1 - Math.pow(((1 + MathUtil.approximateCos(phaseValue)) / 2), plateau) * -1 - 1;
+		var temperatureDelta = -Mod.CONFIG.nightTemperatureDelta * dropFactor;
 
-		// Calculate transition period (15% of shorter period)
-		final long transitionLength = (long) (Math.min(dayLength, nightLength) * 0.2);
-
-		if (dayTickInCycle < transitionLength) {
-			// Night -> Day transition (dawn)
-			double t = (double) dayTickInCycle / transitionLength;
-			return MathUtil.lerp(nighttimeTemperatureDeltaForClimate(climateKind), 0, t);
-		} else if (dayTickInCycle >= dayLength && dayTickInCycle < dayLength + transitionLength) {
-			// Day -> Night transition (dusk)
-			double t = (double) (dayTickInCycle - dayLength) / transitionLength;
-			return MathUtil.lerp(0, nighttimeTemperatureDeltaForClimate(climateKind), t);
-		} else if (dayTickInCycle >= dayLength) {
-			// Full night
-			return nighttimeTemperatureDeltaForClimate(climateKind);
-		} else {
-			// Full day
-			return 0.0;
-		}
+		return temperatureDelta;
 	}
 
-	private static double nighttimeTemperatureDeltaForClimate(ClimateKind climateKind) {
-		switch (climateKind) {
-			case FRIGID:
-				return -10;
-			case COLD:
-				return -10;
-			case TEMPERATE:
-				return -10;
-			case HOT:
-				return -8;
-			case ARID:
-				return -15;
-			default:
-				return 0;
+	private static double phaseValueForAsymmetricTime(double time) {
+		// Wrap around day/night cycle
+		var dayLength = Mod.CONFIG.daylightTicks;
+		var nightLength = Mod.CONFIG.nighttimeTicks;
+		var cycleLength = dayLength + nightLength;
+
+		// Get "tick within this cycle" in [0 … cycleLength)
+		var cycleTick = time % cycleLength;
+		if (cycleTick < 0)
+			cycleTick += cycleLength; // just in case time < 0
+
+		// 2) Normalize ticks into [0 … 1)
+		var normalizedTime = cycleTick / (double) cycleLength;
+
+		// 3) Compute day/night fractions
+		var nightFraction = nightLength / (double) cycleLength;
+		var dayFraction = dayLength / (double) cycleLength;
+
+		// 4) Piecewise φ(x)
+		if (normalizedTime < nightFraction) {
+			// Night: φ ∈ [0, π)
+			return Math.PI * (normalizedTime / nightFraction);
+		} else {
+			// Day: φ ∈ [π, 2π)
+			return Math.PI + Math.PI * ((normalizedTime - nightFraction) / dayFraction);
 		}
 	}
 
