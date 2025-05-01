@@ -65,10 +65,27 @@ public final class WindTemperatureUtil {
 		// Wind Ray Calculation
 
 		var numberOfUnblockedRays = getUnblockedWindRaysForPlayer(serverState, player);
+		var biomeWindChillFactor = biomeWindChillFactorForPlayer(player);
 		var windChillTemperatureFactor = ((double) numberOfUnblockedRays / Mod.CONFIG.windRayCount)
-				* Mod.CONFIG.windChillFactor;
+				* Mod.CONFIG.windChillFactor * biomeWindChillFactor;
 
 		return new WindTemperatureTuple(windTemperature, windChillTemperatureFactor);
+	}
+
+	private static double biomeWindChillFactorForPlayer(ServerPlayerEntity player) {
+		var world = player.getWorld();
+		var biome = world.getBiome(player.getBlockPos()).value();
+		var internalBiomeTemperature = biome.getTemperature();
+		var climateKind = BiomeTemperatureUtil.climateKindForTemperature(internalBiomeTemperature);
+
+		switch (climateKind) {
+			case ARID:
+				return 1.15;
+			case HOT:
+				return 0.9;
+			default:
+				return 1.0;
+		}
 	}
 
 	private static double precipitationTemperatureDeltaForPlayer(ServerState serverState, ServerPlayerEntity player) {
