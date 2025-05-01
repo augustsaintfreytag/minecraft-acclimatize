@@ -112,6 +112,10 @@ public class ModConfig implements ConfigData {
 	public double snowTemperatureDelta = -6.0;
 
 	@ConfigEntry.Category("world")
+	@Comment("The temperature delta gradually applied between sunset and sunrise. (Default: 10.0)")
+	public double nightTemperatureDelta = -10.0;
+
+	@ConfigEntry.Category("world")
 	@Comment("The number of rays cast in a cone shape around the player to check for an interior space. Higher number means more precision but higher cost. (Default: 8)")
 	public int spaceNumberOfRays = 8;
 
