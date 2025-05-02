@@ -42,6 +42,7 @@
     "text.autoconfig.acclimatize.option.aridClimateTemperature": "Arid Climate Temperature",
 	"text.autoconfig.acclimatize.option.rainTemperatureDelta": "Rain Temperature Delta",
 	"text.autoconfig.acclimatize.option.snowTemperatureDelta": "Snow Temperature Delta",
+	"text.autoconfig.acclimatize.option.nightTemperatureDelta": "Night Temperature Delta",
 	"text.autoconfig.acclimatize.option.spaceNumberOfRays": "Space Number of Rays",
 	"text.autoconfig.acclimatize.option.spaceRayLength": "Space Ray Length",
 	"text.autoconfig.acclimatize.option.daylightTicks": "Daylight Ticks",

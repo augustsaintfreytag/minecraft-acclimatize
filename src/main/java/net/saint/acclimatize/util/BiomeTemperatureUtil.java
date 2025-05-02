@@ -23,7 +23,7 @@ public final class BiomeTemperatureUtil {
 
 	// Biome
 
-	public static TemperatureRange biomeTemperatureForPlayer(ServerPlayerEntity player, boolean isInInterior) {
+	public static double biomeTemperatureForPlayer(ServerPlayerEntity player, boolean isInInterior) {
 		var world = player.getWorld();
 		var position = player.getBlockPos();
 
@@ -31,10 +31,10 @@ public final class BiomeTemperatureUtil {
 		var biome = world.getBiome(position).value();
 		var precipitation = biome.getPrecipitation(player.getBlockPos());
 
-		var ambientTemperature = biome.getTemperature();
-		var climateKind = climateKindForTemperature(ambientTemperature);
+		var internalTemperatureValue = biome.getTemperature();
+		var climateKind = climateKindForTemperature(internalTemperatureValue);
 
-		var temperatureRange = baseTemperatureRangeForClimate(climateKind);
+		var biomeTemperature = baseTemperatureForClimate(climateKind);
 
 		// Daylight/Nighttime
 
@@ -42,18 +42,18 @@ public final class BiomeTemperatureUtil {
 			var dayTick = world.getTimeOfDay();
 			var dayNightTemperatureDelta = dayNightTemperatureDeltaForTime(climateKind, dayTick);
 
-			temperatureRange.median += dayNightTemperatureDelta;
+			biomeTemperature += dayNightTemperatureDelta;
 		}
 
 		// Precipitation
 
 		if (precipitation == Biome.Precipitation.RAIN && world.isRaining()) {
-			temperatureRange.median += Mod.CONFIG.rainTemperatureDelta;
+			biomeTemperature += Mod.CONFIG.rainTemperatureDelta;
 		} else if (precipitation == Biome.Precipitation.SNOW && world.isRaining()) {
-			temperatureRange.median += Mod.CONFIG.snowTemperatureDelta;
+			biomeTemperature += Mod.CONFIG.snowTemperatureDelta;
 		}
 
-		return temperatureRange;
+		return biomeTemperature;
 	}
 
 	// Climate
@@ -74,65 +74,60 @@ public final class BiomeTemperatureUtil {
 		return ClimateKind.ARID;
 	}
 
-	private static TemperatureRange baseTemperatureRangeForClimate(ClimateKind climateKind) {
+	private static double baseTemperatureForClimate(ClimateKind climateKind) {
 		switch (climateKind) {
 			case FRIGID:
-				return new TemperatureRange(0.0, Mod.CONFIG.frigidClimateTemperature, 80.0);
+				return Mod.CONFIG.frigidClimateTemperature;
 			case COLD:
-				return new TemperatureRange(0.0, Mod.CONFIG.coldClimateTemperature, 100.0);
+				return Mod.CONFIG.coldClimateTemperature;
 			case TEMPERATE:
-				return new TemperatureRange(0.0, Mod.CONFIG.temperateClimateTemperature, 100.0);
+				return Mod.CONFIG.temperateClimateTemperature;
 			case HOT:
-				return new TemperatureRange(40.0, Mod.CONFIG.hotClimateTemperature, 120.0);
+				return Mod.CONFIG.hotClimateTemperature;
 			case ARID:
-				return new TemperatureRange(40.0, Mod.CONFIG.aridClimateTemperature, 120.0);
+				return Mod.CONFIG.aridClimateTemperature;
 			default:
-				return new TemperatureRange(40.0, Mod.CONFIG.aridClimateTemperature, 120.0);
+				return Mod.CONFIG.aridClimateTemperature;
 		}
 	}
 
 	public static double dayNightTemperatureDeltaForTime(ClimateKind climateKind, long dayTick) {
-		// Get cycle lengths and calc transition periods
-		final long dayLength = Mod.CONFIG.daylightTicks;
-		final long nightLength = Mod.CONFIG.nighttimeTicks;
-		final long totalLength = dayLength + nightLength;
+		var phaseValue = phaseValueForAsymmetricTime(dayTick); // Phase shift phi: φ
+		var plateau = 3; // Plateau: p
+		var offset = 0.1; // Offset delta: δ
 
-		final long dayTickInCycle = dayTick % totalLength;
+		// Formula: Tdf(x) = ((1 + cos(φ - δ)) / 2) ^ p
+		var dropFactor = Math.pow(((1 + MathUtil.approximateCos(phaseValue - offset)) / 2), plateau);
+		var temperatureDelta = -Mod.CONFIG.nightTemperatureDelta * dropFactor;
 
-		// Calculate transition period (15% of shorter period)
-		final long transitionLength = (long) (Math.min(dayLength, nightLength) * 0.2);
-
-		if (dayTickInCycle < transitionLength) {
-			// Night -> Day transition (dawn)
-			double t = (double) dayTickInCycle / transitionLength;
-			return MathUtil.lerp(nighttimeTemperatureDeltaForClimate(climateKind), 0, t);
-		} else if (dayTickInCycle >= dayLength && dayTickInCycle < dayLength + transitionLength) {
-			// Day -> Night transition (dusk)
-			double t = (double) (dayTickInCycle - dayLength) / transitionLength;
-			return MathUtil.lerp(0, nighttimeTemperatureDeltaForClimate(climateKind), t);
-		} else if (dayTickInCycle >= dayLength) {
-			// Full night
-			return nighttimeTemperatureDeltaForClimate(climateKind);
-		} else {
-			// Full day
-			return 0.0;
-		}
+		return temperatureDelta;
 	}
 
-	private static double nighttimeTemperatureDeltaForClimate(ClimateKind climateKind) {
-		switch (climateKind) {
-			case FRIGID:
-				return -10;
-			case COLD:
-				return -10;
-			case TEMPERATE:
-				return -10;
-			case HOT:
-				return -8;
-			case ARID:
-				return -15;
-			default:
-				return 0;
+	private static double phaseValueForAsymmetricTime(double time) {
+		// Wrap around day/night cycle
+		var dayLength = Mod.CONFIG.daylightTicks;
+		var nightLength = Mod.CONFIG.nighttimeTicks;
+		var cycleLength = dayLength + nightLength;
+
+		// Get "tick within this cycle" in [0 … cycleLength)
+		var cycleTick = time % cycleLength;
+		if (cycleTick < 0)
+			cycleTick += cycleLength; // just in case time < 0
+
+		// 2) Normalize ticks into [0 … 1)
+		var normalizedTime = cycleTick / (double) cycleLength;
+
+		// 3) Compute day/night fractions
+		var nightFraction = nightLength / (double) cycleLength;
+		var dayFraction = dayLength / (double) cycleLength;
+
+		// 4) Piecewise φ(x)
+		if (normalizedTime < nightFraction) {
+			// Night: φ ∈ [0, π)
+			return Math.PI * (normalizedTime / nightFraction);
+		} else {
+			// Day: φ ∈ [π, 2π)
+			return Math.PI + Math.PI * ((normalizedTime - nightFraction) / dayFraction);
 		}
 	}
 
