@@ -105,7 +105,6 @@ public final class WindTemperatureUtil {
 	}
 
 	private static double precipitationTemperatureDeltaForPlayer(ServerState serverState, ServerPlayerEntity player) {
-		var precipitationWindModifier = serverState.precipitationWindModifier;
 		var world = player.getWorld();
 		var position = player.getBlockPos();
 		var biome = world.getBiome(position).value();
@@ -113,13 +112,13 @@ public final class WindTemperatureUtil {
 
 		if (precipitation == Biome.Precipitation.RAIN) {
 			if (world.isThundering()) {
-				return precipitationWindModifier * 1.1;
+				return 1.1;
 			} else {
-				return precipitationWindModifier;
+				return 1.0;
 			}
 		} else if (precipitation == Biome.Precipitation.SNOW) {
 			if (world.isRaining()) {
-				return precipitationWindModifier * 1.3;
+				return 1.3;
 			}
 		}
 

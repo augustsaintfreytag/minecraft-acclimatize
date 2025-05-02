@@ -22,7 +22,6 @@ public class ServerState extends PersistentState {
 	public double windDirection = 0.0;
 	public double windTemperatureModifierRange = 8;
 	public double windTemperature = 0;
-	public double precipitationWindModifier = 0;
 
 	public HashMap<UUID, PlayerState> players = new HashMap<>();
 
@@ -53,7 +52,6 @@ public class ServerState extends PersistentState {
 		nbt.putDouble(ServerStateNBTKeys.windDirection, windDirection);
 		nbt.putDouble(ServerStateNBTKeys.windTemperatureModifierRange, windTemperatureModifierRange);
 		nbt.putDouble(ServerStateNBTKeys.windTemperatureModifier, windTemperature);
-		nbt.putDouble(ServerStateNBTKeys.precipitationWindModifier, precipitationWindModifier);
 
 		return nbt;
 	}
@@ -81,7 +79,6 @@ public class ServerState extends PersistentState {
 		serverState.windDirection = tag.getDouble(ServerStateNBTKeys.windDirection);
 		serverState.windTemperatureModifierRange = tag.getDouble(ServerStateNBTKeys.windTemperatureModifierRange);
 		serverState.windTemperature = tag.getDouble(ServerStateNBTKeys.windTemperatureModifier);
-		serverState.precipitationWindModifier = tag.getDouble(ServerStateNBTKeys.precipitationWindModifier);
 
 		return serverState;
 	}

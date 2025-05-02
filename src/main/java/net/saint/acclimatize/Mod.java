@@ -207,15 +207,13 @@ public class Mod implements ModInitializer {
 									var serverState = ServerStateUtil.getServerState(server);
 									WindTemperatureUtil.tickWind(serverWorld, serverState);
 
-									context.getSource().sendMessage(Text.literal("Wind Randomized."));
+									context.getSource().sendMessage(Text.literal("Wind randomized."));
 									context.getSource().sendMessage(
 											Text.literal(
 													"Wind Direction: " + serverState.windDirection * 180 / Math.PI));
 									context.getSource().sendMessage(
 											Text.literal("Wind Temperature Modifier: "
 													+ serverState.windTemperature));
-									context.getSource().sendMessage(Text.literal(
-											"Precipitation Modifier: " + serverState.precipitationWindModifier));
 
 									return 1;
 								}))));
@@ -233,8 +231,6 @@ public class Mod implements ModInitializer {
 							context.getSource().sendMessage(
 									Text.literal(
 											"§eWind Temperature Modifier: §6" + serverState.windTemperature));
-							context.getSource().sendMessage(Text
-									.literal("§ePrecipitation Modifier: §6" + serverState.precipitationWindModifier));
 
 							return 1;
 						})));

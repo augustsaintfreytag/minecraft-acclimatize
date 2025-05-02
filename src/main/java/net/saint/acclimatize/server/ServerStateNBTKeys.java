@@ -15,6 +15,4 @@ public final class ServerStateNBTKeys {
 	public static final String windTemperatureModifierRange = "windTemperatureModifierRange";
 	public static final String windTemperatureModifier = "windTemperatureModifier";
 
-	public static final String precipitationWindModifier = "precipitationWindModifier";
-
 }
