@@ -57,17 +57,21 @@ public final class BlockTemperatureUtil {
 		aggregateTemperatureDelta = Math.min(Mod.CONFIG.blockTemperatureAbsoluteMaximum,
 				aggregateTemperatureDelta);
 
-		aggregateTemperatureDelta += waterSubmersionDeltaForPlayer(player);
+		aggregateTemperatureDelta += waterDeltaForPlayer(player);
 
 		return aggregateTemperatureDelta;
 	}
 
-	private static double waterSubmersionDeltaForPlayer(ServerPlayerEntity player) {
-		if (!player.isTouchingWater()) {
-			return 0.0;
+	private static double waterDeltaForPlayer(ServerPlayerEntity player) {
+		if (player.isSubmergedInWater()) {
+			return Mod.CONFIG.waterBlockTemperature;
 		}
 
-		return -10.0;
+		if (player.isTouchingWaterOrRain()) {
+			return Mod.CONFIG.waterBlockTemperature * 0.75;
+		}
+
+		return 0.0;
 	}
 
 	private static double temperatureDeltaForBlock(World world, BlockPos position, BlockState blockState,

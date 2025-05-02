@@ -53,17 +53,12 @@ public class PlayerTemperatureUtil {
 			acclimatizationRate += ItemTemperatureUtil.acclimatizationRateDeltaForItemTemperature(itemTemperatureDelta);
 		}
 
+		acclimatizationRate = MathUtil.clamp(acclimatizationRate, Mod.CONFIG.itemAcclimatizationRateMinimum, 1.0);
+
 		if (player.isWet()) {
 			// Increase acclimatization rate when wet.
 			acclimatizationRate *= Mod.CONFIG.wetAcclimatizationRateBoostFactor;
-			blockTemperatureDelta += Mod.CONFIG.waterBlockTemperature * 0.75;
 		}
-
-		if (player.isSubmergedInWater()) {
-			blockTemperatureDelta += Mod.CONFIG.waterBlockTemperature * 0.25;
-		}
-
-		acclimatizationRate = MathUtil.clamp(acclimatizationRate, Mod.CONFIG.itemAcclimatizationRateMinimum, 1.0);
 
 		// Player Temperature
 
