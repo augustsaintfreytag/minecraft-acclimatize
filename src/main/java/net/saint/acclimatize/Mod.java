@@ -149,7 +149,6 @@ public class Mod implements ModInitializer {
 			var serverState = ServerStateUtil.getServerState(server);
 
 			if (!modVersion.equals(serverState.worldVersion)) {
-				serverState.windRandomizeTick = 24000;
 				serverState.windTemperatureModifierRange = 8;
 				serverState.worldVersion = modVersion;
 
@@ -172,25 +171,16 @@ public class Mod implements ModInitializer {
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register((server) -> {
-			ServerState serverState = ServerStateUtil.getServerState(server);
+			var serverState = ServerStateUtil.getServerState(server);
+			var serverWorld = server.getOverworld();
+			var serverTick = serverWorld.getTime();
+			var dayTimeLength = Mod.CONFIG.daylightTicks + Mod.CONFIG.nighttimeTicks;
 
-			if (serverState.windRandomizeTick >= 24000) {
-				serverState.windRandomizeTick = 0;
-
-				var random = server.getOverworld().getRandom();
-
-				serverState.windPitch = 360 * Math.PI / 180;
-				serverState.windYaw = random.nextDouble() * 360 * Math.PI / 180;
-				serverState.windTemperature = -serverState.windTemperatureModifierRange
-						+ random.nextDouble() * serverState.windTemperatureModifierRange * 2;
-				serverState.precipitationWindModifier = -serverState.windTemperatureModifierRange
-						+ random.nextDouble() * -serverState.windTemperatureModifierRange;
-
-				serverState.markDirty();
+			if (serverTick % dayTimeLength != 0) {
+				return;
 			}
 
-			serverState.windRandomizeTick += 1;
-
+			WindTemperatureUtil.tickWind(serverWorld, serverState);
 		});
 
 		// Commands
@@ -272,8 +262,6 @@ public class Mod implements ModInitializer {
 											"§eWind Temperature Modifier: §6" + serverState.windTemperature));
 							context.getSource().sendMessage(Text
 									.literal("§ePrecipitation Modifier: §6" + serverState.precipitationWindModifier));
-							context.getSource().sendMessage(
-									Text.literal("§eNext Randomize: §a" + serverState.windRandomizeTick + "§7/24000"));
 
 							return 1;
 						})));

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
@@ -40,7 +41,22 @@ public final class WindTemperatureUtil {
 		}
 	}
 
-	// Main
+	// Wind Tick
+
+	public static void tickWind(ServerWorld world, ServerState serverState) {
+		var random = world.getRandom();
+
+		serverState.windPitch = 360 * Math.PI / 180;
+		serverState.windYaw = random.nextDouble() * 360 * Math.PI / 180;
+		serverState.windTemperature = -serverState.windTemperatureModifierRange
+				+ random.nextDouble() * serverState.windTemperatureModifierRange * 2;
+		serverState.precipitationWindModifier = -serverState.windTemperatureModifierRange
+				+ random.nextDouble() * -serverState.windTemperatureModifierRange;
+
+		serverState.markDirty();
+	}
+
+	// Wind Effects
 
 	public static WindTemperatureTuple windTemperatureForEnvironment(ServerState serverState, ServerPlayerEntity player,
 			boolean isInInterior) {
