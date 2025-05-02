@@ -47,10 +47,7 @@ public final class WindTemperatureUtil {
 		var random = world.getRandom();
 
 		serverState.windDirection = random.nextDouble() * 2 * Math.PI;
-		serverState.windTemperature = -serverState.windTemperatureModifierRange
-				+ random.nextDouble() * serverState.windTemperatureModifierRange * 2;
-		serverState.precipitationWindModifier = -serverState.windTemperatureModifierRange
-				+ random.nextDouble() * -serverState.windTemperatureModifierRange;
+		serverState.windTemperature = random.nextTriangular(0, serverState.windTemperatureModifierRange);
 
 		serverState.markDirty();
 	}
