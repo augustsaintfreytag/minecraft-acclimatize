@@ -30,16 +30,18 @@ public class TemperaturePackets {
 	public static void registerS2CPackets() {
 		ClientPlayNetworking.registerGlobalReceiver(SEND_TEMPERATURE_PLAYERSTATE_S2C_PACKET_ID,
 				(client, handler, buf, responseSender) -> {
+					double windDirection = buf.readDouble();
+					double windIntensity = buf.readDouble();
 					double bodyTemperature = buf.readDouble();
 					double ambientTemperature = buf.readDouble();
-					double windDirection = buf.readDouble();
 					double windTemperature = buf.readDouble();
 
 					client.execute(() -> {
+						ModClient.cachedWindDirection = windDirection;
+						ModClient.cachedWindIntensity = windIntensity;
 						ModClient.cachedBodyTemperature = bodyTemperature;
 						ModClient.cachedAmbientTemperature = ambientTemperature;
 						ModClient.cachedTemperatureDifference = ambientTemperature - bodyTemperature;
-						ModClient.cachedWindDirection = windDirection;
 						ModClient.cachedWindTemperature = windTemperature;
 					});
 				});

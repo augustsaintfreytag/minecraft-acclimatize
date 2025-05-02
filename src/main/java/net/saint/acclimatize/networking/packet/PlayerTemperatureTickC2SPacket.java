@@ -34,9 +34,10 @@ public class PlayerTemperatureTickC2SPacket {
 
 		PacketByteBuf sendingdata = PacketByteBufs.create();
 
+		sendingdata.writeDouble(serverState.windDirection);
+		sendingdata.writeDouble(serverState.windIntensity);
 		sendingdata.writeDouble(playerState.bodyTemperature);
 		sendingdata.writeDouble(playerState.ambientTemperature);
-		sendingdata.writeDouble(serverState.windDirection);
 		sendingdata.writeDouble(playerState.windTemperature);
 
 		ServerPlayNetworking.send(player, TemperaturePackets.SEND_TEMPERATURE_PLAYERSTATE_S2C_PACKET_ID,

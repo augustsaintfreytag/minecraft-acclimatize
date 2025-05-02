@@ -11,8 +11,6 @@ public final class ServerStateNBTKeys {
 	public static final String currentSeasonTick = "currentSeasonTick";
 	public static final String seasonalWeatherTick = "seasonalWeatherTick";
 	public static final String windDirection = "windDirection";
-	public static final String windRandomizeTick = "windRandomizeTick";
-	public static final String windTemperatureModifierRange = "windTemperatureModifierRange";
-	public static final String windTemperatureModifier = "windTemperatureModifier";
+	public static final String windIntensity = "windIntensity";
 
 }

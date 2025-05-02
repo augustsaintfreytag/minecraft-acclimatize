@@ -20,8 +20,7 @@ public class ServerState extends PersistentState {
 
 	// Wind parameters
 	public double windDirection = 0.0;
-	public double windTemperatureModifierRange = 8;
-	public double windTemperature = 0;
+	public double windIntensity = 0.0;
 
 	public HashMap<UUID, PlayerState> players = new HashMap<>();
 
@@ -50,8 +49,7 @@ public class ServerState extends PersistentState {
 		nbt.putLong(ServerStateNBTKeys.currentSeasonTick, currentSeasonTick);
 		nbt.putInt(ServerStateNBTKeys.seasonalWeatherTick, seasonalWeatherTick);
 		nbt.putDouble(ServerStateNBTKeys.windDirection, windDirection);
-		nbt.putDouble(ServerStateNBTKeys.windTemperatureModifierRange, windTemperatureModifierRange);
-		nbt.putDouble(ServerStateNBTKeys.windTemperatureModifier, windTemperature);
+		nbt.putDouble(ServerStateNBTKeys.windIntensity, windIntensity);
 
 		return nbt;
 	}
@@ -77,8 +75,7 @@ public class ServerState extends PersistentState {
 		serverState.currentSeasonTick = tag.getLong(ServerStateNBTKeys.currentSeasonTick);
 		serverState.seasonalWeatherTick = tag.getInt(ServerStateNBTKeys.seasonalWeatherTick);
 		serverState.windDirection = tag.getDouble(ServerStateNBTKeys.windDirection);
-		serverState.windTemperatureModifierRange = tag.getDouble(ServerStateNBTKeys.windTemperatureModifierRange);
-		serverState.windTemperature = tag.getDouble(ServerStateNBTKeys.windTemperatureModifier);
+		serverState.windIntensity = tag.getDouble(ServerStateNBTKeys.windIntensity);
 
 		return serverState;
 	}
