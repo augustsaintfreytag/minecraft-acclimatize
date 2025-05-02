@@ -33,7 +33,7 @@ public abstract class WindManagerMixin {
 		var server = world.getServer();
 		var serverState = ServerStateUtil.getServerState(server);
 
-		WindTemperatureUtil.overrideWind(serverState, currentWindDirection);
+		WindTemperatureUtil.overrideWind(serverState, currentWindDirection, currentWindStrength.get());
 	}
 
 }

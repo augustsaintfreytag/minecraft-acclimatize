@@ -146,9 +146,7 @@ public class Mod implements ModInitializer {
 			var serverState = ServerStateUtil.getServerState(server);
 
 			if (!modVersion.equals(serverState.worldVersion)) {
-				serverState.windTemperatureModifierRange = 8;
 				serverState.worldVersion = modVersion;
-
 				serverState.markDirty();
 			}
 
