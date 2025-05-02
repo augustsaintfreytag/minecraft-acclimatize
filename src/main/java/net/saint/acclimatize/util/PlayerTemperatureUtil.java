@@ -18,22 +18,22 @@ public class PlayerTemperatureUtil {
 		var biomeTemperature = BiomeTemperatureUtil.biomeTemperatureForPlayer(player, isInInterior);
 		var effectiveTemperature = biomeTemperature;
 
-		// Wind
+		// Item Temperature (Wearables)
 
-		var windTemperatureTuple = WindTemperatureUtil.windTemperatureForEnvironment(serverState, player, isInInterior);
-		var windTemperatureDelta = windTemperatureTuple.temperature * windTemperatureTuple.windChillFactor;
-
-		effectiveTemperature += windTemperatureDelta;
+		var itemTemperatureDelta = ItemTemperatureUtil.temperatureDeltaForAllArmorItems(player);
+		effectiveTemperature += itemTemperatureDelta;
 
 		// Block Temperature (Heating & Cooling)
 
 		var blockTemperatureDelta = BlockTemperatureUtil.temperatureDeltaForBlocksInVicinity(player);
 		effectiveTemperature += blockTemperatureDelta;
 
-		// Item Temperature (Wearables)
+		// Wind
 
-		var itemTemperatureDelta = ItemTemperatureUtil.temperatureDeltaForAllArmorItems(player);
-		effectiveTemperature += itemTemperatureDelta;
+		var windTemperatureTuple = WindTemperatureUtil.windTemperatureForEnvironment(serverState, player, isInInterior);
+		var windTemperatureDelta = windTemperatureTuple.temperature * windTemperatureTuple.windChillFactor;
+
+		effectiveTemperature += windTemperatureDelta;
 
 		// Effects
 
