@@ -84,13 +84,5 @@
     "text.autoconfig.acclimatize.option.multidimensionalWind": "Multidimensional Wind",
 	"text.autoconfig.acclimatize.option.windChillFactor": "Wind Chill Factor",
     "text.autoconfig.acclimatize.option.windRayCount": "Wind Ray Count",
-    "text.autoconfig.acclimatize.option.windRayLength": "Wind Ray Length",
-	    
-    "text.autoconfig.acclimatize.option.enableSeasonSystem": "Enable Season System",
-    "text.autoconfig.acclimatize.option.springSeasonLength": "Spring Season Length",
-    "text.autoconfig.acclimatize.option.summerSeasonLength": "Summer Season Length",
-    "text.autoconfig.acclimatize.option.fallSeasonLength": "Fall Season Length",
-    "text.autoconfig.acclimatize.option.winterSeasonLength": "Winter Season Length",
-    "text.autoconfig.acclimatize.option.seasonTemperatureExtremenessFactor": "Season Temperature Extremeness",
-    "text.autoconfig.acclimatize.option.seasonalWeather": "Seasonal Weather"
+    "text.autoconfig.acclimatize.option.windRayLength": "Wind Ray Length"
 }
