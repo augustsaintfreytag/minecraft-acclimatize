@@ -1,22 +1,16 @@
-# gradle
+# System
+
+.DS_Store
+Thumbs.db
+
+# Gradle
 
 .gradle/
 build/
 out/
 classes/
 
-# eclipse
-
-*.launch
-
-# idea
-
-.idea/
-*.iml
-*.ipr
-*.iws
-
-# vscode
+# VS Code
 
 .settings/
 .vscode/
@@ -24,21 +18,9 @@ bin/
 .classpath
 .project
 
-# macos
-
-*.DS_Store
-
-# fabric
-
-run/
-
-# java
+# Java
 
 hs_err_*.log
 replay_*.log
 *.hprof
 *.jfr
-
-# misc
-
-todo.txt
