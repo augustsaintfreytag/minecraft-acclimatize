@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemGroups;
@@ -175,6 +176,12 @@ public class Mod implements ModInitializer {
 				return;
 			}
 
+			if (FabricLoader.getInstance().isModLoaded("immersivewinds")) {
+				Mod.LOGGER.info("Assigning deferred wind direction and intensity from loaded Immersive Winds.");
+				return;
+			}
+
+			Mod.LOGGER.info("Randomizing new wind direction and intensity via tick at " + serverTick + ".");
 			WindTemperatureUtil.tickWind(serverWorld, serverState);
 		});
 
@@ -206,12 +213,10 @@ public class Mod implements ModInitializer {
 									WindTemperatureUtil.tickWind(serverWorld, serverState);
 
 									context.getSource().sendMessage(Text.literal("Wind randomized."));
-									context.getSource().sendMessage(
-											Text.literal(
-													"Wind Direction: " + serverState.windDirection * 180 / Math.PI));
-									context.getSource().sendMessage(
-											Text.literal("Wind Temperature Modifier: "
-													+ serverState.windTemperature));
+									context.getSource().sendMessage(Text
+											.literal("Wind Direction: " + serverState.windDirection * 180 / Math.PI));
+									context.getSource()
+											.sendMessage(Text.literal("Wind Intensity: " + serverState.windIntensity));
 
 									return 1;
 								}))));
@@ -227,8 +232,7 @@ public class Mod implements ModInitializer {
 									.sendMessage(Text.literal(
 											"§eWind Direction: §6" + serverState.windDirection * 180 / Math.PI));
 							context.getSource().sendMessage(
-									Text.literal(
-											"§eWind Temperature Modifier: §6" + serverState.windTemperature));
+									Text.literal("§eWind Temperature Modifier: §6" + serverState.windIntensity));
 
 							return 1;
 						})));
