@@ -22,8 +22,7 @@ public class ModClient implements ClientModInitializer {
 	public static double cachedBodyTemperature = 0;
 	public static double cachedAmbientTemperature = 0;
 	public static double cachedTemperatureDifference = 0;
-	public static double cachedWindPitch = 0;
-	public static double cachedWindYaw = 0;
+	public static double cachedWindDirection = 0;
 	public static double cachedWindTemperature = 0;
 
 	public static int temperatureUpdateTick = 0;
@@ -115,16 +114,18 @@ public class ModClient implements ClientModInitializer {
 		var bound = Math.max(1, 16 + (int) cachedWindTemperature);
 
 		if (random.nextInt(bound) == 0) {
-			Vec3d dir = new Vec3d(
-					Math.cos(cachedWindPitch) * Math.cos(cachedWindYaw),
-					Math.sin(cachedWindPitch) * Math.cos(cachedWindYaw),
-					Math.sin(cachedWindYaw)).negate();
+			double windDirectionRadians = Math.toRadians(cachedWindDirection);
 
-			double x = player.getX() + random.nextTriangular(0, 10) - dir.x * 7;
+			Vec3d direction = new Vec3d(
+					-Math.sin(windDirectionRadians),
+					0,
+					Math.cos(windDirectionRadians));
+
+			double x = player.getX() + random.nextTriangular(0, 10) - direction.x * 7;
 			double y = player.getY() + random.nextTriangular(5, 7);
-			double z = player.getZ() + random.nextTriangular(0, 10) - dir.z * 7;
+			double z = player.getZ() + random.nextTriangular(0, 10) - direction.z * 7;
 
-			world.addParticle(ParticleTypes.CLOUD, x, y, z, dir.x, dir.y, dir.z);
+			world.addParticle(ParticleTypes.CLOUD, x, y, z, direction.x, direction.y, direction.z);
 		}
 	}
 
