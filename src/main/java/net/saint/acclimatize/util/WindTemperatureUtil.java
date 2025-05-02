@@ -47,7 +47,8 @@ public final class WindTemperatureUtil {
 		var world = player.getWorld();
 		var dimension = world.getDimension();
 
-		if (!Mod.CONFIG.enableWind || isInInterior || (!Mod.CONFIG.multidimensionalWind && !dimension.natural())) {
+		if (!Mod.CONFIG.enableWind || isInInterior || player.isSubmergedInWater()
+				|| (!Mod.CONFIG.multidimensionalWind && !dimension.natural())) {
 			cleanUpPlayerData(player);
 			return WindTemperatureTuple.zero();
 		}
