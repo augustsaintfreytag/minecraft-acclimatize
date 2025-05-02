@@ -19,10 +19,11 @@ import net.saint.acclimatize.util.ItemTemperatureUtil;
 
 public class ModClient implements ClientModInitializer {
 
+	public static double cachedWindDirection = 0;
+	public static double cachedWindIntensity = 0;
 	public static double cachedBodyTemperature = 0;
 	public static double cachedAmbientTemperature = 0;
 	public static double cachedTemperatureDifference = 0;
-	public static double cachedWindDirection = 0;
 	public static double cachedWindTemperature = 0;
 
 	public static int temperatureUpdateTick = 0;
