@@ -189,7 +189,7 @@ public final class WindTemperatureUtil {
 		var random = world.getRandom();
 
 		var windDirection = serverState.windDirection;
-		var turbulentAngle = windDirection + random.nextTriangular(0, windTurbulence);
+		var turbulentAngle = windDirection + Math.PI + random.nextTriangular(0, windTurbulence);
 		var directionVector = new Vec3d(MathUtil.approximateSin(turbulentAngle), 0,
 				MathUtil.approximateCos(turbulentAngle));
 
