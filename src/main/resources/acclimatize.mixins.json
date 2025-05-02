@@ -2,7 +2,10 @@
 	"required": true,
 	"package": "net.saint.acclimatize.mixin",
 	"compatibilityLevel": "JAVA_17",
-	"mixins": [],
+	"plugin": "net.saint.acclimatize.ModMixinPlugin",
+	"mixins": [
+		"WindManagerMixin"
+	],
 	"client": [
 		"InGameHudMixin",
 		"PlayerStatusEffectsMixin"
