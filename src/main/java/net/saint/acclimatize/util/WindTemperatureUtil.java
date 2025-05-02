@@ -46,8 +46,7 @@ public final class WindTemperatureUtil {
 	public static void tickWind(ServerWorld world, ServerState serverState) {
 		var random = world.getRandom();
 
-		serverState.windPitch = 360 * Math.PI / 180;
-		serverState.windYaw = random.nextDouble() * 360 * Math.PI / 180;
+		serverState.windDirection = random.nextDouble() * 2 * Math.PI;
 		serverState.windTemperature = -serverState.windTemperatureModifierRange
 				+ random.nextDouble() * serverState.windTemperatureModifierRange * 2;
 		serverState.precipitationWindModifier = -serverState.windTemperatureModifierRange
@@ -186,17 +185,14 @@ public final class WindTemperatureUtil {
 	}
 
 	private static boolean performSingleWindRaycast(ServerState serverState, ServerPlayerEntity player) {
-		var windYaw = serverState.windYaw;
-		var windPitch = serverState.windPitch;
 		var world = player.getWorld();
 		var random = world.getRandom();
 
-		var directionVector = new Vec3d(
-				(MathUtil.approximateCos(windPitch + random.nextTriangular(0, windTurbulence))
-						* MathUtil.approximateCos(windYaw + random.nextTriangular(0, windTurbulence))),
-				(MathUtil.approximateSin(windPitch + random.nextTriangular(0, windTurbulence))
-						* MathUtil.approximateCos(windYaw + random.nextTriangular(0, windTurbulence))),
-				MathUtil.approximateSin(windYaw + random.nextTriangular(0, windTurbulence)));
+		var windDirection = serverState.windDirection;
+		var turbulentAngle = windDirection + random.nextTriangular(0, windTurbulence);
+		var horizontalVector = new Vec3d(MathUtil.approximateSin(turbulentAngle), 0,
+				MathUtil.approximateCos(turbulentAngle));
+		var directionVector = horizontalVector.multiply(Mod.CONFIG.windRayLength);
 
 		var startVector = new Vec3d(player.getPos().x, player.getPos().y + 1, player.getPos().z);
 		var endVector = startVector.add(directionVector.multiply(Mod.CONFIG.windRayLength));

@@ -32,16 +32,14 @@ public class TemperaturePackets {
 				(client, handler, buf, responseSender) -> {
 					double bodyTemperature = buf.readDouble();
 					double ambientTemperature = buf.readDouble();
-					double windPitch = buf.readDouble();
-					double windYaw = buf.readDouble();
+					double windDirection = buf.readDouble();
 					double windTemperature = buf.readDouble();
 
 					client.execute(() -> {
 						ModClient.cachedBodyTemperature = bodyTemperature;
 						ModClient.cachedAmbientTemperature = ambientTemperature;
 						ModClient.cachedTemperatureDifference = ambientTemperature - bodyTemperature;
-						ModClient.cachedWindPitch = windPitch;
-						ModClient.cachedWindYaw = windYaw;
+						ModClient.cachedWindDirection = windDirection;
 						ModClient.cachedWindTemperature = windTemperature;
 					});
 				});

@@ -19,9 +19,7 @@ public class ServerState extends PersistentState {
 	public int seasonalWeatherTick = 0;
 
 	// Wind parameters
-	public double windPitch = 360 * Math.PI / 180;
-	public double windYaw = 0;
-
+	public double windDirection = 0.0;
 	public double windTemperatureModifierRange = 8;
 	public double windTemperature = 0;
 	public double precipitationWindModifier = 0;
@@ -52,8 +50,7 @@ public class ServerState extends PersistentState {
 		nbt.putInt(ServerStateNBTKeys.seasonTick, seasonTick);
 		nbt.putLong(ServerStateNBTKeys.currentSeasonTick, currentSeasonTick);
 		nbt.putInt(ServerStateNBTKeys.seasonalWeatherTick, seasonalWeatherTick);
-		nbt.putDouble(ServerStateNBTKeys.windPitch, windPitch);
-		nbt.putDouble(ServerStateNBTKeys.windYaw, windYaw);
+		nbt.putDouble(ServerStateNBTKeys.windDirection, windDirection);
 		nbt.putDouble(ServerStateNBTKeys.windTemperatureModifierRange, windTemperatureModifierRange);
 		nbt.putDouble(ServerStateNBTKeys.windTemperatureModifier, windTemperature);
 		nbt.putDouble(ServerStateNBTKeys.precipitationWindModifier, precipitationWindModifier);
@@ -81,8 +78,7 @@ public class ServerState extends PersistentState {
 		serverState.seasonTick = tag.getInt(ServerStateNBTKeys.seasonTick);
 		serverState.currentSeasonTick = tag.getLong(ServerStateNBTKeys.currentSeasonTick);
 		serverState.seasonalWeatherTick = tag.getInt(ServerStateNBTKeys.seasonalWeatherTick);
-		serverState.windPitch = tag.getDouble(ServerStateNBTKeys.windPitch);
-		serverState.windYaw = tag.getDouble(ServerStateNBTKeys.windYaw);
+		serverState.windDirection = tag.getDouble(ServerStateNBTKeys.windDirection);
 		serverState.windTemperatureModifierRange = tag.getDouble(ServerStateNBTKeys.windTemperatureModifierRange);
 		serverState.windTemperature = tag.getDouble(ServerStateNBTKeys.windTemperatureModifier);
 		serverState.precipitationWindModifier = tag.getDouble(ServerStateNBTKeys.precipitationWindModifier);
