@@ -52,6 +52,13 @@ public final class WindTemperatureUtil {
 		serverState.markDirty();
 	}
 
+	// Wind Override
+
+	public static void overrideWind(ServerState serverState, double windDirection) {
+		serverState.windDirection = windDirection;
+		serverState.setDirty(true);
+	}
+
 	// Wind Effects
 
 	public static WindTemperatureTuple windTemperatureForEnvironment(ServerState serverState, ServerPlayerEntity player,
