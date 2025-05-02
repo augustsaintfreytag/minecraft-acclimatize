@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
@@ -16,10 +17,12 @@ public final class WindTemperatureUtil {
 
 	// Configuration
 
-	private static final double windBaseTurbulence = 23.0;
+	private static final double windBaseTurbulence = 10.0;
 	private static final double windTurbulence = windBaseTurbulence * Math.PI / 180d;
 
 	// State
+
+	private static int numberOfRaysFired = 0;
 
 	private static final Map<UUID, boolean[]> playerWindBuffers = new HashMap<>();
 	private static final Map<UUID, Integer> playerBufferIndices = new HashMap<>();
@@ -40,9 +43,29 @@ public final class WindTemperatureUtil {
 		}
 	}
 
-	// Main
+	// Wind Tick
 
-	public static WindTemperatureTuple windTemperatureForEnvironment(ServerState serverState, ServerPlayerEntity player,
+	public static void tickWind(ServerWorld world, ServerState serverState) {
+		var random = world.getRandom();
+
+		serverState.windDirection = random.nextDouble() * 2 * Math.PI;
+		serverState.windIntensity = random.nextTriangular(5.0, 10.0);
+
+		serverState.markDirty();
+	}
+
+	// Wind Override
+
+	public static void overrideWind(ServerState serverState, double windDirection, double windIntensity) {
+		serverState.windDirection = windDirection;
+		serverState.windIntensity = windIntensity;
+
+		serverState.setDirty(true);
+	}
+
+	// Wind Effects
+
+	public static double windTemperatureForEnvironment(ServerState serverState, ServerPlayerEntity player,
 			boolean isInInterior) {
 		var world = player.getWorld();
 		var dimension = world.getDimension();
@@ -50,27 +73,36 @@ public final class WindTemperatureUtil {
 		if (!Mod.CONFIG.enableWind || isInInterior || player.isSubmergedInWater()
 				|| (!Mod.CONFIG.multidimensionalWind && !dimension.natural())) {
 			cleanUpPlayerData(player);
-			return WindTemperatureTuple.zero();
+			return 0.0;
 		}
 
-		// Wind Base Temperature
+		// Base Wind Temperature
 
-		var windTemperature = serverState.windTemperature;
+		var windTemperature = serverState.windIntensity;
 
-		var heightWindTemperatureDelta = heightTemperatureDeltaForPlayer(player);
-		windTemperature += heightWindTemperatureDelta;
+		// Biome Wind Chill
 
-		var precipitationWindModifier = precipitationTemperatureDeltaForPlayer(serverState, player);
-		windTemperature += precipitationWindModifier;
+		var biomeWindChillFactor = biomeWindChillFactorForPlayer(player);
+		windTemperature *= biomeWindChillFactor;
 
-		// Wind Ray Calculation
+		// Precipitation Wind Chill
+
+		var precipitationWindFactor = precipitationTemperatureFactorForPlayer(serverState, player);
+		windTemperature *= precipitationWindFactor;
+
+		// Configurable Wind Chill
+
+		var flatWindChillFactor = Mod.CONFIG.windChillFactor;
+		windTemperature *= flatWindChillFactor;
+
+		// Wind Raycast Hit Factor
 
 		var numberOfUnblockedRays = getUnblockedWindRaysForPlayer(serverState, player);
-		var biomeWindChillFactor = biomeWindChillFactorForPlayer(player);
-		var windChillTemperatureFactor = ((double) numberOfUnblockedRays / Mod.CONFIG.windRayCount)
-				* Mod.CONFIG.windChillFactor * biomeWindChillFactor;
+		var windHitTemperatureFactor = ((double) numberOfUnblockedRays / (double) numberOfRaysFired);
 
-		return new WindTemperatureTuple(windTemperature, windChillTemperatureFactor);
+		windTemperature *= windHitTemperatureFactor;
+
+		return windTemperature;
 	}
 
 	private static double biomeWindChillFactorForPlayer(ServerPlayerEntity player) {
@@ -89,8 +121,7 @@ public final class WindTemperatureUtil {
 		}
 	}
 
-	private static double precipitationTemperatureDeltaForPlayer(ServerState serverState, ServerPlayerEntity player) {
-		var precipitationWindModifier = serverState.precipitationWindModifier;
+	private static double precipitationTemperatureFactorForPlayer(ServerState serverState, ServerPlayerEntity player) {
 		var world = player.getWorld();
 		var position = player.getBlockPos();
 		var biome = world.getBiome(position).value();
@@ -98,34 +129,17 @@ public final class WindTemperatureUtil {
 
 		if (precipitation == Biome.Precipitation.RAIN) {
 			if (world.isThundering()) {
-				return precipitationWindModifier * 1.1;
+				return 1.3;
 			} else {
-				return precipitationWindModifier;
+				return 1.1;
 			}
 		} else if (precipitation == Biome.Precipitation.SNOW) {
 			if (world.isRaining()) {
-				return precipitationWindModifier * 1.3;
+				return 1.2;
 			}
 		}
 
 		return 0.0;
-	}
-
-	private static double heightTemperatureDeltaForPlayer(ServerPlayerEntity player) {
-		var coefficient = -0.02;
-		var growthFactor = 1.5;
-		var softeningFactor = 15.0;
-
-		var height = player.getPos().y;
-		var heightValue = height - 62.0;
-
-		var lowerBound = -20.0;
-		var upperBound = 15.0;
-
-		var delta = coefficient * Math.signum(heightValue) * Math.pow(Math.abs(heightValue), growthFactor)
-				- coefficient * Math.pow(softeningFactor, growthFactor);
-
-		return MathUtil.clamp(delta, lowerBound, upperBound);
 	}
 
 	private static int getUnblockedWindRaysForPlayer(ServerState serverState, ServerPlayerEntity player) {
@@ -145,6 +159,7 @@ public final class WindTemperatureUtil {
 
 		// Perform only a single raycast and store the result
 		buffer[currentIndex] = performSingleWindRaycast(serverState, player);
+		numberOfRaysFired = Math.min(numberOfRaysFired + 1, Mod.CONFIG.windRayCount);
 
 		// Update index for next call
 		currentIndex = (currentIndex + 1) % Mod.CONFIG.windRayCount;
@@ -153,7 +168,7 @@ public final class WindTemperatureUtil {
 		// Count unblocked rays in the buffer
 		var numberOfUnblockedRays = 0;
 
-		for (boolean isUnblocked : buffer) {
+		for (var isUnblocked : buffer) {
 			if (isUnblocked) {
 				numberOfUnblockedRays++;
 			}
@@ -170,17 +185,13 @@ public final class WindTemperatureUtil {
 	}
 
 	private static boolean performSingleWindRaycast(ServerState serverState, ServerPlayerEntity player) {
-		var windYaw = serverState.windYaw;
-		var windPitch = serverState.windPitch;
 		var world = player.getWorld();
 		var random = world.getRandom();
 
-		var directionVector = new Vec3d(
-				(MathUtil.approximateCos(windPitch + random.nextTriangular(0, windTurbulence))
-						* MathUtil.approximateCos(windYaw + random.nextTriangular(0, windTurbulence))),
-				(MathUtil.approximateSin(windPitch + random.nextTriangular(0, windTurbulence))
-						* MathUtil.approximateCos(windYaw + random.nextTriangular(0, windTurbulence))),
-				MathUtil.approximateSin(windYaw + random.nextTriangular(0, windTurbulence)));
+		var windDirection = serverState.windDirection;
+		var turbulentAngle = windDirection + Math.PI + random.nextTriangular(0, windTurbulence);
+		var directionVector = new Vec3d(MathUtil.approximateSin(turbulentAngle), 0,
+				MathUtil.approximateCos(turbulentAngle));
 
 		var startVector = new Vec3d(player.getPos().x, player.getPos().y + 1, player.getPos().z);
 		var endVector = startVector.add(directionVector.multiply(Mod.CONFIG.windRayLength));

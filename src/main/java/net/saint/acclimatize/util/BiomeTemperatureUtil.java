@@ -36,14 +36,23 @@ public final class BiomeTemperatureUtil {
 
 		var biomeTemperature = baseTemperatureForClimate(climateKind);
 
+		if (!dimension.natural()) {
+			return biomeTemperature;
+		}
+
+		// Height
+
+		var height = position.getY();
+		var heightTemperatureDelta = heightTemperatureDeltaForPosition(height);
+
+		biomeTemperature += heightTemperatureDelta;
+
 		// Daylight/Nighttime
 
-		if (dimension.natural()) {
-			var dayTick = world.getTimeOfDay();
-			var dayNightTemperatureDelta = dayNightTemperatureDeltaForTime(climateKind, dayTick);
+		var dayTick = world.getTimeOfDay();
+		var dayNightTemperatureDelta = dayNightTemperatureDeltaForTime(climateKind, dayTick);
 
-			biomeTemperature += dayNightTemperatureDelta;
-		}
+		biomeTemperature += dayNightTemperatureDelta;
 
 		// Precipitation
 
@@ -54,6 +63,23 @@ public final class BiomeTemperatureUtil {
 		}
 
 		return biomeTemperature;
+	}
+
+	// Height
+
+	private static double heightTemperatureDeltaForPosition(double height) {
+		var coefficient = -0.02;
+		var growthFactor = 1.5;
+		var softeningFactor = 15.0;
+		var lowerBound = -20.0;
+		var upperBound = 15.0;
+
+		var heightValue = height - 62.0;
+
+		var delta = coefficient * Math.signum(heightValue) * Math.pow(Math.abs(heightValue), growthFactor)
+				- coefficient * Math.pow(softeningFactor, growthFactor);
+
+		return MathUtil.clamp(delta, lowerBound, upperBound);
 	}
 
 	// Climate

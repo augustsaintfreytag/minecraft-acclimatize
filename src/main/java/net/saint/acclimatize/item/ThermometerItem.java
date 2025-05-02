@@ -30,7 +30,9 @@ public class ThermometerItem extends Item {
 		}
 
 		var player = (ServerPlayerEntity) user;
+		var server = world.getServer();
 		var playerState = ServerStateUtil.getPlayerState(player);
+		var serverState = ServerStateUtil.getServerState(server);
 
 		user.sendMessage(Text
 				.of("♜ Body: " + formattedValue(playerState.bodyTemperature) + " (↕ Acclim "
@@ -38,6 +40,8 @@ public class ThermometerItem extends Item {
 						+ ") \n(☼ Ambient " + formattedValue(playerState.ambientTemperature)
 						+ ", ♣ Biome " + formattedValue(playerState.biomeTemperature) + ", ☰ Wind "
 						+ formattedValue(playerState.windTemperature)
+						+ " from " + Math.floor(serverState.windDirection) + "° at "
+						+ formattedValue(serverState.windIntensity)
 						+ ", ♢ Blocks " + formattedValue(playerState.blockTemperature)
 						+ ", ☍ Items " + formattedValue(playerState.itemTemperature) + ", ☈ Interior "
 						+ formattedValue(playerState.isInInterior) + ")"));
