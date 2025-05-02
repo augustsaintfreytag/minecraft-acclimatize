@@ -311,7 +311,7 @@ public class ModConfig implements ConfigData {
 	public int windRayCount = 6;
 
 	@ConfigEntry.Category("wind")
-	@Comment("How many blocks long wind rays are. Increase for larger spaces. (Default: 24)")
-	public int windRayLength = 24;
+	@Comment("How many blocks long wind rays are. Increase for larger spaces. (Default: 16)")
+	public int windRayLength = 16;
 
 }
