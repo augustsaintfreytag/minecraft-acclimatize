@@ -78,7 +78,7 @@ public final class WindTemperatureUtil {
 
 		// Base Wind Temperature
 
-		var windTemperature = serverState.windIntensity;
+		var windTemperature = serverState.windIntensity * -1.0;
 
 		// Biome Wind Chill
 
