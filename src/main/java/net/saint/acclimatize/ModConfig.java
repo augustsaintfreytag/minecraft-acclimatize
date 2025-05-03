@@ -116,8 +116,8 @@ public class ModConfig implements ConfigData {
 	public double nightTemperatureDelta = -10.0;
 
 	@ConfigEntry.Category("world")
-	@Comment("The number of rays cast in a cone shape around the player to check for an interior space. Higher number means more precision but higher cost. (Default: 8)")
-	public int spaceNumberOfRays = 8;
+	@Comment("The number of rays cast in a cone shape around the player to check for an interior space. Higher number means more precision but higher cost. (Default: 12)")
+	public int spaceNumberOfRays = 12;
 
 	@ConfigEntry.Category("world")
 	@Comment("The length of the rays cast around the player to check for an interior space. Higher means more coverage but higher cost. (Default: 32)")
