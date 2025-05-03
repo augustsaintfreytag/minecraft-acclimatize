@@ -277,8 +277,8 @@ public class ModConfig implements ConfigData {
 	public double bootsAutoTemperatureFactor = 1.0;
 
 	@ConfigEntry.Category("items")
-	@Comment("The factor for how much the raw temperature value of worn items adds to player temperature. (Default: 0.35)")
-	public double itemTemperatureFactor = 0.35;
+	@Comment("The factor for how much the raw temperature value of worn items adds to player temperature. (Default: 0.25)")
+	public double itemTemperatureFactor = 0.25;
 
 	@ConfigEntry.Category("items")
 	@Comment("Factor for how much player acclimatization is affected by the temperature value of worn items. (Default: -0.005)")
