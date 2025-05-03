@@ -207,9 +207,9 @@ public class ModConfig implements ConfigData {
 			"minecraft:blue_ice = -2.0",
 			"minecraft:snow_block = -0.5");
 
-	@ConfigEntry.Category("player")
-	@Comment("Temperature value applied when the player is submerged in water. (Default: -5.0)")
-	public double waterBlockTemperature = -5.0;
+	@ConfigEntry.Category("blocks")
+	@Comment("Temperature value applied when the player is submerged in water. (Default: -8.0)")
+	public double waterBlockTemperature = -8.0;
 
 	// Items
 
