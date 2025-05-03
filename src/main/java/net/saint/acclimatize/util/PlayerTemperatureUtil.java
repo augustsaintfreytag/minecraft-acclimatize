@@ -61,7 +61,7 @@ public class PlayerTemperatureUtil {
 		// Player Temperature
 
 		var bodyTemperature = playerState.bodyTemperature;
-		bodyTemperature += (effectiveTemperature - bodyTemperature) * acclimatizationRate;
+		bodyTemperature += (effectiveTemperature - bodyTemperature) * (acclimatizationRate / 10.0);
 
 		// State
 

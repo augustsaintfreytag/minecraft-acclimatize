@@ -54,8 +54,8 @@ public class ModConfig implements ConfigData {
 	// Player
 
 	@ConfigEntry.Category("player")
-	@Comment("How quick your body temperature absorbs or loses heat from/to the environment. (Default: 0.02)")
-	public double acclimatizationRate = 0.02;
+	@Comment("The rate by which body temperature adapts to ambient temperatures. (Default: 0.25)")
+	public double acclimatizationRate = 0.25;
 
 	@ConfigEntry.Category("player")
 	@Comment("The factor by which player acclimatization rate is boosted when wet. (Default: 5.0)")
@@ -112,7 +112,7 @@ public class ModConfig implements ConfigData {
 	public double snowTemperatureDelta = -6.0;
 
 	@ConfigEntry.Category("world")
-	@Comment("The temperature delta gradually applied between sunset and sunrise. (Default: 10.0)")
+	@Comment("The temperature delta gradually applied between sunset and sunrise. (Default: -10.0)")
 	public double nightTemperatureDelta = -10.0;
 
 	@ConfigEntry.Category("world")
@@ -146,11 +146,11 @@ public class ModConfig implements ConfigData {
 	public double blockTemperatureAbsoluteMaximum = 40.0;
 
 	@ConfigEntry.Category("blocks")
-	@Comment("The value added to distance under heat intensity used in the fall-off calculation. (Default: 0.1)")
+	@Comment("The value added to distance under heat intensity used in the fall-off calculation. (Default: 0.75)")
 	public double blockTemperatureFalloffConstant = 0.75;
 
 	@ConfigEntry.Category("blocks")
-	@Comment("The factor multiplied by the distance between player and heat source. Lower means less falloff. (Default: 0.5)")
+	@Comment("The factor multiplied by the distance between player and heat source. Lower means less falloff. (Default: 0.075)")
 	public double blockTemperatureDistanceFalloffFactor = 0.075;
 
 	@ConfigEntry.Category("blocks")
@@ -261,15 +261,15 @@ public class ModConfig implements ConfigData {
 			"turtle = 1.0");
 
 	@ConfigEntry.Category("items")
-	@Comment("Temperature factor for helmets with auto-assigned material-based values. (Default: 0.5)")
+	@Comment("Temperature factor for helmets with auto-assigned material-based values. (Default: 1.0)")
 	public double helmetAutoTemperatureFactor = 1.0;
 
 	@ConfigEntry.Category("items")
-	@Comment("Temperature factor for chestplates with auto-assigned material-based values. (Default: 1.0)")
+	@Comment("Temperature factor for chestplates with auto-assigned material-based values. (Default: 2.0)")
 	public double leggingsAutoTemperatureFactor = 2.0;
 
 	@ConfigEntry.Category("items")
-	@Comment("Temperature factor for leggings with auto-assigned material-based values. (Default: 1.25)")
+	@Comment("Temperature factor for leggings with auto-assigned material-based values. (Default: 3.0)")
 	public double chestplateAutoTemperatureFactor = 3.0;
 
 	@ConfigEntry.Category("items")
