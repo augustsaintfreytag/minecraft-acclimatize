@@ -10,6 +10,7 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -164,6 +165,19 @@ public class Mod implements ModInitializer {
 			var player = handler.player;
 			SpaceUtil.cleanUpPlayerData(player);
 			WindTemperatureUtil.cleanUpPlayerData(player);
+		});
+
+		ServerLifecycleEvents.SERVER_STARTED.register((server) -> {
+			var serverState = ServerStateUtil.getServerState(server);
+			var serverWorld = server.getOverworld();
+
+			if (FabricLoader.getInstance().isModLoaded("immersivewinds")) {
+				Mod.LOGGER.info("Assigning deferred wind direction and intensity from loaded Immersive Winds.");
+				return;
+			}
+
+			Mod.LOGGER.info("Randomizing new wind direction and intensity at server start.");
+			WindTemperatureUtil.tickWind(serverWorld, serverState);
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register((server) -> {
