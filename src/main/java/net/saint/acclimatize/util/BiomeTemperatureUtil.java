@@ -119,12 +119,12 @@ public final class BiomeTemperatureUtil {
 
 	public static double dayNightTemperatureDeltaForTime(ClimateKind climateKind, long dayTick) {
 		var phaseValue = phaseValueForAsymmetricTime(dayTick); // Phase shift phi: φ
-		var plateau = 3; // Plateau: p
-		var offset = 0.1; // Offset delta: δ
+		var plateau = 2; // Plateau: p
+		var offset = 1.65 * Math.PI; // Offset delta: δ
 
 		// Formula: Tdf(x) = ((1 + cos(φ - δ)) / 2) ^ p
 		var dropFactor = Math.pow(((1 + MathUtil.approximateCos(phaseValue - offset)) / 2), plateau);
-		var temperatureDelta = -Mod.CONFIG.nightTemperatureDelta * dropFactor;
+		var temperatureDelta = Mod.CONFIG.nightTemperatureDelta * dropFactor;
 
 		return temperatureDelta;
 	}
