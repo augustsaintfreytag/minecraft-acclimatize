@@ -1,29 +1,20 @@
 package net.saint.acclimatize;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.SpecialRecipeSerializer;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.saint.acclimatize.item.GoldSweetBerriesItem;
 import net.saint.acclimatize.item.IceWaterItem;
@@ -32,19 +23,19 @@ import net.saint.acclimatize.item.WoolClothItem;
 import net.saint.acclimatize.networking.TemperaturePackets;
 import net.saint.acclimatize.profiler.Profiler;
 import net.saint.acclimatize.recipe.LeatherArmorWoolRecipe;
-import net.saint.acclimatize.server.ServerState;
 import net.saint.acclimatize.util.BlockTemperatureUtil;
 import net.saint.acclimatize.util.ItemTemperatureUtil;
-import net.saint.acclimatize.util.ServerStateUtil;
-import net.saint.acclimatize.util.SpaceUtil;
-import net.saint.acclimatize.util.WindTemperatureUtil;
 
 public class Mod implements ModInitializer {
-	public static final String modId = "acclimatize";
-	public static final String modVersion = "6.0.0";
+	// Metadata
 
-	public static final Logger LOGGER = LoggerFactory.getLogger("acclimatize");
-	public static final Profiler PROFILER = Profiler.getProfiler("acclimatize");
+	public static final String modId = "acclimatize";
+
+	public static String modVersion;
+
+	// Config
+
+	public static ModConfig CONFIG;
 
 	// Items
 
@@ -69,14 +60,23 @@ public class Mod implements ModInitializer {
 			.register("crafting_special_leather_armor_wool",
 					new SpecialRecipeSerializer<LeatherArmorWoolRecipe>(LeatherArmorWoolRecipe::new));
 
-	// Config
+	// Modules
 
-	public static ModConfig CONFIG;
+	public static final Logger LOGGER = LoggerFactory.getLogger(modId);
+	public static final Profiler PROFILER = Profiler.getProfiler(modId);
 
 	// Init
 
 	@Override
 	public void onInitialize() {
+		// Metadata
+
+		var fabricLoader = FabricLoader.getInstance();
+
+		fabricLoader.getModContainer(modId).ifPresent(modContainer -> {
+			modVersion = modContainer.getMetadata().getVersion().getFriendlyString();
+		});
+
 		// Config
 
 		AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
@@ -94,35 +94,33 @@ public class Mod implements ModInitializer {
 		ItemTemperatureUtil.reloadItems();
 		BlockTemperatureUtil.reloadBlocks();
 
-		// Status Effects
+		// Registration
 
+		registerStatusEffects();
+		registerItems();
+		registerBlocks();
+		registerNetworkPackets();
+		registerServerEvents();
+		registerCommands();
+
+	}
+
+	private static void registerStatusEffects() {
 		Registry.register(Registries.STATUS_EFFECT, new Identifier(modId, "cold_resistance"),
 				ModStatusEffects.COLD_RESISTANCE);
 		Registry.register(Registries.STATUS_EFFECT, new Identifier(modId, "hypothermia"),
 				ModStatusEffects.HYPOTHERMIA);
 		Registry.register(Registries.STATUS_EFFECT, new Identifier(modId, "hyperthermia"),
 				ModStatusEffects.HYPERTHERMIA);
+	}
 
+	private static void registerItems() {
 		// Items
 
 		Registry.register(Registries.ITEM, new Identifier(modId, "thermometer"), THERMOMETER_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modId, "golden_sweet_berries"), GOLDEN_SWEET_BERRIES_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modId, "ice_water"), ICE_WATER_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modId, "wool_cloth"), WOOL_CLOTH_ITEM);
-
-		// Blocks
-
-		Registry.register(Registries.BLOCK, new Identifier(modId, "ice_box_empty"), ModBlocks.ICE_BOX_EMPTY_BLOCK);
-		Registry.register(Registries.BLOCK, new Identifier(modId, "ice_box_freezing"),
-				ModBlocks.ICE_BOX_FREEZING_BLOCK);
-		Registry.register(Registries.BLOCK, new Identifier(modId, "ice_box_frozen"), ModBlocks.ICE_BOX_FROZEN_BLOCK);
-		Registry.register(Registries.BLOCK, new Identifier(modId, "smoke"), ModBlocks.SMOKE_BLOCK);
-
-		// Block Item Registry
-
-		Registry.register(Registries.ITEM, new Identifier(modId, "ice_box_empty_item"), ICE_BOX_EMPTY_ITEM);
-		Registry.register(Registries.ITEM, new Identifier(modId, "ice_box_freezing_item"), ICE_BOX_FREEZING_ITEM);
-		Registry.register(Registries.ITEM, new Identifier(modId, "ice_box_frozen_item"), ICE_BOX_FROZEN_ITEM);
 
 		// Item Groups
 
@@ -139,117 +137,33 @@ public class Mod implements ModInitializer {
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register(content -> {
 			content.add(WOOL_CLOTH_ITEM);
 		});
+	}
 
+	private static void registerBlocks() {
+		// Blocks
+
+		Registry.register(Registries.BLOCK, new Identifier(modId, "ice_box_empty"), ModBlocks.ICE_BOX_EMPTY_BLOCK);
+		Registry.register(Registries.BLOCK, new Identifier(modId, "ice_box_freezing"),
+				ModBlocks.ICE_BOX_FREEZING_BLOCK);
+		Registry.register(Registries.BLOCK, new Identifier(modId, "ice_box_frozen"), ModBlocks.ICE_BOX_FROZEN_BLOCK);
+		Registry.register(Registries.BLOCK, new Identifier(modId, "smoke"), ModBlocks.SMOKE_BLOCK);
+
+		// Block Item Registry
+
+		Registry.register(Registries.ITEM, new Identifier(modId, "ice_box_empty_item"), ICE_BOX_EMPTY_ITEM);
+		Registry.register(Registries.ITEM, new Identifier(modId, "ice_box_freezing_item"), ICE_BOX_FREEZING_ITEM);
+		Registry.register(Registries.ITEM, new Identifier(modId, "ice_box_frozen_item"), ICE_BOX_FROZEN_ITEM);
+	}
+
+	private static void registerNetworkPackets() {
 		TemperaturePackets.registerC2SPackets();
+	}
 
-		// Events
+	private static void registerServerEvents() {
+		ModServerEvents.registerServerEvents();
+	}
 
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			var serverState = ServerStateUtil.getServerState(server);
-
-			if (!modVersion.equals(serverState.worldVersion)) {
-				serverState.worldVersion = modVersion;
-				serverState.markDirty();
-			}
-
-			var player = handler.player;
-			var playerState = ServerStateUtil.getPlayerState(player);
-
-			if (playerState.bodyTemperature == 0.0) {
-				playerState.bodyTemperature = 50.0;
-				playerState.markDirty();
-			}
-		});
-
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-			var player = handler.player;
-			SpaceUtil.cleanUpPlayerData(player);
-			WindTemperatureUtil.cleanUpPlayerData(player);
-		});
-
-		ServerLifecycleEvents.SERVER_STARTED.register((server) -> {
-			var serverState = ServerStateUtil.getServerState(server);
-			var serverWorld = server.getOverworld();
-
-			if (FabricLoader.getInstance().isModLoaded("immersivewinds")) {
-				Mod.LOGGER.info("Assigning deferred wind direction and intensity from loaded Immersive Winds.");
-				return;
-			}
-
-			Mod.LOGGER.info("Randomizing new wind direction and intensity at server start.");
-			WindTemperatureUtil.tickWind(serverWorld, serverState);
-		});
-
-		ServerTickEvents.END_SERVER_TICK.register((server) -> {
-			var serverState = ServerStateUtil.getServerState(server);
-			var serverWorld = server.getOverworld();
-			var serverTick = serverWorld.getTime();
-			var dayTimeLength = Mod.CONFIG.daylightTicks + Mod.CONFIG.nighttimeTicks;
-
-			if (serverTick % dayTimeLength != 0) {
-				return;
-			}
-
-			if (FabricLoader.getInstance().isModLoaded("immersivewinds")) {
-				Mod.LOGGER.info("Assigning deferred wind direction and intensity from loaded Immersive Winds.");
-				return;
-			}
-
-			Mod.LOGGER.info("Randomizing new wind direction and intensity via tick at " + serverTick + ".");
-			WindTemperatureUtil.tickWind(serverWorld, serverState);
-		});
-
-		// Commands
-
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("acclimatize:reset_temperature").requires(source -> source.hasPermissionLevel(4))
-						.then(argument("player", EntityArgumentType.player())
-								.executes(context -> {
-									var player = EntityArgumentType.getPlayer(context, "player");
-									var playerState = ServerStateUtil.getPlayerState(player);
-
-									playerState.bodyTemperature = 50.0;
-									playerState.markDirty();
-
-									return 1;
-								}))));
-
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("acclimatize:randomize_wind").requires(source -> source.hasPermissionLevel(4))
-						.then(argument("player", EntityArgumentType.player())
-								.executes(context -> {
-
-									var player = EntityArgumentType.getPlayer(context, "player");
-									var server = player.getServer();
-									var serverWorld = server.getOverworld();
-
-									var serverState = ServerStateUtil.getServerState(server);
-									WindTemperatureUtil.tickWind(serverWorld, serverState);
-
-									context.getSource().sendMessage(Text.literal("Wind randomized."));
-									context.getSource().sendMessage(Text
-											.literal("Wind Direction: " + serverState.windDirection * 180 / Math.PI));
-									context.getSource()
-											.sendMessage(Text.literal("Wind Intensity: " + serverState.windIntensity));
-
-									return 1;
-								}))));
-
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("acclimatize:log_wind_info").requires(source -> source.hasPermissionLevel(4))
-						.executes(context -> {
-
-							ServerState serverState = ServerStateUtil.getServerState(context.getSource().getServer());
-
-							context.getSource().sendMessage(Text.literal("§e=====Wind Info====="));
-							context.getSource()
-									.sendMessage(Text.literal(
-											"§eWind Direction: §6" + serverState.windDirection * 180 / Math.PI));
-							context.getSource().sendMessage(
-									Text.literal("§eWind Temperature Modifier: §6" + serverState.windIntensity));
-
-							return 1;
-						})));
-
+	private static void registerCommands() {
+		ModCommands.registerCommands();
 	}
 }
