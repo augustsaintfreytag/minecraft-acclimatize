@@ -21,7 +21,7 @@ public final class WindTemperatureUtil {
 	private static final double WIND_BASE_TURBULENCE = 10.0;
 	private static final double WIND_TURBULENCE = WIND_BASE_TURBULENCE * Math.PI / 180d;
 
-	private static final int WIND_INTERVAL_JITTER = 20 * 30; // 30 seconds
+	private static final double WIND_INTERVAL_JITTER_FACTOR = 0.15;
 
 	// State
 
@@ -52,7 +52,7 @@ public final class WindTemperatureUtil {
 
 	public static void tickWindInSchedule(ServerWorld world, ServerState serverState) {
 		if (FabricLoader.getInstance().isModLoaded("immersivewinds")) {
-			if (!didLogWindPropertiesSource) {
+			if (Mod.CONFIG.enableLogging && !didLogWindPropertiesSource) {
 				didLogWindPropertiesSource = true;
 				Mod.LOGGER.info("Assigning deferred wind direction and intensity from loaded Immersive Winds.");
 			}
@@ -66,8 +66,10 @@ public final class WindTemperatureUtil {
 
 		if (dayTimeLength > serverState.nextWindIntensityTick) {
 			tickWindIntensity(world, serverState);
+
+			var intervalJitter = (int) (WIND_INTERVAL_JITTER_FACTOR * Mod.CONFIG.windIntensityUpdateInterval);
 			serverState.nextWindIntensityTick = serverTick + Mod.CONFIG.windIntensityUpdateInterval
-					+ random.nextBetween(-WIND_INTERVAL_JITTER, WIND_INTERVAL_JITTER);
+					+ random.nextBetween(-intervalJitter, intervalJitter);
 
 			if (Mod.CONFIG.enableLogging) {
 				Mod.LOGGER.info("Randomizing new wind intensity via tick at " + serverTick + ", next scheduled for "
@@ -78,8 +80,10 @@ public final class WindTemperatureUtil {
 
 		if (dayTimeLength > serverState.nextWindDirectionTick) {
 			tickWindDirection(world, serverState);
+
+			var intervalJitter = (int) (WIND_INTERVAL_JITTER_FACTOR * Mod.CONFIG.windDirectionUpdateInterval);
 			serverState.nextWindDirectionTick = serverTick + Mod.CONFIG.windDirectionUpdateInterval
-					+ random.nextBetween(-WIND_INTERVAL_JITTER, WIND_INTERVAL_JITTER);
+					+ random.nextBetween(-intervalJitter, intervalJitter);
 
 			if (Mod.CONFIG.enableLogging) {
 				Mod.LOGGER.info("Randomizing new wind direction via tick at " + serverTick + ", next scheduled for "
