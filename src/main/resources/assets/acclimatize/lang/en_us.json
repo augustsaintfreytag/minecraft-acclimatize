@@ -14,13 +14,11 @@
     "effect.acclimatize.cold_resistance": "Cold Resistance",
 	
     "text.autoconfig.acclimatize.title": "Acclimatize",
-    "text.autoconfig.acclimatize.category.seasons": "Seasons",
     "text.autoconfig.acclimatize.category.hud": "HUD",
     "text.autoconfig.acclimatize.category.player": "Player",
     "text.autoconfig.acclimatize.category.items": "Items",
     "text.autoconfig.acclimatize.category.blocks": "Blocks",
 	"text.autoconfig.acclimatize.category.world": "World",
-    "text.autoconfig.acclimatize.category.environment": "Environment",
     "text.autoconfig.acclimatize.category.wind": "Wind",
     
 	"text.autoconfig.acclimatize.option.enableLogging": "Enable Logging",
@@ -82,6 +80,8 @@
     
     "text.autoconfig.acclimatize.option.enableWind": "Enable Wind",
     "text.autoconfig.acclimatize.option.multidimensionalWind": "Multidimensional Wind",
+	"text.autoconfig.acclimatize.option.windDirectionUpdateInterval": "Wind Direction Update Interval",
+	"text.autoconfig.acclimatize.option.windIntensityUpdateInterval": "Wind Intensity Update Interval",
 	"text.autoconfig.acclimatize.option.windChillFactor": "Wind Chill Factor",
     "text.autoconfig.acclimatize.option.windRayCount": "Wind Ray Count",
     "text.autoconfig.acclimatize.option.windRayLength": "Wind Ray Length"

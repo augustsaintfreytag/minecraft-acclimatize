@@ -15,16 +15,15 @@ A comprehensive and highly-configurable body temperature system for Minecraft. T
 - **Biome Temperature**: Each biome has a base temperature affecting the player
 - **Block Temperature**: Heating blocks (fireplaces, lava, campfires) and cooling blocks (ice, snow) affect nearby players
 - **Temperature Falloff**: Heat sources have configurable falloff based on distance
-- **Thermal Clothing**: Wear different materials to insulate against cold or heat
-- **Customizable Wool Lining**: Add wool to leather armor for additional insulation (ported from *Thermite*)
 - **Wind System**: Configurable wind that affects temperature and can be visualized with particles
+- **Thermal Clothing**: Wear different materials to insulate against cold or heat
+- **Customizable Wool Lining**: Add wool to leather armor for additional insulation (from *Thermite*)
 
 ### Items and Blocks
 - **Thermometer**: Check your current temperature and environmental factors
 - **Ice Water**: Drinkable item that provides temporary cold resistance
 - **Golden Sweet Berries**: Food with temperature-related effects
 - **Wool Cloth**: Crafting material to improve armor insulation
-- **Brick Fireplace**: Decorative heating block to warm your home
 - **Ice Box**: A cooling block with three stages (empty, freezing, frozen)
 
 ### HUD and Visual Feedback
@@ -43,15 +42,15 @@ The mod offers extensive configuration options through a user-friendly in-game i
 - **Item Temperature**: Configure how armor and held items affect temperature
 - **Material Properties**: Set temperature values for different armor materials
 - **HUD Customization**: Adjust the position and style of temperature display
-- **Environmental Factors**: Configure wind, seasons, and biome temperatures
+- **Environmental Factors**: Configure wind and biome temperatures
 
 ## Mod Compatibility
 
 *Acclimatize* is designed to be compatible with many other mods:
 
-- **Block Auto-Detection**: The mod can automatically handle modded blocks with heat or cold properties
-- **Material Auto-Assignment**: Temperature values can be automatically assigned to armor from other mods
-- **Configurable Compatibility**: Add specific modded items and blocks to the temperature system via configs
+- **Block Auto-Detection**: The mod can automatically handle some modded blocks with heat or cold properties
+- **Material Auto-Assignment**: Temperature values can be automatically assigned to wearables by material
+- **Configurable Compatibility**: Add overrides for specific items and blocks and assign temperature values
 - **Built-in Support**: Default configuration includes support for:
   - Hardcore Torches
   - Farmer's Delight
@@ -62,8 +61,8 @@ The mod offers extensive configuration options through a user-friendly in-game i
 
 - Minecraft 1.20.1
 - Fabric API 0.91.0+
-- Cloth Config 11.1.136+
 - Fabric Loader 0.16.10+
+- Cloth Config 11.1.136+
 - Java 17+
 
 ## License and Credits
@@ -71,5 +70,3 @@ The mod offers extensive configuration options through a user-friendly in-game i
 This project is available under the MIT License, which permits free use, modification, and distribution under the condition that the original copyright notice and permission notice are included in all copies or substantial portions of the software.
 
 *Acclimatize* is built upon the foundation of *Thermite*, originally created by Sparkierkan7. This fork is developed and maintained by Saint, with extensions and re-interpretations to the original concept including configurability, block and item handling, and player acclimatization.
-
-Copyright © 2025 Saint
