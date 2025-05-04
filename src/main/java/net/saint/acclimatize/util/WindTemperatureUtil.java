@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.HitResult;
@@ -17,8 +18,10 @@ public final class WindTemperatureUtil {
 
 	// Configuration
 
-	private static final double windBaseTurbulence = 10.0;
-	private static final double windTurbulence = windBaseTurbulence * Math.PI / 180d;
+	private static final double WIND_BASE_TURBULENCE = 10.0;
+	private static final double WIND_TURBULENCE = WIND_BASE_TURBULENCE * Math.PI / 180d;
+
+	private static final int WIND_INTERVAL_JITTER = 20 * 30; // 30 seconds
 
 	// State
 
@@ -26,6 +29,8 @@ public final class WindTemperatureUtil {
 
 	private static final Map<UUID, boolean[]> playerWindBuffers = new HashMap<>();
 	private static final Map<UUID, Integer> playerBufferIndices = new HashMap<>();
+
+	private static boolean didLogWindPropertiesSource = false;
 
 	// Library
 
@@ -45,12 +50,56 @@ public final class WindTemperatureUtil {
 
 	// Wind Tick
 
+	public static void tickWindIfNeeded(ServerWorld world, ServerState serverState) {
+		if (FabricLoader.getInstance().isModLoaded("immersivewinds")) {
+			if (!didLogWindPropertiesSource) {
+				didLogWindPropertiesSource = true;
+				Mod.LOGGER.info("Assigning deferred wind direction and intensity from loaded Immersive Winds.");
+			}
+
+			return;
+		}
+
+		var random = world.getRandom();
+		var serverTick = world.getTime();
+		var dayTimeLength = Mod.CONFIG.daylightTicks + Mod.CONFIG.nighttimeTicks;
+
+		if (dayTimeLength > serverState.nextWindIntensityTick) {
+			tickWindIntensity(world, serverState);
+			serverState.nextWindIntensityTick = serverTick + Mod.CONFIG.windIntensityUpdateInterval
+					+ random.nextBetween(-WIND_INTERVAL_JITTER, WIND_INTERVAL_JITTER);
+
+			if (Mod.CONFIG.enableLogging) {
+				Mod.LOGGER.info("Randomizing new wind intensity via tick at " + serverTick + ", next scheduled for "
+						+ serverState.nextWindIntensityTick + ".");
+			}
+
+		}
+
+		if (dayTimeLength > serverState.nextWindDirectionTick) {
+			tickWind(world, serverState);
+			serverState.nextWindDirectionTick = serverTick + Mod.CONFIG.windDirectionUpdateInterval
+					+ random.nextBetween(-WIND_INTERVAL_JITTER, WIND_INTERVAL_JITTER);
+
+			if (Mod.CONFIG.enableLogging) {
+				Mod.LOGGER.info("Randomizing new wind direction via tick at " + serverTick + ", next scheduled for "
+						+ serverState.nextWindDirectionTick + ".");
+			}
+		}
+	}
+
 	public static void tickWind(ServerWorld world, ServerState serverState) {
 		var random = world.getRandom();
 
 		serverState.windDirection = random.nextDouble() * 2 * Math.PI;
-		serverState.windIntensity = random.nextTriangular(5.0, 10.0);
+		serverState.windIntensity = random.nextTriangular(3.0, 6.0);
+		serverState.markDirty();
+	}
 
+	public static void tickWindIntensity(ServerWorld world, ServerState serverState) {
+		var random = world.getRandom();
+
+		serverState.windIntensity = random.nextTriangular(3.0, 6.0);
 		serverState.markDirty();
 	}
 
@@ -189,7 +238,7 @@ public final class WindTemperatureUtil {
 		var random = world.getRandom();
 
 		var windDirection = serverState.windDirection;
-		var turbulentAngle = windDirection + Math.PI + random.nextTriangular(0, windTurbulence);
+		var turbulentAngle = windDirection + Math.PI + random.nextTriangular(0, WIND_TURBULENCE);
 		var directionVector = new Vec3d(MathUtil.approximateSin(turbulentAngle), 0,
 				MathUtil.approximateCos(turbulentAngle));
 
