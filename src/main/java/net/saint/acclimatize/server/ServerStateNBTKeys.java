@@ -8,5 +8,7 @@ public final class ServerStateNBTKeys {
 
 	public static final String windDirection = "windDirection";
 	public static final String windIntensity = "windIntensity";
+	public static final String nextWindDirectionTick = "nextWindDirectionTick";
+	public static final String nextWindIntensityTick = "nextWindIntensityTick";
 
 }

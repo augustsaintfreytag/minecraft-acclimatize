@@ -19,6 +19,9 @@ public class ServerState extends PersistentState {
 	public double windDirection = 0.0;
 	public double windIntensity = 0.0;
 
+	public long nextWindDirectionTick = 0;
+	public long nextWindIntensityTick = 0;
+
 	// Player State
 
 	public HashMap<UUID, PlayerState> players = new HashMap<>();
@@ -45,6 +48,8 @@ public class ServerState extends PersistentState {
 		nbt.putString(ServerStateNBTKeys.worldVersion, worldVersion);
 		nbt.putDouble(ServerStateNBTKeys.windDirection, windDirection);
 		nbt.putDouble(ServerStateNBTKeys.windIntensity, windIntensity);
+		nbt.putLong(ServerStateNBTKeys.nextWindDirectionTick, nextWindDirectionTick);
+		nbt.putLong(ServerStateNBTKeys.nextWindIntensityTick, nextWindIntensityTick);
 
 		return nbt;
 	}
@@ -67,6 +72,8 @@ public class ServerState extends PersistentState {
 		serverState.worldVersion = tag.getString(ServerStateNBTKeys.worldVersion);
 		serverState.windDirection = tag.getDouble(ServerStateNBTKeys.windDirection);
 		serverState.windIntensity = tag.getDouble(ServerStateNBTKeys.windIntensity);
+		serverState.nextWindDirectionTick = tag.getLong(ServerStateNBTKeys.nextWindDirectionTick);
+		serverState.nextWindIntensityTick = tag.getLong(ServerStateNBTKeys.nextWindIntensityTick);
 
 		return serverState;
 	}
