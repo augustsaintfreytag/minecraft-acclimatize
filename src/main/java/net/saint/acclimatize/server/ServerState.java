@@ -10,9 +10,9 @@ import net.saint.acclimatize.player.PlayerState;
 
 public class ServerState extends PersistentState {
 
-	public String worldVersion = "4.1.0.8";
 	// World Metadata
 
+	public String worldVersion = Mod.modVersion;
 
 	// Wind
 
