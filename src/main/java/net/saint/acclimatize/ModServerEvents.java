@@ -38,13 +38,8 @@ public final class ModServerEvents {
 			var serverState = ServerStateUtil.getServerState(server);
 			var serverWorld = server.getOverworld();
 
-			if (FabricLoader.getInstance().isModLoaded("immersivewinds")) {
-				Mod.LOGGER.info("Assigning deferred wind direction and intensity from loaded Immersive Winds.");
-				return;
-			}
-
 			Mod.LOGGER.info("Randomizing new wind direction and intensity at server start.");
-			WindTemperatureUtil.tickWind(serverWorld, serverState);
+			WindTemperatureUtil.tickWindIfNeeded(serverWorld, serverState);
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register((server) -> {
