@@ -303,6 +303,14 @@ public class ModConfig implements ConfigData {
 	public boolean multidimensionalWind = false;
 
 	@ConfigEntry.Category("wind")
+	@Comment("The base number of ticks until wind direction is updated, plus randomization. (Default: 6000)")
+	public int windDirectionUpdateInterval = 6000;
+
+	@ConfigEntry.Category("wind")
+	@Comment("The base number of ticks until wind intensity is updated, plus randomization. (Default: 1200)")
+	public int windIntensityUpdateInterval = 1200;
+
+	@ConfigEntry.Category("wind")
 	@Comment("The factor for how much wind exposure affects ambient temperature. (Default: 1.25)")
 	public double windChillFactor = 1.25;
 
