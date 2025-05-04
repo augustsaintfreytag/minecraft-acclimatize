@@ -3,7 +3,6 @@ package net.saint.acclimatize;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.loader.api.FabricLoader;
 import net.saint.acclimatize.util.ServerStateUtil;
 import net.saint.acclimatize.util.SpaceUtil;
 import net.saint.acclimatize.util.WindTemperatureUtil;
@@ -39,14 +38,14 @@ public final class ModServerEvents {
 			var serverWorld = server.getOverworld();
 
 			Mod.LOGGER.info("Randomizing new wind direction and intensity at server start.");
-			WindTemperatureUtil.tickWindIfNeeded(serverWorld, serverState);
+			WindTemperatureUtil.tickWindInSchedule(serverWorld, serverState);
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register((server) -> {
 			var serverState = ServerStateUtil.getServerState(server);
 			var serverWorld = server.getOverworld();
 
-			WindTemperatureUtil.tickWindIfNeeded(serverWorld, serverState);
+			WindTemperatureUtil.tickWindInSchedule(serverWorld, serverState);
 		});
 	}
 

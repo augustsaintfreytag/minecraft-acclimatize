@@ -50,7 +50,7 @@ public final class WindTemperatureUtil {
 
 	// Wind Tick
 
-	public static void tickWindIfNeeded(ServerWorld world, ServerState serverState) {
+	public static void tickWindInSchedule(ServerWorld world, ServerState serverState) {
 		if (FabricLoader.getInstance().isModLoaded("immersivewinds")) {
 			if (!didLogWindPropertiesSource) {
 				didLogWindPropertiesSource = true;
