@@ -17,6 +17,7 @@ A comprehensive and highly-configurable body temperature system for Minecraft. T
 - **Temperature Falloff**: Heat sources have configurable falloff based on distance
 - **Thermal Clothing**: Wear different materials to insulate against cold or heat
 - **Customizable Wool Lining**: Add wool to leather armor for additional insulation (ported from *Thermite*)
+- **Wind System**: Configurable wind that affects temperature and can be visualized with particles
 
 ### Items and Blocks
 - **Thermometer**: Check your current temperature and environmental factors
@@ -25,11 +26,6 @@ A comprehensive and highly-configurable body temperature system for Minecraft. T
 - **Wool Cloth**: Crafting material to improve armor insulation
 - **Brick Fireplace**: Decorative heating block to warm your home
 - **Ice Box**: A cooling block with three stages (empty, freezing, frozen)
-
-### Weather and Seasons
-- **Wind System**: Configurable wind that affects temperature and can be visualized with particles
-- **Optional Seasons**: Seasonal temperature variations with configurable duration
-- **Weather Integration**: Option for season-dependent weather patterns
 
 ### HUD and Visual Feedback
 - **Temperature Display**: Configurable HUD element showing current body temperature

@@ -54,8 +54,8 @@ public class ModConfig implements ConfigData {
 	// Player
 
 	@ConfigEntry.Category("player")
-	@Comment("How quick your body temperature absorbs or loses heat from/to the environment. (Default: 0.02)")
-	public double acclimatizationRate = 0.02;
+	@Comment("The rate by which body temperature adapts to ambient temperatures. (Default: 0.25)")
+	public double acclimatizationRate = 0.25;
 
 	@ConfigEntry.Category("player")
 	@Comment("The factor by which player acclimatization rate is boosted when wet. (Default: 5.0)")
@@ -112,8 +112,12 @@ public class ModConfig implements ConfigData {
 	public double snowTemperatureDelta = -6.0;
 
 	@ConfigEntry.Category("world")
-	@Comment("The number of rays cast in a cone shape around the player to check for an interior space. Higher number means more precision but higher cost. (Default: 8)")
-	public int spaceNumberOfRays = 8;
+	@Comment("The temperature delta gradually applied between sunset and sunrise. (Default: -10.0)")
+	public double nightTemperatureDelta = -10.0;
+
+	@ConfigEntry.Category("world")
+	@Comment("The number of rays cast in a cone shape around the player to check for an interior space. Higher number means more precision but higher cost. (Default: 12)")
+	public int spaceNumberOfRays = 12;
 
 	@ConfigEntry.Category("world")
 	@Comment("The length of the rays cast around the player to check for an interior space. Higher means more coverage but higher cost. (Default: 32)")
@@ -142,11 +146,11 @@ public class ModConfig implements ConfigData {
 	public double blockTemperatureAbsoluteMaximum = 40.0;
 
 	@ConfigEntry.Category("blocks")
-	@Comment("The value added to distance under heat intensity used in the fall-off calculation. (Default: 0.1)")
+	@Comment("The value added to distance under heat intensity used in the fall-off calculation. (Default: 0.75)")
 	public double blockTemperatureFalloffConstant = 0.75;
 
 	@ConfigEntry.Category("blocks")
-	@Comment("The factor multiplied by the distance between player and heat source. Lower means less falloff. (Default: 0.5)")
+	@Comment("The factor multiplied by the distance between player and heat source. Lower means less falloff. (Default: 0.075)")
 	public double blockTemperatureDistanceFalloffFactor = 0.075;
 
 	@ConfigEntry.Category("blocks")
@@ -203,9 +207,9 @@ public class ModConfig implements ConfigData {
 			"minecraft:blue_ice = -2.0",
 			"minecraft:snow_block = -0.5");
 
-	@ConfigEntry.Category("player")
-	@Comment("Temperature value applied when the player is submerged in water. (Default: -5.0)")
-	public double waterBlockTemperature = -5.0;
+	@ConfigEntry.Category("blocks")
+	@Comment("Temperature value applied when the player is submerged in water. (Default: -8.0)")
+	public double waterBlockTemperature = -8.0;
 
 	// Items
 
@@ -257,15 +261,15 @@ public class ModConfig implements ConfigData {
 			"turtle = 1.0");
 
 	@ConfigEntry.Category("items")
-	@Comment("Temperature factor for helmets with auto-assigned material-based values. (Default: 0.5)")
+	@Comment("Temperature factor for helmets with auto-assigned material-based values. (Default: 1.0)")
 	public double helmetAutoTemperatureFactor = 1.0;
 
 	@ConfigEntry.Category("items")
-	@Comment("Temperature factor for chestplates with auto-assigned material-based values. (Default: 1.0)")
+	@Comment("Temperature factor for chestplates with auto-assigned material-based values. (Default: 2.0)")
 	public double leggingsAutoTemperatureFactor = 2.0;
 
 	@ConfigEntry.Category("items")
-	@Comment("Temperature factor for leggings with auto-assigned material-based values. (Default: 1.25)")
+	@Comment("Temperature factor for leggings with auto-assigned material-based values. (Default: 3.0)")
 	public double chestplateAutoTemperatureFactor = 3.0;
 
 	@ConfigEntry.Category("items")
@@ -273,8 +277,8 @@ public class ModConfig implements ConfigData {
 	public double bootsAutoTemperatureFactor = 1.0;
 
 	@ConfigEntry.Category("items")
-	@Comment("The factor for how much the raw temperature value of worn items adds to player temperature. (Default: 0.35)")
-	public double itemTemperatureFactor = 0.35;
+	@Comment("The factor for how much the raw temperature value of worn items adds to player temperature. (Default: 0.25)")
+	public double itemTemperatureFactor = 0.25;
 
 	@ConfigEntry.Category("items")
 	@Comment("Factor for how much player acclimatization is affected by the temperature value of worn items. (Default: -0.005)")
@@ -307,37 +311,7 @@ public class ModConfig implements ConfigData {
 	public int windRayCount = 6;
 
 	@ConfigEntry.Category("wind")
-	@Comment("How many blocks long wind rays are. Increase for larger spaces. (Default: 10)")
-	public int windRayLength = 10;
-
-	// Seasons
-
-	@ConfigEntry.Category("seasons")
-	@Comment("(Experimental) A small built in season system that affects your temperature depending on the season. You can configure the length of each season in half seconds, (one minecraft day = 2400 half seconds).")
-	public boolean enableSeasonSystem = false;
-
-	@ConfigEntry.Category("seasons")
-	@Comment("Length of spring (Default: 48000 half seconds = 20 days).")
-	public long springSeasonLength = 48000;
-
-	@ConfigEntry.Category("seasons")
-	@Comment("Length of summer (Default 48000 half seconds = 20 days).")
-	public long summerSeasonLength = 48000;
-
-	@ConfigEntry.Category("seasons")
-	@Comment("Length of fall (Default 48000 half seconds = 20 days).")
-	public long fallSeasonLength = 48000;
-
-	@ConfigEntry.Category("seasons")
-	@Comment("Length of winter (Default 48000 half seconds = 20 days).")
-	public long winterSeasonLength = 48000;
-
-	@ConfigEntry.Category("seasons")
-	@Comment("Multiplier for how much seasons affect your temperature.")
-	public float seasonTemperatureExtremenessFactor = 1.0f;
-
-	@ConfigEntry.Category("seasons")
-	@Comment("(Experimental) Makes weather reflect the current season. If you enable this make sure to run (/gamerule doWeatherCycle false) to disable the vanilla weather cycle.")
-	public boolean seasonalWeather = false;
+	@Comment("How many blocks long wind rays are. Increase for larger spaces. (Default: 16)")
+	public int windRayLength = 16;
 
 }

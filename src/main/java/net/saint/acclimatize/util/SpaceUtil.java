@@ -40,7 +40,9 @@ public final class SpaceUtil {
 		playerLastSpacePreCheck.put(playerId, preCheckResult);
 
 		if (!preCheckResult) {
-			// Ray hit the sky, assume outdoors.
+			// Pre-check raycast hit did not hit blocks, assume exterior.
+			// Having a single block above your head does not make an interior
+			// but having no block above your head definitively makes an exterior.
 			cleanUpPlayerData(player);
 			profile.end();
 
@@ -56,7 +58,7 @@ public final class SpaceUtil {
 		}
 
 		if (!performAccumulativeRaycastForPositionInInterior(world, player)) {
-			// Ray sequence hit a block, assume indoors.
+			// Rays in ring buffer did not hit blocks, assume exterior.
 			profile.end();
 
 			if (Mod.CONFIG.enableLogging) {
@@ -68,8 +70,7 @@ public final class SpaceUtil {
 		profile.end();
 
 		if (Mod.CONFIG.enableLogging) {
-			Mod.LOGGER.info(
-					"Space check raycast (hit block, extended check), duration: " + profile.getDescription());
+			Mod.LOGGER.info("Space check raycast (hit block, extended check), duration: " + profile.getDescription());
 		}
 
 		return true;

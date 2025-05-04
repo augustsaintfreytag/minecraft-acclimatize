@@ -16,7 +16,7 @@ public class PlayerTemperatureUtil {
 		// Biome Temperature
 
 		var biomeTemperature = BiomeTemperatureUtil.biomeTemperatureForPlayer(player, isInInterior);
-		var effectiveTemperature = biomeTemperature.median;
+		var effectiveTemperature = biomeTemperature;
 
 		// Item Temperature (Wearables)
 
@@ -30,9 +30,7 @@ public class PlayerTemperatureUtil {
 
 		// Wind
 
-		var windTemperatureTuple = WindTemperatureUtil.windTemperatureForEnvironment(serverState, player, isInInterior);
-		var windTemperatureDelta = windTemperatureTuple.temperature * windTemperatureTuple.windChillFactor;
-
+		var windTemperatureDelta = WindTemperatureUtil.windTemperatureForEnvironment(serverState, player, isInInterior);
 		effectiveTemperature += windTemperatureDelta;
 
 		// Effects
@@ -53,22 +51,17 @@ public class PlayerTemperatureUtil {
 			acclimatizationRate += ItemTemperatureUtil.acclimatizationRateDeltaForItemTemperature(itemTemperatureDelta);
 		}
 
+		acclimatizationRate = MathUtil.clamp(acclimatizationRate, Mod.CONFIG.itemAcclimatizationRateMinimum, 1.0);
+
 		if (player.isWet()) {
 			// Increase acclimatization rate when wet.
 			acclimatizationRate *= Mod.CONFIG.wetAcclimatizationRateBoostFactor;
-			blockTemperatureDelta += Mod.CONFIG.waterBlockTemperature * 0.75;
 		}
-
-		if (player.isSubmergedInWater()) {
-			blockTemperatureDelta += Mod.CONFIG.waterBlockTemperature * 0.25;
-		}
-
-		acclimatizationRate = MathUtil.clamp(acclimatizationRate, Mod.CONFIG.itemAcclimatizationRateMinimum, 1.0);
 
 		// Player Temperature
 
 		var bodyTemperature = playerState.bodyTemperature;
-		bodyTemperature += (effectiveTemperature - bodyTemperature) * acclimatizationRate;
+		bodyTemperature += (effectiveTemperature - bodyTemperature) * (acclimatizationRate / 10.0);
 
 		// State
 
@@ -76,7 +69,7 @@ public class PlayerTemperatureUtil {
 		playerState.acclimatizationRate = acclimatizationRate;
 		playerState.bodyTemperature = bodyTemperature;
 		playerState.ambientTemperature = effectiveTemperature;
-		playerState.biomeTemperature = biomeTemperature.median;
+		playerState.biomeTemperature = biomeTemperature;
 		playerState.blockTemperature = blockTemperatureDelta;
 		playerState.itemTemperature = itemTemperatureDelta;
 		playerState.windTemperature = windTemperatureDelta;

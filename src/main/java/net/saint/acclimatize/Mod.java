@@ -10,22 +10,21 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemGroups;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.SpecialRecipeSerializer;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
 import net.saint.acclimatize.item.GoldSweetBerriesItem;
 import net.saint.acclimatize.item.IceWaterItem;
 import net.saint.acclimatize.item.ThermometerItem;
@@ -149,10 +148,7 @@ public class Mod implements ModInitializer {
 			var serverState = ServerStateUtil.getServerState(server);
 
 			if (!modVersion.equals(serverState.worldVersion)) {
-				serverState.windRandomizeTick = 24000;
-				serverState.windTemperatureModifierRange = 8;
 				serverState.worldVersion = modVersion;
-
 				serverState.markDirty();
 			}
 
@@ -171,26 +167,36 @@ public class Mod implements ModInitializer {
 			WindTemperatureUtil.cleanUpPlayerData(player);
 		});
 
-		ServerTickEvents.END_SERVER_TICK.register((server) -> {
-			ServerState serverState = ServerStateUtil.getServerState(server);
+		ServerLifecycleEvents.SERVER_STARTED.register((server) -> {
+			var serverState = ServerStateUtil.getServerState(server);
+			var serverWorld = server.getOverworld();
 
-			if (serverState.windRandomizeTick >= 24000) {
-				serverState.windRandomizeTick = 0;
-
-				var random = server.getOverworld().getRandom();
-
-				serverState.windPitch = 360 * Math.PI / 180;
-				serverState.windYaw = random.nextDouble() * 360 * Math.PI / 180;
-				serverState.windTemperature = -serverState.windTemperatureModifierRange
-						+ random.nextDouble() * serverState.windTemperatureModifierRange * 2;
-				serverState.precipitationWindModifier = -serverState.windTemperatureModifierRange
-						+ random.nextDouble() * -serverState.windTemperatureModifierRange;
-
-				serverState.markDirty();
+			if (FabricLoader.getInstance().isModLoaded("immersivewinds")) {
+				Mod.LOGGER.info("Assigning deferred wind direction and intensity from loaded Immersive Winds.");
+				return;
 			}
 
-			serverState.windRandomizeTick += 1;
+			Mod.LOGGER.info("Randomizing new wind direction and intensity at server start.");
+			WindTemperatureUtil.tickWind(serverWorld, serverState);
+		});
 
+		ServerTickEvents.END_SERVER_TICK.register((server) -> {
+			var serverState = ServerStateUtil.getServerState(server);
+			var serverWorld = server.getOverworld();
+			var serverTick = serverWorld.getTime();
+			var dayTimeLength = Mod.CONFIG.daylightTicks + Mod.CONFIG.nighttimeTicks;
+
+			if (serverTick % dayTimeLength != 0) {
+				return;
+			}
+
+			if (FabricLoader.getInstance().isModLoaded("immersivewinds")) {
+				Mod.LOGGER.info("Assigning deferred wind direction and intensity from loaded Immersive Winds.");
+				return;
+			}
+
+			Mod.LOGGER.info("Randomizing new wind direction and intensity via tick at " + serverTick + ".");
+			WindTemperatureUtil.tickWind(serverWorld, serverState);
 		});
 
 		// Commands
@@ -214,49 +220,20 @@ public class Mod implements ModInitializer {
 								.executes(context -> {
 
 									var player = EntityArgumentType.getPlayer(context, "player");
-									var world = player.getWorld();
-									var server = world.getServer();
+									var server = player.getServer();
+									var serverWorld = server.getOverworld();
 
 									var serverState = ServerStateUtil.getServerState(server);
-									var random = server.getOverworld().getRandom();
+									WindTemperatureUtil.tickWind(serverWorld, serverState);
 
-									serverState.windPitch = 360 * Math.PI / 180;
-									serverState.windYaw = random.nextDouble() * 360 * Math.PI / 180;
-									serverState.windTemperature = -serverState.windTemperatureModifierRange
-											+ random.nextDouble() * serverState.windTemperatureModifierRange * 2;
-									serverState.precipitationWindModifier = -serverState.windTemperatureModifierRange
-											+ random.nextDouble() * -serverState.windTemperatureModifierRange;
-
-									serverState.markDirty();
-
-									context.getSource().sendMessage(Text.literal("Wind Randomized."));
-									context.getSource().sendMessage(
-											Text.literal("Wind Yaw: " + serverState.windYaw * 180 / Math.PI));
-									context.getSource().sendMessage(
-											Text.literal("Wind Temperature Modifier: "
-													+ serverState.windTemperature));
-									context.getSource().sendMessage(Text.literal(
-											"Precipitation Modifier: " + serverState.precipitationWindModifier));
+									context.getSource().sendMessage(Text.literal("Wind randomized."));
+									context.getSource().sendMessage(Text
+											.literal("Wind Direction: " + serverState.windDirection * 180 / Math.PI));
+									context.getSource()
+											.sendMessage(Text.literal("Wind Intensity: " + serverState.windIntensity));
 
 									return 1;
 								}))));
-
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("acclimatize:show_wind").requires(source -> source.hasPermissionLevel(4))
-						.executes(context -> {
-
-							ServerState serverState = ServerStateUtil.getServerState(context.getSource().getServer());
-							PlayerEntity player = context.getSource().getPlayer();
-
-							Vec3d dir = new Vec3d((Math.cos(serverState.windPitch) * Math.cos(serverState.windYaw)),
-									(Math.sin(serverState.windPitch) * Math.cos(serverState.windYaw)),
-									Math.sin(serverState.windYaw));
-
-							player.getWorld().addParticle(ParticleTypes.CLOUD, player.getX(), player.getY() + 1,
-									player.getZ(), dir.x * 4, dir.y * 4, dir.z * 4);
-
-							return 1;
-						})));
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
 				.register(literal("acclimatize:log_wind_info").requires(source -> source.hasPermissionLevel(4))
@@ -266,14 +243,10 @@ public class Mod implements ModInitializer {
 
 							context.getSource().sendMessage(Text.literal("§e=====Wind Info====="));
 							context.getSource()
-									.sendMessage(Text.literal("§eWind Yaw: §6" + serverState.windYaw * 180 / Math.PI));
+									.sendMessage(Text.literal(
+											"§eWind Direction: §6" + serverState.windDirection * 180 / Math.PI));
 							context.getSource().sendMessage(
-									Text.literal(
-											"§eWind Temperature Modifier: §6" + serverState.windTemperature));
-							context.getSource().sendMessage(Text
-									.literal("§ePrecipitation Modifier: §6" + serverState.precipitationWindModifier));
-							context.getSource().sendMessage(
-									Text.literal("§eNext Randomize: §a" + serverState.windRandomizeTick + "§7/24000"));
+									Text.literal("§eWind Temperature Modifier: §6" + serverState.windIntensity));
 
 							return 1;
 						})));
