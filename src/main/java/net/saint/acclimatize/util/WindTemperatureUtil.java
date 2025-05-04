@@ -77,7 +77,7 @@ public final class WindTemperatureUtil {
 		}
 
 		if (dayTimeLength > serverState.nextWindDirectionTick) {
-			tickWind(world, serverState);
+			tickWindDirection(world, serverState);
 			serverState.nextWindDirectionTick = serverTick + Mod.CONFIG.windDirectionUpdateInterval
 					+ random.nextBetween(-WIND_INTERVAL_JITTER, WIND_INTERVAL_JITTER);
 
@@ -88,15 +88,19 @@ public final class WindTemperatureUtil {
 		}
 	}
 
-	public static void tickWind(ServerWorld world, ServerState serverState) {
+	public static void tickWindDirectionAndIntensity(ServerWorld world, ServerState serverState) {
+		tickWindDirection(world, serverState);
+		tickWindIntensity(world, serverState);
+	}
+
+	private static void tickWindDirection(ServerWorld world, ServerState serverState) {
 		var random = world.getRandom();
 
 		serverState.windDirection = random.nextDouble() * 2 * Math.PI;
-		serverState.windIntensity = random.nextTriangular(3.0, 6.0);
 		serverState.markDirty();
 	}
 
-	public static void tickWindIntensity(ServerWorld world, ServerState serverState) {
+	private static void tickWindIntensity(ServerWorld world, ServerState serverState) {
 		var random = world.getRandom();
 
 		serverState.windIntensity = random.nextTriangular(3.0, 6.0);

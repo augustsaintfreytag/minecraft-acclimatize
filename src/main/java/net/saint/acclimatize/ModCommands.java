@@ -36,7 +36,7 @@ public final class ModCommands {
 									var serverWorld = server.getOverworld();
 
 									var serverState = ServerStateUtil.getServerState(server);
-									WindTemperatureUtil.tickWind(serverWorld, serverState);
+									WindTemperatureUtil.tickWindDirectionAndIntensity(serverWorld, serverState);
 
 									context.getSource().sendMessage(Text.literal("Wind randomized."));
 									context.getSource().sendMessage(Text
