@@ -3,7 +3,6 @@ package net.saint.acclimatize;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.loader.api.FabricLoader;
 import net.saint.acclimatize.util.ServerStateUtil;
 import net.saint.acclimatize.util.SpaceUtil;
 import net.saint.acclimatize.util.WindTemperatureUtil;
@@ -38,20 +37,15 @@ public final class ModServerEvents {
 			var serverState = ServerStateUtil.getServerState(server);
 			var serverWorld = server.getOverworld();
 
-			if (FabricLoader.getInstance().isModLoaded("immersivewinds")) {
-				Mod.LOGGER.info("Assigning deferred wind direction and intensity from loaded Immersive Winds.");
-				return;
-			}
-
 			Mod.LOGGER.info("Randomizing new wind direction and intensity at server start.");
-			WindTemperatureUtil.tickWind(serverWorld, serverState);
+			WindTemperatureUtil.tickWindInSchedule(serverWorld, serverState);
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register((server) -> {
 			var serverState = ServerStateUtil.getServerState(server);
 			var serverWorld = server.getOverworld();
 
-			WindTemperatureUtil.tickWindIfNeeded(serverWorld, serverState);
+			WindTemperatureUtil.tickWindInSchedule(serverWorld, serverState);
 		});
 	}
 
