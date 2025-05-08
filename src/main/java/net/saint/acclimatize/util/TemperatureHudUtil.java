@@ -127,13 +127,21 @@ public final class TemperatureHudUtil {
 
 		if (temperature < burnThresholdMinor - 10 && temperature > freezeThresholdMinor + 10) {
 			return TEMPERATE_GLASS_TEXTURE;
-		} else if (temperature < freezeThresholdMinor + 11 && temperature > freezeThresholdMinor + 5) {
+		}
+
+		if (temperature < freezeThresholdMinor + 11 && temperature > freezeThresholdMinor + 5) {
 			return COLD_GLASS_TEXTURE;
-		} else if (temperature < freezeThresholdMinor + 6) {
+		}
+
+		if (temperature < freezeThresholdMinor + 6) {
 			return FROZEN_GLASS_TEXTURE;
-		} else if (temperature > burnThresholdMinor - 11 && temperature < burnThresholdMinor - 5) {
+		}
+
+		if (temperature > burnThresholdMinor - 11 && temperature < burnThresholdMinor - 5) {
 			return HOT_GLASS_TEXTURE;
-		} else if (temperature > burnThresholdMinor - 6) {
+		}
+
+		if (temperature > burnThresholdMinor - 6) {
 			return BLAZING_GLASS_TEXTURE;
 		}
 
@@ -143,11 +151,17 @@ public final class TemperatureHudUtil {
 	private static Identifier selectOutlineTexture(double temperatureDifference) {
 		if (temperatureDifference < 0 && temperatureDifference > -10) {
 			return COOLING_OUTLINE_SMALL_TEXTURE;
-		} else if (temperatureDifference < -9) {
+		}
+
+		if (temperatureDifference < -9) {
 			return COOLING_OUTLINE_TEXTURE;
-		} else if (temperatureDifference > 0 && temperatureDifference < 10) {
+		}
+
+		if (temperatureDifference > 0 && temperatureDifference < 10) {
 			return HEATING_OUTLINE_SMALL_TEXTURE;
-		} else if (temperatureDifference > 9) {
+		}
+
+		if (temperatureDifference > 9) {
 			return HEATING_OUTLINE_TEXTURE;
 		}
 
