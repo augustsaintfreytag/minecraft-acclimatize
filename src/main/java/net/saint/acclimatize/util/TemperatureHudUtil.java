@@ -1,5 +1,7 @@
 package net.saint.acclimatize.util;
 
+import java.awt.Point;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
@@ -62,74 +64,94 @@ public final class TemperatureHudUtil {
 			return;
 		}
 
+		if (!client.player.isSpectator() && !client.player.isCreative()) {
+			var offset = applyGlassShakeForRender(temperature);
+			var glassTexture = selectGlassTexture(temperature);
+			var outlineTexture = selectOutlineTexture(temperatureDifference);
+
+			var positionX = x + offset.x;
+			var positionY = y + offset.y;
+
+			if (glassTexture != null) {
+				context.drawTexture(glassTexture, positionX - 8, positionY - 10, 0, 0, 16, 21, 16, 21);
+			}
+
+			if (outlineTexture != null) {
+				context.drawTexture(outlineTexture, positionX - 8, positionY - 10, 0, 0, 16, 21, 16, 21);
+			}
+		}
+	}
+
+	private static Point applyGlassShakeForRender(double temperature) {
 		var burnThresholdMinor = Mod.CONFIG.hyperthermiaThresholdMinor;
 		var burnThresholdMajor = Mod.CONFIG.hyperthermiaThresholdMajor;
 		var freezeThresholdMinor = Mod.CONFIG.hypothermiaThresholdMinor;
 		var freezeThresholdMajor = Mod.CONFIG.hypothermiaThresholdMajor;
 
-		if (!client.player.isSpectator() && !client.player.isCreative()) {
-			if (temperature < freezeThresholdMinor + 1
-					&& temperature > freezeThresholdMajor) {
-				ModClient.glassShakeTickMax = 4;
-				ModClient.glassShakeAxis = true;
-			} else if (temperature < freezeThresholdMajor + 1) {
-				ModClient.glassShakeTickMax = 3;
-				ModClient.glassShakeAxis = true;
-			} else if (temperature > burnThresholdMinor - 1
-					&& temperature < burnThresholdMajor) {
-				ModClient.glassShakeTickMax = 4;
-				ModClient.glassShakeAxis = false;
-			} else if (temperature > burnThresholdMajor - 1) {
-				ModClient.glassShakeTickMax = 3;
-				ModClient.glassShakeAxis = false;
+		if (temperature < freezeThresholdMinor + 1 && temperature > freezeThresholdMajor) {
+			ModClient.glassShakeTickMax = 4;
+			ModClient.glassShakeAxis = true;
+		} else if (temperature < freezeThresholdMajor + 1) {
+			ModClient.glassShakeTickMax = 3;
+			ModClient.glassShakeAxis = true;
+		} else if (temperature > burnThresholdMinor - 1 && temperature < burnThresholdMajor) {
+			ModClient.glassShakeTickMax = 4;
+			ModClient.glassShakeAxis = false;
+		} else if (temperature > burnThresholdMajor - 1) {
+			ModClient.glassShakeTickMax = 3;
+			ModClient.glassShakeAxis = false;
+		} else {
+			ModClient.glassShakeTickMax = 0;
+		}
+
+		if (ModClient.glassShakeTickMax != 0) {
+			ModClient.glassShakeTick += 1;
+
+			if (ModClient.glassShakeTick >= ModClient.glassShakeTickMax) {
+				ModClient.glassShakeTick = 0;
+				ModClient.glassShakePM = -ModClient.glassShakePM;
+			}
+
+			if (ModClient.glassShakeAxis) {
+				return new Point(ModClient.glassShakePM, 0);
 			} else {
-				ModClient.glassShakeTickMax = 0;
-			}
-
-			if (ModClient.glassShakeTickMax != 0) {
-				ModClient.glassShakeTick += 1;
-				if (ModClient.glassShakeTick >= ModClient.glassShakeTickMax) {
-					ModClient.glassShakeTick = 0;
-					if (ModClient.glassShakePM == 1) {
-						ModClient.glassShakePM = -1;
-					} else if (ModClient.glassShakePM == -1) {
-						ModClient.glassShakePM = 1;
-					}
-				}
-				if (ModClient.glassShakeAxis) {
-					x += ModClient.glassShakePM;
-				} else {
-					y += ModClient.glassShakePM;
-				}
-			}
-
-			if (temperature < burnThresholdMinor - 10
-					&& temperature > freezeThresholdMinor + 10) {
-				context.drawTexture(TEMPERATE_GLASS_TEXTURE, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temperature < freezeThresholdMinor + 11
-					&& temperature > freezeThresholdMinor + 5) {
-				context.drawTexture(COLD_GLASS_TEXTURE, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temperature < freezeThresholdMinor + 6) {
-				context.drawTexture(FROZEN_GLASS_TEXTURE, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temperature > burnThresholdMinor - 11
-					&& temperature < burnThresholdMinor - 5) {
-				context.drawTexture(HOT_GLASS_TEXTURE, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temperature > burnThresholdMinor - 6) {
-				context.drawTexture(BLAZING_GLASS_TEXTURE, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			}
-
-			if (temperatureDifference < 0
-					&& temperatureDifference > -10) {
-				context.drawTexture(COOLING_OUTLINE_SMALL_TEXTURE, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temperatureDifference < -9) {
-				context.drawTexture(COOLING_OUTLINE_TEXTURE, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temperatureDifference > 0
-					&& temperatureDifference < 10) {
-				context.drawTexture(HEATING_OUTLINE_SMALL_TEXTURE, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temperatureDifference > 9) {
-				context.drawTexture(HEATING_OUTLINE_TEXTURE, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
+				return new Point(0, ModClient.glassShakePM);
 			}
 		}
+		return new Point(0, 0);
+	}
+
+	private static Identifier selectGlassTexture(double temperature) {
+		var burnThresholdMinor = Mod.CONFIG.hyperthermiaThresholdMinor;
+		var freezeThresholdMinor = Mod.CONFIG.hypothermiaThresholdMinor;
+
+		if (temperature < burnThresholdMinor - 10 && temperature > freezeThresholdMinor + 10) {
+			return TEMPERATE_GLASS_TEXTURE;
+		} else if (temperature < freezeThresholdMinor + 11 && temperature > freezeThresholdMinor + 5) {
+			return COLD_GLASS_TEXTURE;
+		} else if (temperature < freezeThresholdMinor + 6) {
+			return FROZEN_GLASS_TEXTURE;
+		} else if (temperature > burnThresholdMinor - 11 && temperature < burnThresholdMinor - 5) {
+			return HOT_GLASS_TEXTURE;
+		} else if (temperature > burnThresholdMinor - 6) {
+			return BLAZING_GLASS_TEXTURE;
+		}
+
+		return null;
+	}
+
+	private static Identifier selectOutlineTexture(double temperatureDifference) {
+		if (temperatureDifference < 0 && temperatureDifference > -10) {
+			return COOLING_OUTLINE_SMALL_TEXTURE;
+		} else if (temperatureDifference < -9) {
+			return COOLING_OUTLINE_TEXTURE;
+		} else if (temperatureDifference > 0 && temperatureDifference < 10) {
+			return HEATING_OUTLINE_SMALL_TEXTURE;
+		} else if (temperatureDifference > 9) {
+			return HEATING_OUTLINE_TEXTURE;
+		}
+
+		return null;
 	}
 
 	// Rendering (Gauge Thermometer)
