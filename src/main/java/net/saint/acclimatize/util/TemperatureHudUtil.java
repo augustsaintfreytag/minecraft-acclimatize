@@ -184,48 +184,68 @@ public final class TemperatureHudUtil {
 		var xOffset = Mod.CONFIG.temperatureXOffset;
 		var yOffset = Mod.CONFIG.temperatureYOffset;
 
-		var x = window.getScaledWidth() / 2 + xOffset;
-		var y = window.getScaledHeight() + yOffset;
+		var centerX = window.getScaledWidth() / 2 + xOffset;
+		var centerY = window.getScaledHeight() + yOffset;
 
 		var spacingFactor = 1.5f;
-		var temperatureFraction = ((temperature / 100f) * Math.round(40 * spacingFactor));
+		var temperatureFraction = calculateTemperatureFraction(temperature, spacingFactor);
 
-		if (((temperature / 100f) * Math.round(40 * spacingFactor)) > 59.0f) {
-			temperatureFraction = ((97 / 100f) * Math.round(40 * spacingFactor));
-		} else if ((temperature / 100f) < 0) {
-			temperatureFraction = 0f;
-		}
-
-		context.drawTexture(THERMOMETER_GAUGE_TEXTURE, x - ((44 + 149) - Math.round(2 * spacingFactor)),
-				y - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1), 0, 0,
+		context.drawTexture(THERMOMETER_GAUGE_TEXTURE,
+				centerX - ((44 + 149) - Math.round(2 * spacingFactor)),
+				centerY - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1),
+				0, 0,
 				Math.round(40 * spacingFactor), Math.round(9 * spacingFactor),
 				Math.round(40 * spacingFactor), Math.round(9 * spacingFactor));
 
 		context.drawTexture(THERMOMETER_HAND_TEXTURE,
-				x - (int) (((44 + 149) - Math.round(2 * spacingFactor)) - temperatureFraction),
-				y - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1), 0, 0,
-				Math.round(1), Math.round(9 * spacingFactor), Math.round(1), Math.round(9 * spacingFactor));
+				centerX - (int) (((44 + 149) - Math.round(2 * spacingFactor)) - temperatureFraction),
+				centerY - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1),
+				0, 0,
+				Math.round(1), Math.round(9 * spacingFactor),
+				Math.round(1), Math.round(9 * spacingFactor));
 
-		var frameY = y - (Math.round(13 * spacingFactor) + 1);
-
-		context.drawTexture(THERMOMETER_FRAME_TEXTURE, x - (44 + 149), frameY, 0, 0,
+		var frameY = centerY - (Math.round(13 * spacingFactor) + 1);
+		context.drawTexture(THERMOMETER_FRAME_TEXTURE,
+				centerX - (44 + 149),
+				frameY,
+				0, 0,
 				Math.round(44 * spacingFactor), Math.round(13 * spacingFactor),
 				Math.round(44 * spacingFactor), Math.round(13 * spacingFactor));
 
-		if (temperatureDifference > 0) {
-			context.drawTexture(THERMOMETER_FLAME_TEXTURE, x - (17 + 149), y - (Math.round(22 * spacingFactor)),
-					0, 0, Math.round(8 * spacingFactor), Math.round(8 * spacingFactor),
-					Math.round(8 * spacingFactor), Math.round(8 * spacingFactor));
-		} else if (temperatureDifference < 0) {
-			context.drawTexture(THERMOMETER_SNOWFLAKE_TEXTURE, x - (17 + 149),
-					y - (Math.round(22 * spacingFactor)), 0, 0, Math.round(8 * spacingFactor),
+		var indicatorTexture = selectIndicatorTexture(temperatureDifference);
+		if (indicatorTexture != null) {
+			context.drawTexture(indicatorTexture,
+					centerX - (17 + 149),
+					centerY - (Math.round(22 * spacingFactor)),
+					0, 0,
 					Math.round(8 * spacingFactor), Math.round(8 * spacingFactor),
-					Math.round(8 * spacingFactor));
-		} else {
-			context.drawTexture(THERMOMETER_STILL_TEXTURE, x - (17 + 149), y - (Math.round(22 * spacingFactor)),
-					0, 0, Math.round(8 * spacingFactor), Math.round(8 * spacingFactor),
 					Math.round(8 * spacingFactor), Math.round(8 * spacingFactor));
 		}
 	}
 
+	private static double calculateTemperatureFraction(double temperature, double spacingFactor) {
+		var scaledValue = (temperature / 100f) * Math.round(40 * spacingFactor);
+
+		if (scaledValue > 59.0f) {
+			return (97f / 100f) * Math.round(40 * spacingFactor);
+		}
+
+		if ((temperature / 100f) < 0f) {
+			return 0f;
+		}
+
+		return scaledValue;
+	}
+
+	private static Identifier selectIndicatorTexture(double temperatureDifference) {
+		if (temperatureDifference > 0) {
+			return THERMOMETER_FLAME_TEXTURE;
+		}
+
+		if (temperatureDifference < 0) {
+			return THERMOMETER_SNOWFLAKE_TEXTURE;
+		}
+
+		return THERMOMETER_STILL_TEXTURE;
+	}
 }
