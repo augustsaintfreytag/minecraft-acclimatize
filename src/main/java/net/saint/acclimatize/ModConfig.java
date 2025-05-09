@@ -31,6 +31,9 @@ public class ModConfig implements ConfigData {
 	@ConfigEntry.Category("hud") @Comment("When enabled, being cold enough causes a blue outline effect. And being hot enough causes an orange one. (Default: true)")
 	public boolean enableTemperatureVignette = true;
 
+	@ConfigEntry.Category("hud") @Comment("The opacity value used when rendering the temperature vignette. Can be used to fade or intensify the effect. (Default: 1.0)")
+	public double temperatureVignetteAlpha = 1.0;
+
 	@ConfigEntry.Category("hud") @Comment("When enabled, particles will spawn showing the direction that the wind is flowing. More wind = more particles. (Default: true)")
 	public boolean enableWindParticles = false;
 

@@ -29,6 +29,7 @@
     "text.autoconfig.acclimatize.option.temperatureDisplayType": "Temperature Display Type",
     "text.autoconfig.acclimatize.option.temperatureDamageDecreasesSaturation": "Temperature Damage Decreases Saturation",
     "text.autoconfig.acclimatize.option.enableTemperatureVignette": "Enable Temperature Vignette",
+	"text.autoconfig.acclimatize.option.temperatureVignetteAlpha": "Temperature Vignette Alpha",
     "text.autoconfig.acclimatize.option.enableWindParticles": "Enable Wind Particles",
 	"text.autoconfig.acclimatize.option.enableThermometerTemperatureDisplay": "Enable Thermometer Temperature Display",
 	    
