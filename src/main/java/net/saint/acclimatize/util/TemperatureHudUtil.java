@@ -1,6 +1,7 @@
 package net.saint.acclimatize.util;
 
 import java.awt.Point;
+import java.util.HashMap;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -21,7 +22,7 @@ public final class TemperatureHudUtil {
 	}
 
 	private enum TEMPERATURE_CHANGE_INDICATOR {
-		EXTREME_COOLING, COOLING, HEATING, EXTREME_HEATING
+		EXTREME_COOLING, REGULAR_COOLING, NEUTRAL, REGULAR_HEATING, EXTREME_HEATING
 	}
 
 	// Textures
@@ -34,16 +35,29 @@ public final class TemperatureHudUtil {
 	private static final Identifier THERMOMETER_FLAME_TEXTURE = textureIdentifierForThermometer("flame_icon_8x8.png");
 	private static final Identifier THERMOMETER_STILL_TEXTURE = textureIdentifierForThermometer("temperate_icon.png");
 
-	private static final Identifier TEMPERATE_GLASS_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/temperate_glass.png");
-	private static final Identifier COLD_GLASS_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/cold_glass.png");
-	private static final Identifier FROZEN_GLASS_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/frozen_glass.png");
-	private static final Identifier HOT_GLASS_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/hot_glass.png");
-	private static final Identifier BLAZING_GLASS_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/blazing_glass.png");
+	private static final HashMap<TEMPERATURE_LEVEL, Identifier> THERMOMETER_FILL_TEXTURES = new HashMap<>() {
+		{
+			put(TEMPERATURE_LEVEL.EXTREMELY_COLD, textureIdentifierForGlassStyle("fill_extremely_cold.png"));
+			put(TEMPERATURE_LEVEL.VERY_COLD, textureIdentifierForGlassStyle("fill_very_cold.png"));
+			put(TEMPERATURE_LEVEL.COLD, textureIdentifierForGlassStyle("fill_cold.png"));
+			put(TEMPERATURE_LEVEL.SLIGHTLY_COLD, textureIdentifierForGlassStyle("fill_slightly_cold.png"));
+			put(TEMPERATURE_LEVEL.NEUTRAL, textureIdentifierForGlassStyle("fill_neutral.png"));
+			put(TEMPERATURE_LEVEL.SLIGHTLY_HOT, textureIdentifierForGlassStyle("fill_slightly_hot.png"));
+			put(TEMPERATURE_LEVEL.HOT, textureIdentifierForGlassStyle("fill_hot.png"));
+			put(TEMPERATURE_LEVEL.VERY_HOT, textureIdentifierForGlassStyle("fill_very_hot.png"));
+			put(TEMPERATURE_LEVEL.EXTREMELY_HOT, textureIdentifierForGlassStyle("fill_extremely_hot.png"));
+		}
+	};
 
-	private static final Identifier COOLING_OUTLINE_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/cooling_outline.png");
-	private static final Identifier COOLING_OUTLINE_SMALL_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/cooling_small_outline.png");
-	private static final Identifier HEATING_OUTLINE_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/heating_outline.png");
-	private static final Identifier HEATING_OUTLINE_SMALL_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/heating_small_outline.png");
+	private static final HashMap<TEMPERATURE_CHANGE_INDICATOR, Identifier> THERMOMETER_OUTLINE_TEXTURES = new HashMap<>() {
+		{
+			put(TEMPERATURE_CHANGE_INDICATOR.EXTREME_COOLING, textureIdentifierForGlassStyle("outline_extreme_cooling.png"));
+			put(TEMPERATURE_CHANGE_INDICATOR.REGULAR_COOLING, textureIdentifierForGlassStyle("outline_cooling.png"));
+			put(TEMPERATURE_CHANGE_INDICATOR.NEUTRAL, textureIdentifierForGlassStyle("outline_neutral.png"));
+			put(TEMPERATURE_CHANGE_INDICATOR.REGULAR_HEATING, textureIdentifierForGlassStyle("outline_heating.png"));
+			put(TEMPERATURE_CHANGE_INDICATOR.EXTREME_HEATING, textureIdentifierForGlassStyle("outline_extreme_heating.png"));
+		}
+	};
 
 	// Rendering (Glass Thermometer)
 
@@ -57,17 +71,18 @@ public final class TemperatureHudUtil {
 		var x = window.getScaledWidth() / 2 + xOffset;
 		var y = window.getScaledHeight() - 48 + yOffset;
 
-		var temperature = ModClient.cachedBodyTemperature;
-		var temperatureDifference = ModClient.cachedTemperatureDifference;
+		var bodyTemperature = ModClient.cachedBodyTemperature;
+		var ambientTemperature = ModClient.cachedAmbientTemperature;
+		var acclimatizationRate = ModClient.cachedAcclimatizationRate;
 
-		if (temperature == 0.0) {
+		if (bodyTemperature == 0.0) {
 			return;
 		}
 
 		if (!client.player.isSpectator() && !client.player.isCreative()) {
-			var offset = applyGlassShakeForRender(temperature);
-			var glassTexture = selectGlassTexture(temperature);
-			var outlineTexture = selectOutlineTexture(temperatureDifference);
+			var offset = applyGlassShakeForRender(bodyTemperature);
+			var glassTexture = selectGlassThermometerFillTexture(bodyTemperature);
+			var outlineTexture = selectGlassThermometerOutlineTexture(bodyTemperature, ambientTemperature, acclimatizationRate);
 
 			var positionX = x + offset.x;
 			var positionY = y + offset.y;
@@ -88,29 +103,39 @@ public final class TemperatureHudUtil {
 		var freezeThresholdMinor = Mod.CONFIG.hypothermiaThresholdMinor;
 		var freezeThresholdMajor = Mod.CONFIG.hypothermiaThresholdMajor;
 
+		var newGlassShakeTickMax = 0;
+		var newGlassShakeAxis = false;
+
+		// Determine shake properties based on temperature
+
 		if (temperature < freezeThresholdMinor + 1 && temperature > freezeThresholdMajor) {
-			ModClient.glassShakeTickMax = 4;
-			ModClient.glassShakeAxis = true;
+			newGlassShakeTickMax = 4;
+			newGlassShakeAxis = true;
 		} else if (temperature < freezeThresholdMajor + 1) {
-			ModClient.glassShakeTickMax = 3;
-			ModClient.glassShakeAxis = true;
+			newGlassShakeTickMax = 3;
+			newGlassShakeAxis = true;
 		} else if (temperature > burnThresholdMinor - 1 && temperature < burnThresholdMajor) {
-			ModClient.glassShakeTickMax = 4;
-			ModClient.glassShakeAxis = false;
+			newGlassShakeTickMax = 4;
+			newGlassShakeAxis = false;
 		} else if (temperature > burnThresholdMajor - 1) {
-			ModClient.glassShakeTickMax = 3;
-			ModClient.glassShakeAxis = false;
-		} else {
-			ModClient.glassShakeTickMax = 0;
+			newGlassShakeTickMax = 3;
+			newGlassShakeAxis = false;
 		}
 
-		if (ModClient.glassShakeTickMax != 0) {
-			ModClient.glassShakeTick += 1;
+		ModClient.glassShakeTickMax = newGlassShakeTickMax;
+		ModClient.glassShakeAxis = newGlassShakeAxis;
 
-			if (ModClient.glassShakeTick >= ModClient.glassShakeTickMax) {
-				ModClient.glassShakeTick = 0;
-				ModClient.glassShakePM = -ModClient.glassShakePM;
+		if (ModClient.glassShakeTickMax != 0) {
+			var newGlassShakeTick = ModClient.glassShakeTick + 1;
+			var newGlassShakePM = ModClient.glassShakePM;
+
+			if (newGlassShakeTick >= ModClient.glassShakeTickMax) {
+				newGlassShakeTick = 0;
+				newGlassShakePM = -ModClient.glassShakePM;
 			}
+
+			ModClient.glassShakeTick = newGlassShakeTick;
+			ModClient.glassShakePM = newGlassShakePM;
 
 			if (ModClient.glassShakeAxis) {
 				return new Point(ModClient.glassShakePM, 0);
@@ -121,51 +146,63 @@ public final class TemperatureHudUtil {
 		return new Point(0, 0);
 	}
 
-	private static Identifier selectGlassTexture(double temperature) {
-		var burnThresholdMinor = Mod.CONFIG.hyperthermiaThresholdMinor;
-		var freezeThresholdMinor = Mod.CONFIG.hypothermiaThresholdMinor;
-
-		if (temperature < burnThresholdMinor - 10 && temperature > freezeThresholdMinor + 10) {
-			return TEMPERATE_GLASS_TEXTURE;
-		}
-
-		if (temperature < freezeThresholdMinor + 11 && temperature > freezeThresholdMinor + 5) {
-			return COLD_GLASS_TEXTURE;
-		}
-
-		if (temperature < freezeThresholdMinor + 6) {
-			return FROZEN_GLASS_TEXTURE;
-		}
-
-		if (temperature > burnThresholdMinor - 11 && temperature < burnThresholdMinor - 5) {
-			return HOT_GLASS_TEXTURE;
-		}
-
-		if (temperature > burnThresholdMinor - 6) {
-			return BLAZING_GLASS_TEXTURE;
-		}
-
-		return null;
+	private static Identifier selectGlassThermometerFillTexture(double bodyTemperature) {
+		var temperatureLevel = temperatureLevelForPlayer(bodyTemperature);
+		return THERMOMETER_FILL_TEXTURES.get(temperatureLevel);
 	}
 
-	private static Identifier selectOutlineTexture(double temperatureDifference) {
-		if (temperatureDifference < 0 && temperatureDifference > -10) {
-			return COOLING_OUTLINE_SMALL_TEXTURE;
+	private static TEMPERATURE_LEVEL temperatureLevelForPlayer(double bodyTemperature) {
+		// Assume temperature ranges from 0 to 90
+
+		if (bodyTemperature <= 10) {
+			return TEMPERATURE_LEVEL.EXTREMELY_COLD;
+		} else if (bodyTemperature <= 20) {
+			return TEMPERATURE_LEVEL.VERY_COLD;
+		} else if (bodyTemperature <= 30) {
+			return TEMPERATURE_LEVEL.COLD;
+		} else if (bodyTemperature <= 40) {
+			return TEMPERATURE_LEVEL.SLIGHTLY_COLD;
+		} else if (bodyTemperature <= 50) {
+			return TEMPERATURE_LEVEL.NEUTRAL;
+		} else if (bodyTemperature <= 60) {
+			return TEMPERATURE_LEVEL.SLIGHTLY_HOT;
+		} else if (bodyTemperature <= 70) {
+			return TEMPERATURE_LEVEL.HOT;
+		} else if (bodyTemperature <= 80) {
+			return TEMPERATURE_LEVEL.VERY_HOT;
+		} else {
+			return TEMPERATURE_LEVEL.EXTREMELY_HOT;
+		}
+	}
+
+	private static Identifier selectGlassThermometerOutlineTexture(double bodyTemperature, double ambientTemperature, double acclimatizationRate) {
+		// Temperature difference is positive if warming up.
+		var temperatureDifference = ambientTemperature - bodyTemperature;
+		var temperatureThresholdMargin = 2;
+		var acclimatizationRateThreshold = PlayerTemperatureUtil.applicableAcclimatizationRate(Mod.CONFIG.acclimatizationRate) * 1.5;
+
+		// If body temperature is decreasing at a regular rate, render minor cooling.
+		if (acclimatizationRate <= acclimatizationRateThreshold && temperatureDifference < -temperatureThresholdMargin) {
+			return THERMOMETER_OUTLINE_TEXTURES.get(TEMPERATURE_CHANGE_INDICATOR.REGULAR_COOLING);
 		}
 
-		if (temperatureDifference < -9) {
-			return COOLING_OUTLINE_TEXTURE;
+		// If body temperature is decreasing at an elevated rate, render major cooling.
+		if (acclimatizationRate > acclimatizationRateThreshold && temperatureDifference < -temperatureThresholdMargin) {
+			return THERMOMETER_OUTLINE_TEXTURES.get(TEMPERATURE_CHANGE_INDICATOR.EXTREME_COOLING);
 		}
 
-		if (temperatureDifference > 0 && temperatureDifference < 10) {
-			return HEATING_OUTLINE_SMALL_TEXTURE;
+		// If body temperature is increasing at a regular rate, render minor heating.
+		if (acclimatizationRate <= acclimatizationRateThreshold && temperatureDifference > temperatureThresholdMargin) {
+			return THERMOMETER_OUTLINE_TEXTURES.get(TEMPERATURE_CHANGE_INDICATOR.REGULAR_HEATING);
 		}
 
-		if (temperatureDifference > 9) {
-			return HEATING_OUTLINE_TEXTURE;
+		// If body temperature is increasing at an elevated rate, render major heating.
+		if (acclimatizationRate > acclimatizationRateThreshold && temperatureDifference > temperatureThresholdMargin) {
+			return THERMOMETER_OUTLINE_TEXTURES.get(TEMPERATURE_CHANGE_INDICATOR.EXTREME_HEATING);
 		}
 
-		return null;
+		// If body temperature is safe and ambient temperature is within margins, render neutral.
+		return THERMOMETER_OUTLINE_TEXTURES.get(TEMPERATURE_CHANGE_INDICATOR.NEUTRAL);
 	}
 
 	// Rendering (Gauge Thermometer)
