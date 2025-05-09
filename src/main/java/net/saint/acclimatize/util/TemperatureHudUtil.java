@@ -10,40 +10,32 @@ import net.saint.acclimatize.ModClient;
 
 public final class TemperatureHudUtil {
 
+	// Library
+
+	private enum THERMOMETER_STYLE {
+		GLASS, GAUGE
+	}
+
 	// Textures
 
-	private static final Identifier THERMOMETER_FRAME_TEXTURE = new Identifier(Mod.modId,
-			"textures/thermometer/thermometer_frame.png");
-	private static final Identifier THERMOMETER_GAUGE_TEXTURE = new Identifier(Mod.modId,
-			"textures/thermometer/thermometer_gauge_fix_1.png");
-	private static final Identifier THERMOMETER_HAND_TEXTURE = new Identifier(Mod.modId,
-			"textures/thermometer/thermometer_hand.png");
-	private static final Identifier THERMOMETER_SNOWFLAKE_TEXTURE = new Identifier(Mod.modId,
-			"textures/thermometer/snowflake_icon_8x8.png");
-	private static final Identifier THERMOMETER_FLAME_TEXTURE = new Identifier(Mod.modId,
-			"textures/thermometer/flame_icon_8x8.png");
-	private static final Identifier THERMOMETER_STILL_TEXTURE = new Identifier(Mod.modId,
-			"textures/thermometer/temperate_icon.png");
+	private static final Identifier THERMOMETER_FRAME_TEXTURE = textureIdentifierForGaugeStyle("thermometer_frame.png");
+	private static final Identifier THERMOMETER_GAUGE_TEXTURE = textureIdentifierForGaugeStyle("thermometer_gauge.png");
+	private static final Identifier THERMOMETER_HAND_TEXTURE = textureIdentifierForGaugeStyle("thermometer_hand.png");
 
-	private static final Identifier TEMPERATE_GLASS_TEXTURE = new Identifier(Mod.modId,
-			"textures/glass_thermometer/temperate_glass.png");
-	private static final Identifier COLD_GLASS_TEXTURE = new Identifier(Mod.modId,
-			"textures/glass_thermometer/cold_glass.png");
-	private static final Identifier FROZEN_GLASS_TEXTURE = new Identifier(Mod.modId,
-			"textures/glass_thermometer/frozen_glass.png");
-	private static final Identifier HOT_GLASS_TEXTURE = new Identifier(Mod.modId,
-			"textures/glass_thermometer/hot_glass.png");
-	private static final Identifier BLAZING_GLASS_TEXTURE = new Identifier(Mod.modId,
-			"textures/glass_thermometer/blazing_glass.png");
+	private static final Identifier THERMOMETER_SNOWFLAKE_TEXTURE = textureIdentifierForThermometer("snowflake_icon_8x8.png");
+	private static final Identifier THERMOMETER_FLAME_TEXTURE = textureIdentifierForThermometer("flame_icon_8x8.png");
+	private static final Identifier THERMOMETER_STILL_TEXTURE = textureIdentifierForThermometer("temperate_icon.png");
 
-	private static final Identifier COOLING_OUTLINE_TEXTURE = new Identifier(Mod.modId,
-			"textures/glass_thermometer/cooling_outline.png");
-	private static final Identifier COOLING_OUTLINE_SMALL_TEXTURE = new Identifier(Mod.modId,
-			"textures/glass_thermometer/cooling_small_outline.png");
-	private static final Identifier HEATING_OUTLINE_TEXTURE = new Identifier(Mod.modId,
-			"textures/glass_thermometer/heating_outline.png");
-	private static final Identifier HEATING_OUTLINE_SMALL_TEXTURE = new Identifier(Mod.modId,
-			"textures/glass_thermometer/heating_small_outline.png");
+	private static final Identifier TEMPERATE_GLASS_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/temperate_glass.png");
+	private static final Identifier COLD_GLASS_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/cold_glass.png");
+	private static final Identifier FROZEN_GLASS_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/frozen_glass.png");
+	private static final Identifier HOT_GLASS_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/hot_glass.png");
+	private static final Identifier BLAZING_GLASS_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/blazing_glass.png");
+
+	private static final Identifier COOLING_OUTLINE_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/cooling_outline.png");
+	private static final Identifier COOLING_OUTLINE_SMALL_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/cooling_small_outline.png");
+	private static final Identifier HEATING_OUTLINE_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/heating_outline.png");
+	private static final Identifier HEATING_OUTLINE_SMALL_TEXTURE = new Identifier(Mod.modId, "textures/glass_thermometer/heating_small_outline.png");
 
 	// Rendering (Glass Thermometer)
 
@@ -233,5 +225,34 @@ public final class TemperatureHudUtil {
 		}
 
 		return THERMOMETER_STILL_TEXTURE;
+	}
+
+	// Resource Utility
+
+	private static Identifier textureIdentifierForGlassStyle(String textureName) {
+		return textureIdentifier(THERMOMETER_STYLE.GLASS, textureName);
+	}
+
+	private static Identifier textureIdentifierForGaugeStyle(String textureName) {
+		return textureIdentifier(THERMOMETER_STYLE.GAUGE, textureName);
+	}
+
+	private static Identifier textureIdentifierForThermometer(String textureName) {
+		return new Identifier(Mod.modId, "textures/thermometer" + textureName);
+	}
+
+	private static Identifier textureIdentifier(THERMOMETER_STYLE style, String textureName) {
+		return new Identifier(Mod.modId, "textures/" + textureGroupForThermometerStyle(style) + "/" + textureName);
+	}
+
+	private static String textureGroupForThermometerStyle(THERMOMETER_STYLE style) {
+		switch (style) {
+		case GLASS:
+			return "glass_thermometer";
+		case GAUGE:
+			return "thermometer";
+		default:
+			throw new IllegalArgumentException("Invalid thermometer style: " + style);
+		}
 	}
 }
