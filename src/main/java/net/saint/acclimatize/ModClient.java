@@ -19,12 +19,14 @@ import net.saint.acclimatize.util.ItemTemperatureUtil;
 
 public class ModClient implements ClientModInitializer {
 
+	public static double cachedAcclimatizationRate = 0;
+	public static double cachedBodyTemperature = 0;
+	public static double cachedTemperatureDifference = 0;
+
+	public static double cachedAmbientTemperature = 0;
+	public static double cachedWindTemperature = 0;
 	public static double cachedWindDirection = 0;
 	public static double cachedWindIntensity = 0;
-	public static double cachedBodyTemperature = 0;
-	public static double cachedAmbientTemperature = 0;
-	public static double cachedTemperatureDifference = 0;
-	public static double cachedWindTemperature = 0;
 
 	public static int temperatureUpdateTick = 0;
 
@@ -46,11 +48,8 @@ public class ModClient implements ClientModInitializer {
 	}
 
 	private static void setUpKeybindings() {
-		enableHUDKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-				"Toggle Temperature GUI",
-				InputUtil.Type.KEYSYM,
-				GLFW.GLFW_KEY_UNKNOWN,
-				"Acclimatize"));
+		enableHUDKeyBinding = KeyBindingHelper
+				.registerKeyBinding(new KeyBinding("Toggle Temperature GUI", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "Acclimatize"));
 
 		if (enableHUDKeyBinding.wasPressed()) {
 			enableHUD = !enableHUD;
@@ -75,9 +74,7 @@ public class ModClient implements ClientModInitializer {
 
 			if (++temperatureUpdateTick >= Mod.CONFIG.temperatureTickInterval) {
 				if (!isPaused && !client.player.isCreative() && !client.player.isSpectator()) {
-					ClientPlayNetworking.send(
-							TemperaturePackets.PLAYER_TEMPERATURE_TICK_C2S_PACKET_ID,
-							PacketByteBufs.create());
+					ClientPlayNetworking.send(TemperaturePackets.PLAYER_TEMPERATURE_TICK_C2S_PACKET_ID, PacketByteBufs.create());
 				}
 
 				temperatureUpdateTick = 0;
@@ -117,10 +114,7 @@ public class ModClient implements ClientModInitializer {
 		if (random.nextInt(bound) == 0) {
 			double windDirectionRadians = Math.toRadians(cachedWindDirection);
 
-			Vec3d direction = new Vec3d(
-					-Math.sin(windDirectionRadians),
-					0,
-					Math.cos(windDirectionRadians));
+			Vec3d direction = new Vec3d(-Math.sin(windDirectionRadians), 0, Math.cos(windDirectionRadians));
 
 			double x = player.getX() + random.nextTriangular(0, 10) - direction.x * 7;
 			double y = player.getY() + random.nextTriangular(5, 7);

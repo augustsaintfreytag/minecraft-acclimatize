@@ -16,8 +16,8 @@ import net.saint.acclimatize.util.ServerStateUtil;
 
 public class PlayerTemperatureTickC2SPacket {
 
-	public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler,
-			PacketByteBuf buf, PacketSender responseSender) {
+	public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf,
+			PacketSender responseSender) {
 
 		ServerState serverState = ServerStateUtil.getServerState(server);
 		PlayerState playerState = ServerStateUtil.getPlayerState(player);
@@ -34,14 +34,14 @@ public class PlayerTemperatureTickC2SPacket {
 
 		PacketByteBuf sendingdata = PacketByteBufs.create();
 
-		sendingdata.writeDouble(serverState.windDirection);
-		sendingdata.writeDouble(serverState.windIntensity);
+		sendingdata.writeDouble(playerState.acclimatizationRate);
 		sendingdata.writeDouble(playerState.bodyTemperature);
 		sendingdata.writeDouble(playerState.ambientTemperature);
 		sendingdata.writeDouble(playerState.windTemperature);
+		sendingdata.writeDouble(serverState.windDirection);
+		sendingdata.writeDouble(serverState.windIntensity);
 
-		ServerPlayNetworking.send(player, TemperaturePackets.SEND_TEMPERATURE_PLAYERSTATE_S2C_PACKET_ID,
-				sendingdata);
+		ServerPlayNetworking.send(player, TemperaturePackets.SEND_TEMPERATURE_PLAYERSTATE_S2C_PACKET_ID, sendingdata);
 
 		serverState.markDirty();
 	}
