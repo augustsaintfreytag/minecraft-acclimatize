@@ -15,18 +15,14 @@ public final class TemperatureHudOverlayUtil {
 	// Configuration
 
 	public static final Identifier HIGH_TEMPERATURE_OVERLAY = new Identifier(Mod.modId, "textures/overlay/high_temperature_overlay.png");
-	public static final Identifier EXTREME_TEMPERATURE_OVERLAY = new Identifier(Mod.modId, "textures/overlay/extreme_temperature_overlay.png");
+	public static final Identifier EXTREME_TEMPERATURE_OVERLAY = new Identifier(Mod.modId,
+			"textures/overlay/extreme_temperature_overlay.png");
 
 	public static final double ALPHA_EFFECT_MINOR = 0.4;
 	public static final double ALPHA_EFFECT_MAJOR = 0.7;
 
 	private static final RGBAColor hypothermiaColor = new RGBAColor(0.6f, 0.75f, 1.0f, 1.0f);
 	private static final RGBAColor hyperthermiaColor = new RGBAColor(0.8f, 0.3f, 0.15f, 1.0f);
-
-	private static final RGBAColor hypothermiaColorMinor = hypothermiaColor.withAlpha((float) ALPHA_EFFECT_MINOR);
-	private static final RGBAColor hypothermiaColorMajor = hypothermiaColor.withAlpha((float) ALPHA_EFFECT_MAJOR);
-	private static final RGBAColor hyperthermiaColorMinor = hyperthermiaColor.withAlpha((float) ALPHA_EFFECT_MINOR);
-	private static final RGBAColor hyperthermiaColorMajor = hyperthermiaColor.withAlpha((float) ALPHA_EFFECT_MAJOR);
 
 	// Library
 
@@ -73,14 +69,14 @@ public final class TemperatureHudOverlayUtil {
 
 		RenderSystem.disableDepthTest();
 		RenderSystem.depthMask(false);
-		RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE,
-				GlStateManager.DstFactor.ZERO);
+		RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR,
+				GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
 		context.setShaderColor(overlayColor.r, overlayColor.g, overlayColor.b, overlayColor.a);
 
 		var texture = overlayColor.a > 1f ? EXTREME_TEMPERATURE_OVERLAY : HIGH_TEMPERATURE_OVERLAY;
 
-		context.drawTexture(texture, 0, 0, -90, 0f, 0f, context.getScaledWindowWidth(), context.getScaledWindowHeight(), context.getScaledWindowWidth(),
-				context.getScaledWindowHeight());
+		context.drawTexture(texture, 0, 0, -90, 0f, 0f, context.getScaledWindowWidth(), context.getScaledWindowHeight(),
+				context.getScaledWindowWidth(), context.getScaledWindowHeight());
 
 		RenderSystem.depthMask(true);
 		RenderSystem.enableDepthTest();
@@ -94,19 +90,19 @@ public final class TemperatureHudOverlayUtil {
 
 	private static RGBAColor overlayColorForTemperature(double temperature) {
 		if (temperature <= Mod.CONFIG.hypothermiaThresholdMinor && temperature > Mod.CONFIG.hypothermiaThresholdMajor) {
-			return hypothermiaColorMinor;
+			return hypothermiaColor.withAlpha((float) (Mod.CONFIG.temperatureVignetteAlpha * 0.8));
 		}
 
 		if (temperature <= Mod.CONFIG.hypothermiaThresholdMajor) {
-			return hypothermiaColorMajor;
+			return hypothermiaColor.withAlpha((float) Mod.CONFIG.temperatureVignetteAlpha);
 		}
 
 		if (temperature >= Mod.CONFIG.hyperthermiaThresholdMinor && temperature < Mod.CONFIG.hyperthermiaThresholdMajor) {
-			return hyperthermiaColorMinor;
+			return hyperthermiaColor.withAlpha((float) (Mod.CONFIG.temperatureVignetteAlpha * 0.8));
 		}
 
 		if (temperature >= Mod.CONFIG.hyperthermiaThresholdMajor) {
-			return hyperthermiaColorMajor;
+			return hyperthermiaColor.withAlpha((float) Mod.CONFIG.temperatureVignetteAlpha);
 		}
 
 		return null;
