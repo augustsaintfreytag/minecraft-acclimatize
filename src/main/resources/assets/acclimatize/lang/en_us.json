@@ -47,6 +47,7 @@
 	"text.autoconfig.acclimatize.option.nighttimeTicks": "Nighttime Ticks",
     
 	"text.autoconfig.acclimatize.option.acclimatizationRate": "Acclimatization Rate",
+	"text.autoconfig.acclimatize.option.acclimatizationRateMinimum": "Acclimatization Rate Minimum",
 	"text.autoconfig.acclimatize.option.wetAcclimatizationRateBoostFactor": "Wetness Acclimatization Rate Boost Factor",
     "text.autoconfig.acclimatize.option.hypothermiaThresholdMinor": "Minor Freeze Threshold",
     "text.autoconfig.acclimatize.option.hypothermiaThresholdMajor": "Major Freeze Threshold",
@@ -64,7 +65,6 @@
 	"text.autoconfig.acclimatize.option.bootsAutoTemperatureFactor": "Boots Auto-Assigned Temperature Factor",
 	"text.autoconfig.acclimatize.option.itemTemperatureFactor": "Item Temperature Factor",
 	"text.autoconfig.acclimatize.option.itemAcclimatizationRateFactor": "Item Acclimatization Rate Factor",
-	"text.autoconfig.acclimatize.option.itemAcclimatizationRateMinimum": "Item Acclimatization Rate Minimum",
 	"text.autoconfig.acclimatize.option.iceWaterEffectDuration": "Ice Water Effect Duration",
     
 	"text.autoconfig.acclimatize.option.blockTemperatureRadius": "Block Temperature Radius",
