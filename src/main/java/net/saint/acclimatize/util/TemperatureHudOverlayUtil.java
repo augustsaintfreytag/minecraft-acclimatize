@@ -12,11 +12,43 @@ import net.saint.acclimatize.ModClient;
 
 public final class TemperatureHudOverlayUtil {
 
-	public static final Identifier HIGH_TEMPERATURE_OVERLAY = new Identifier(Mod.modId,
-			"textures/overlay/high_temperature_overlay.png");
+	// Configuration
 
-	public static final Identifier EXTREME_TEMPERATURE_OVERLAY = new Identifier(Mod.modId,
-			"textures/overlay/extreme_temperature_overlay.png");
+	public static final Identifier HIGH_TEMPERATURE_OVERLAY = new Identifier(Mod.modId, "textures/overlay/high_temperature_overlay.png");
+	public static final Identifier EXTREME_TEMPERATURE_OVERLAY = new Identifier(Mod.modId, "textures/overlay/extreme_temperature_overlay.png");
+
+	public static final double ALPHA_EFFECT_MINOR = 0.4;
+	public static final double ALPHA_EFFECT_MAJOR = 0.7;
+
+	private static final RGBAColor hypothermiaColor = new RGBAColor(0.6f, 0.75f, 1.0f, 1.0f);
+	private static final RGBAColor hyperthermiaColor = new RGBAColor(0.8f, 0.3f, 0.15f, 1.0f);
+
+	private static final RGBAColor hypothermiaColorMinor = hypothermiaColor.withAlpha((float) ALPHA_EFFECT_MINOR);
+	private static final RGBAColor hypothermiaColorMajor = hypothermiaColor.withAlpha((float) ALPHA_EFFECT_MAJOR);
+	private static final RGBAColor hyperthermiaColorMinor = hyperthermiaColor.withAlpha((float) ALPHA_EFFECT_MINOR);
+	private static final RGBAColor hyperthermiaColorMajor = hyperthermiaColor.withAlpha((float) ALPHA_EFFECT_MAJOR);
+
+	// Library
+
+	private static final class RGBAColor {
+		public final float r;
+		public final float g;
+		public final float b;
+		public final float a;
+
+		private RGBAColor(float r, float g, float b, float a) {
+			this.r = r;
+			this.g = g;
+			this.b = b;
+			this.a = a;
+		}
+
+		public RGBAColor withAlpha(float alpha) {
+			return new RGBAColor(this.r, this.g, this.b, alpha);
+		}
+	}
+
+	// Rendering
 
 	public static void renderVignetteHudOverlay(DrawContext context, Entity entity) {
 		if (!Mod.CONFIG.enableTemperatureVignette) {
@@ -29,69 +61,54 @@ public final class TemperatureHudOverlayUtil {
 
 		var player = (ClientPlayerEntity) entity;
 
-		if (!player.isCreative() && !player.isSpectator()) {
-			float r = 0;
-			float g = 0;
-			float b = 0;
-			float a = 0;
-
-			boolean isExtreme = false;
-
-			if (ModClient.cachedBodyTemperature < 41 && ModClient.cachedBodyTemperature > 35) {
-				r = 0.25f;
-				g = 0.5f;
-				b = 0.8f;
-				a = 0.5f;
-			} else if (ModClient.cachedBodyTemperature < 36 && ModClient.cachedBodyTemperature > 25) {
-				r = 0.25f;
-				g = 0.5f;
-				b = 0.8f;
-				a = 1f;
-			} else if (ModClient.cachedBodyTemperature < 26) {
-				r = 0.60f;
-				g = 0.75f;
-				b = 1.0f;
-				a = 2.5f;
-				// extreme = true;
-			} else if (ModClient.cachedBodyTemperature > 59 && ModClient.cachedBodyTemperature < 65) {
-				r = 0.8f;
-				g = 0.3f;
-				b = 0.15f;
-				a = 0.5f;
-			} else if (ModClient.cachedBodyTemperature > 64 && ModClient.cachedBodyTemperature < 75) {
-				r = 0.8f;
-				g = 0.3f;
-				b = 0.15f;
-				a = 1f;
-			} else if (ModClient.cachedBodyTemperature > 74) {
-				r = 0.9f;
-				g = 0.4f;
-				b = 0.15f;
-				a = 02.5f;
-			}
-
-			RenderSystem.disableDepthTest();
-			RenderSystem.depthMask(false);
-			RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA,
-					GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE,
-					GlStateManager.DstFactor.ZERO);
-			context.setShaderColor(r, g, b, a);
-
-			if (isExtreme) {
-				context.drawTexture(EXTREME_TEMPERATURE_OVERLAY, 0, 0, -90, 0.0f, 0.0f,
-						context.getScaledWindowWidth(), context.getScaledWindowHeight(),
-						context.getScaledWindowWidth(), context.getScaledWindowHeight());
-			} else {
-				context.drawTexture(HIGH_TEMPERATURE_OVERLAY, 0, 0, -90, 0.0f, 0.0f,
-						context.getScaledWindowWidth(), context.getScaledWindowHeight(),
-						context.getScaledWindowWidth(), context.getScaledWindowHeight());
-			}
-
-			RenderSystem.depthMask(true);
-			RenderSystem.enableDepthTest();
-			context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-			RenderSystem.defaultBlendFunc();
+		if (player.isCreative() || player.isSpectator()) {
+			return;
 		}
+
+		var overlayColor = overlayColorForTemperature(ModClient.cachedBodyTemperature);
+
+		if (overlayColor == null) {
+			return;
+		}
+
+		RenderSystem.disableDepthTest();
+		RenderSystem.depthMask(false);
+		RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE,
+				GlStateManager.DstFactor.ZERO);
+		context.setShaderColor(overlayColor.r, overlayColor.g, overlayColor.b, overlayColor.a);
+
+		var texture = overlayColor.a > 1f ? EXTREME_TEMPERATURE_OVERLAY : HIGH_TEMPERATURE_OVERLAY;
+
+		context.drawTexture(texture, 0, 0, -90, 0f, 0f, context.getScaledWindowWidth(), context.getScaledWindowHeight(), context.getScaledWindowWidth(),
+				context.getScaledWindowHeight());
+
+		RenderSystem.depthMask(true);
+		RenderSystem.enableDepthTest();
+
+		context.setShaderColor(1f, 1f, 1f, 1f);
+
+		RenderSystem.defaultBlendFunc();
 	}
 
+	// Overlay Color
+
+	private static RGBAColor overlayColorForTemperature(double temperature) {
+		if (temperature <= Mod.CONFIG.hypothermiaThresholdMinor && temperature > Mod.CONFIG.hypothermiaThresholdMajor) {
+			return hypothermiaColorMinor;
+		}
+
+		if (temperature <= Mod.CONFIG.hypothermiaThresholdMajor) {
+			return hypothermiaColorMajor;
+		}
+
+		if (temperature >= Mod.CONFIG.hyperthermiaThresholdMinor && temperature < Mod.CONFIG.hyperthermiaThresholdMajor) {
+			return hyperthermiaColorMinor;
+		}
+
+		if (temperature >= Mod.CONFIG.hyperthermiaThresholdMajor) {
+			return hyperthermiaColorMajor;
+		}
+
+		return null;
+	}
 }
