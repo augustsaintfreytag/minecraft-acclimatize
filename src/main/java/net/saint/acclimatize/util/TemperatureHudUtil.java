@@ -16,6 +16,14 @@ public final class TemperatureHudUtil {
 		GLASS, GAUGE
 	}
 
+	private enum TEMPERATURE_LEVEL {
+		EXTREMELY_COLD, VERY_COLD, COLD, SLIGHTLY_COLD, NEUTRAL, SLIGHTLY_HOT, HOT, VERY_HOT, EXTREMELY_HOT
+	}
+
+	private enum TEMPERATURE_CHANGE_INDICATOR {
+		EXTREME_COOLING, COOLING, HEATING, EXTREME_HEATING
+	}
+
 	// Textures
 
 	private static final Identifier THERMOMETER_FRAME_TEXTURE = textureIdentifierForGaugeStyle("thermometer_frame.png");
