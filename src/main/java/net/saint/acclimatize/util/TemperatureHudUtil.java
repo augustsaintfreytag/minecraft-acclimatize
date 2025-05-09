@@ -190,36 +190,22 @@ public final class TemperatureHudUtil {
 		var spacingFactor = 1.5f;
 		var temperatureFraction = calculateTemperatureFraction(temperature, spacingFactor);
 
-		context.drawTexture(THERMOMETER_GAUGE_TEXTURE,
-				centerX - ((44 + 149) - Math.round(2 * spacingFactor)),
-				centerY - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1),
-				0, 0,
-				Math.round(40 * spacingFactor), Math.round(9 * spacingFactor),
-				Math.round(40 * spacingFactor), Math.round(9 * spacingFactor));
+		context.drawTexture(THERMOMETER_GAUGE_TEXTURE, centerX - ((44 + 149) - Math.round(2 * spacingFactor)),
+				centerY - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1), 0, 0, Math.round(40 * spacingFactor),
+				Math.round(9 * spacingFactor), Math.round(40 * spacingFactor), Math.round(9 * spacingFactor));
 
-		context.drawTexture(THERMOMETER_HAND_TEXTURE,
-				centerX - (int) (((44 + 149) - Math.round(2 * spacingFactor)) - temperatureFraction),
-				centerY - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1),
-				0, 0,
-				Math.round(1), Math.round(9 * spacingFactor),
+		context.drawTexture(THERMOMETER_HAND_TEXTURE, centerX - (int) (((44 + 149) - Math.round(2 * spacingFactor)) - temperatureFraction),
+				centerY - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1), 0, 0, Math.round(1), Math.round(9 * spacingFactor),
 				Math.round(1), Math.round(9 * spacingFactor));
 
 		var frameY = centerY - (Math.round(13 * spacingFactor) + 1);
-		context.drawTexture(THERMOMETER_FRAME_TEXTURE,
-				centerX - (44 + 149),
-				frameY,
-				0, 0,
-				Math.round(44 * spacingFactor), Math.round(13 * spacingFactor),
+		context.drawTexture(THERMOMETER_FRAME_TEXTURE, centerX - (44 + 149), frameY, 0, 0, Math.round(44 * spacingFactor), Math.round(13 * spacingFactor),
 				Math.round(44 * spacingFactor), Math.round(13 * spacingFactor));
 
 		var indicatorTexture = selectIndicatorTexture(temperatureDifference);
 		if (indicatorTexture != null) {
-			context.drawTexture(indicatorTexture,
-					centerX - (17 + 149),
-					centerY - (Math.round(22 * spacingFactor)),
-					0, 0,
-					Math.round(8 * spacingFactor), Math.round(8 * spacingFactor),
-					Math.round(8 * spacingFactor), Math.round(8 * spacingFactor));
+			context.drawTexture(indicatorTexture, centerX - (17 + 149), centerY - (Math.round(22 * spacingFactor)), 0, 0, Math.round(8 * spacingFactor),
+					Math.round(8 * spacingFactor), Math.round(8 * spacingFactor), Math.round(8 * spacingFactor));
 		}
 	}
 
