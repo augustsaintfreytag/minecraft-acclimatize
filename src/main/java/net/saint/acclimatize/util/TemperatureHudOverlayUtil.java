@@ -9,16 +9,29 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.ModClient;
+import net.saint.acclimatize.library.RGBAColor;
 
 public final class TemperatureHudOverlayUtil {
 
-	public static final Identifier HIGH_TEMPERATURE_OVERLAY = new Identifier(Mod.modId,
-			"textures/overlay/high_temperature_overlay.png");
+	// Configuration (Rendering)
 
-	public static final Identifier EXTREME_TEMPERATURE_OVERLAY = new Identifier(Mod.modId,
-			"textures/overlay/extreme_temperature_overlay.png");
+	public static final Identifier TEMPERATURE_OVERLAY = new Identifier(Mod.modId, "textures/overlay/temperature_overlay.png");
 
-	public static void renderVignetteHudOverlay(DrawContext context, Entity entity) {
+	private static final RGBAColor HYPOTHERMIA_COLOR = new RGBAColor(0.6f, 0.75f, 1.0f, 1.0f);
+	private static final RGBAColor HYPERTHERMIA_COLOR = new RGBAColor(0.8f, 0.3f, 0.15f, 1.0f);
+
+	// Configuration (Animation)
+
+	private static final long ANIMATION_DURATION = 1500;
+
+	private static long animationStartTime = 0;
+	private static boolean isDisplayingOverlay = false;
+	private static float lastTargetAlpha = 0;
+	private static RGBAColor lastOverlayColor = RGBAColor.white().transparent();
+
+	// Rendering
+
+	public static void renderVignetteHudOverlayIfNeeded(DrawContext context, Entity entity) {
 		if (!Mod.CONFIG.enableTemperatureVignette) {
 			return;
 		}
@@ -29,69 +42,77 @@ public final class TemperatureHudOverlayUtil {
 
 		var player = (ClientPlayerEntity) entity;
 
-		if (!player.isCreative() && !player.isSpectator()) {
-			float r = 0;
-			float g = 0;
-			float b = 0;
-			float a = 0;
-
-			boolean isExtreme = false;
-
-			if (ModClient.cachedBodyTemperature < 41 && ModClient.cachedBodyTemperature > 35) {
-				r = 0.25f;
-				g = 0.5f;
-				b = 0.8f;
-				a = 0.5f;
-			} else if (ModClient.cachedBodyTemperature < 36 && ModClient.cachedBodyTemperature > 25) {
-				r = 0.25f;
-				g = 0.5f;
-				b = 0.8f;
-				a = 1f;
-			} else if (ModClient.cachedBodyTemperature < 26) {
-				r = 0.60f;
-				g = 0.75f;
-				b = 1.0f;
-				a = 2.5f;
-				// extreme = true;
-			} else if (ModClient.cachedBodyTemperature > 59 && ModClient.cachedBodyTemperature < 65) {
-				r = 0.8f;
-				g = 0.3f;
-				b = 0.15f;
-				a = 0.5f;
-			} else if (ModClient.cachedBodyTemperature > 64 && ModClient.cachedBodyTemperature < 75) {
-				r = 0.8f;
-				g = 0.3f;
-				b = 0.15f;
-				a = 1f;
-			} else if (ModClient.cachedBodyTemperature > 74) {
-				r = 0.9f;
-				g = 0.4f;
-				b = 0.15f;
-				a = 02.5f;
-			}
-
-			RenderSystem.disableDepthTest();
-			RenderSystem.depthMask(false);
-			RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA,
-					GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE,
-					GlStateManager.DstFactor.ZERO);
-			context.setShaderColor(r, g, b, a);
-
-			if (isExtreme) {
-				context.drawTexture(EXTREME_TEMPERATURE_OVERLAY, 0, 0, -90, 0.0f, 0.0f,
-						context.getScaledWindowWidth(), context.getScaledWindowHeight(),
-						context.getScaledWindowWidth(), context.getScaledWindowHeight());
-			} else {
-				context.drawTexture(HIGH_TEMPERATURE_OVERLAY, 0, 0, -90, 0.0f, 0.0f,
-						context.getScaledWindowWidth(), context.getScaledWindowHeight(),
-						context.getScaledWindowWidth(), context.getScaledWindowHeight());
-			}
-
-			RenderSystem.depthMask(true);
-			RenderSystem.enableDepthTest();
-			context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-			RenderSystem.defaultBlendFunc();
+		if (player.isCreative() || player.isSpectator()) {
+			return;
 		}
+
+		renderVignetteHudOverlay(context, ModClient.cachedBodyTemperature);
 	}
 
+	private static void renderVignetteHudOverlay(DrawContext context, double temperature) {
+		var staticColor = overlayColorForTemperature(temperature);
+		var shouldDisplayOverlay = staticColor != null;
+
+		if (staticColor != null) {
+			lastOverlayColor = staticColor.copy();
+			lastTargetAlpha = lastOverlayColor.a;
+		}
+
+		if (shouldDisplayOverlay != isDisplayingOverlay) {
+			animationStartTime = System.currentTimeMillis();
+			isDisplayingOverlay = shouldDisplayOverlay;
+		}
+
+		var maxAlpha = MathUtil.clamp((float) Mod.CONFIG.temperatureVignetteAlpha, 0, 1);
+		var progress = Math.min(maxAlpha, (System.currentTimeMillis() - animationStartTime) / (float) ANIMATION_DURATION);
+		var alpha = shouldDisplayOverlay ? lastTargetAlpha * progress : lastTargetAlpha * (maxAlpha - progress);
+
+		// Bail if not supposed to draw and fade out has already completed.
+		if (!shouldDisplayOverlay && progress >= 1f) {
+			return;
+		}
+
+		RenderSystem.disableDepthTest();
+		RenderSystem.depthMask(false);
+
+		RenderSystem.enableBlend();
+		RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
+
+		// Apply tint and alpha for drawing.
+		context.setShaderColor(lastOverlayColor.r, lastOverlayColor.g, lastOverlayColor.b, alpha);
+
+		int width = context.getScaledWindowWidth();
+		int height = context.getScaledWindowHeight();
+
+		context.drawTexture(TEMPERATURE_OVERLAY, 0, 0, -90, 0.0f, 0.0f, width, height, width, height);
+
+		RenderSystem.depthMask(true);
+		RenderSystem.enableDepthTest();
+
+		context.setShaderColor(1f, 1f, 1f, 1f);
+
+		RenderSystem.defaultBlendFunc();
+	}
+
+	// Overlay Color
+
+	private static RGBAColor overlayColorForTemperature(double temperature) {
+		if (temperature <= Mod.CONFIG.hypothermiaThresholdMinor && temperature > Mod.CONFIG.hypothermiaThresholdMajor) {
+			return HYPOTHERMIA_COLOR;
+		}
+
+		if (temperature <= Mod.CONFIG.hypothermiaThresholdMajor) {
+			return HYPOTHERMIA_COLOR;
+		}
+
+		if (temperature >= Mod.CONFIG.hyperthermiaThresholdMinor && temperature < Mod.CONFIG.hyperthermiaThresholdMajor) {
+			return HYPERTHERMIA_COLOR;
+		}
+
+		if (temperature >= Mod.CONFIG.hyperthermiaThresholdMajor) {
+			return HYPERTHERMIA_COLOR;
+		}
+
+		return null;
+	}
 }

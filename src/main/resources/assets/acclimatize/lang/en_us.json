@@ -29,6 +29,8 @@
     "text.autoconfig.acclimatize.option.temperatureDisplayType": "Temperature Display Type",
     "text.autoconfig.acclimatize.option.temperatureDamageDecreasesSaturation": "Temperature Damage Decreases Saturation",
     "text.autoconfig.acclimatize.option.enableTemperatureVignette": "Enable Temperature Vignette",
+	"text.autoconfig.acclimatize.option.temperatureVignetteAlpha": "Temperature Vignette Alpha",
+	"text.autoconfig.acclimatize.option.temperatureVignetteTransitionDuration": "Temperature Vignette Transition Duration",
     "text.autoconfig.acclimatize.option.enableWindParticles": "Enable Wind Particles",
 	"text.autoconfig.acclimatize.option.enableThermometerTemperatureDisplay": "Enable Thermometer Temperature Display",
 	    
@@ -47,6 +49,7 @@
 	"text.autoconfig.acclimatize.option.nighttimeTicks": "Nighttime Ticks",
     
 	"text.autoconfig.acclimatize.option.acclimatizationRate": "Acclimatization Rate",
+	"text.autoconfig.acclimatize.option.acclimatizationRateMinimum": "Acclimatization Rate Minimum",
 	"text.autoconfig.acclimatize.option.wetAcclimatizationRateBoostFactor": "Wetness Acclimatization Rate Boost Factor",
     "text.autoconfig.acclimatize.option.hypothermiaThresholdMinor": "Minor Freeze Threshold",
     "text.autoconfig.acclimatize.option.hypothermiaThresholdMajor": "Major Freeze Threshold",
@@ -64,7 +67,6 @@
 	"text.autoconfig.acclimatize.option.bootsAutoTemperatureFactor": "Boots Auto-Assigned Temperature Factor",
 	"text.autoconfig.acclimatize.option.itemTemperatureFactor": "Item Temperature Factor",
 	"text.autoconfig.acclimatize.option.itemAcclimatizationRateFactor": "Item Acclimatization Rate Factor",
-	"text.autoconfig.acclimatize.option.itemAcclimatizationRateMinimum": "Item Acclimatization Rate Minimum",
 	"text.autoconfig.acclimatize.option.iceWaterEffectDuration": "Ice Water Effect Duration",
     
 	"text.autoconfig.acclimatize.option.blockTemperatureRadius": "Block Temperature Radius",

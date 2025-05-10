@@ -1,5 +1,8 @@
 package net.saint.acclimatize.util;
 
+import java.awt.Point;
+import java.util.HashMap;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
@@ -8,234 +11,293 @@ import net.saint.acclimatize.ModClient;
 
 public final class TemperatureHudUtil {
 
-	private static final Identifier THERMOMETER_FRAME = new Identifier(Mod.modId,
-			"textures/thermometer/thermometer_frame.png");
-	private static final Identifier THERMOMETER_GAUGE = new Identifier(Mod.modId,
-			"textures/thermometer/thermometer_gauge_fix_1.png");
-	private static final Identifier THERMOMETER_HAND = new Identifier(Mod.modId,
-			"textures/thermometer/thermometer_hand.png");
-	private static final Identifier THERMOMETER_SNOWFLAKE = new Identifier(Mod.modId,
-			"textures/thermometer/snowflake_icon_8x8.png");
-	private static final Identifier THERMOMETER_FLAME = new Identifier(Mod.modId,
-			"textures/thermometer/flame_icon_8x8.png");
-	private static final Identifier THERMOMETER_STILL = new Identifier(Mod.modId,
-			"textures/thermometer/temperate_icon.png");
+	// Library
 
-	private static final Identifier THERMOMETER_DISPLAY = new Identifier(Mod.modId,
-			"textures/thermometer/thermometer_display.png");
+	private enum THERMOMETER_STYLE {
+		GLASS, GAUGE
+	}
 
-	// glass thermometer
-	private static final Identifier TEMPERATE_GLASS = new Identifier(Mod.modId,
-			"textures/glass_thermometer/temperate_glass.png");
-	private static final Identifier COLD_GLASS = new Identifier(Mod.modId,
-			"textures/glass_thermometer/cold_glass.png");
-	private static final Identifier FROZEN_GLASS = new Identifier(Mod.modId,
-			"textures/glass_thermometer/frozen_glass.png");
-	private static final Identifier HOT_GLASS = new Identifier(Mod.modId,
-			"textures/glass_thermometer/hot_glass.png");
-	private static final Identifier BLAZING_GLASS = new Identifier(Mod.modId,
-			"textures/glass_thermometer/blazing_glass.png");
+	private enum TEMPERATURE_LEVEL {
+		EXTREMELY_COLD, VERY_COLD, COLD, SLIGHTLY_COLD, NEUTRAL, SLIGHTLY_HOT, HOT, VERY_HOT, EXTREMELY_HOT
+	}
 
-	private static final Identifier COOLING_OUTLINE = new Identifier(Mod.modId,
-			"textures/glass_thermometer/cooling_outline.png");
-	private static final Identifier COOLING_OUTLINE_SMALL = new Identifier(Mod.modId,
-			"textures/glass_thermometer/cooling_small_outline.png");
-	private static final Identifier HEATING_OUTLINE = new Identifier(Mod.modId,
-			"textures/glass_thermometer/heating_outline.png");
-	private static final Identifier HEATING_OUTLINE_SMALL = new Identifier(Mod.modId,
-			"textures/glass_thermometer/heating_small_outline.png");
+	private enum TEMPERATURE_CHANGE_INDICATOR {
+		EXTREME_COOLING, REGULAR_COOLING, NEUTRAL, REGULAR_HEATING, EXTREME_HEATING
+	}
 
-	public static void renderGaugeThermometerHud(DrawContext context) {
-		MinecraftClient client = MinecraftClient.getInstance();
+	// Textures
 
-		var temperature = ModClient.cachedBodyTemperature;
-		var temperatureDifference = ModClient.cachedTemperatureDifference;
+	private static final Identifier THERMOMETER_FRAME_TEXTURE = textureIdentifierForGaugeStyle("thermometer_frame.png");
+	private static final Identifier THERMOMETER_GAUGE_TEXTURE = textureIdentifierForGaugeStyle("thermometer_gauge.png");
+	private static final Identifier THERMOMETER_HAND_TEXTURE = textureIdentifierForGaugeStyle("thermometer_hand.png");
 
-		if (temperature == 0.0) {
-			return;
+	private static final Identifier THERMOMETER_SNOWFLAKE_TEXTURE = textureIdentifierForThermometer("snowflake_icon_8x8.png");
+	private static final Identifier THERMOMETER_FLAME_TEXTURE = textureIdentifierForThermometer("flame_icon_8x8.png");
+	private static final Identifier THERMOMETER_STILL_TEXTURE = textureIdentifierForThermometer("temperate_icon.png");
+
+	private static final HashMap<TEMPERATURE_LEVEL, Identifier> THERMOMETER_FILL_TEXTURES = new HashMap<>() {
+		{
+			put(TEMPERATURE_LEVEL.EXTREMELY_COLD, textureIdentifierForGlassStyle("fill_extremely_cold.png"));
+			put(TEMPERATURE_LEVEL.VERY_COLD, textureIdentifierForGlassStyle("fill_very_cold.png"));
+			put(TEMPERATURE_LEVEL.COLD, textureIdentifierForGlassStyle("fill_cold.png"));
+			put(TEMPERATURE_LEVEL.SLIGHTLY_COLD, textureIdentifierForGlassStyle("fill_slightly_cold.png"));
+			put(TEMPERATURE_LEVEL.NEUTRAL, textureIdentifierForGlassStyle("fill_neutral.png"));
+			put(TEMPERATURE_LEVEL.SLIGHTLY_HOT, textureIdentifierForGlassStyle("fill_slightly_hot.png"));
+			put(TEMPERATURE_LEVEL.HOT, textureIdentifierForGlassStyle("fill_hot.png"));
+			put(TEMPERATURE_LEVEL.VERY_HOT, textureIdentifierForGlassStyle("fill_very_hot.png"));
+			put(TEMPERATURE_LEVEL.EXTREMELY_HOT, textureIdentifierForGlassStyle("fill_extremely_hot.png"));
 		}
+	};
+
+	private static final HashMap<TEMPERATURE_CHANGE_INDICATOR, Identifier> THERMOMETER_OUTLINE_TEXTURES = new HashMap<>() {
+		{
+			put(TEMPERATURE_CHANGE_INDICATOR.EXTREME_COOLING, textureIdentifierForGlassStyle("outline_extreme_cooling.png"));
+			put(TEMPERATURE_CHANGE_INDICATOR.REGULAR_COOLING, textureIdentifierForGlassStyle("outline_cooling.png"));
+			put(TEMPERATURE_CHANGE_INDICATOR.NEUTRAL, textureIdentifierForGlassStyle("outline_neutral.png"));
+			put(TEMPERATURE_CHANGE_INDICATOR.REGULAR_HEATING, textureIdentifierForGlassStyle("outline_heating.png"));
+			put(TEMPERATURE_CHANGE_INDICATOR.EXTREME_HEATING, textureIdentifierForGlassStyle("outline_extreme_heating.png"));
+		}
+	};
+
+	// Rendering (Glass Thermometer)
+
+	public static void renderGlassThermometerHud(DrawContext context) {
+		var client = MinecraftClient.getInstance();
+		var window = client.getWindow();
 
 		var xOffset = Mod.CONFIG.temperatureXOffset;
 		var yOffset = Mod.CONFIG.temperatureYOffset;
 
-		var x = (client.getWindow().getScaledWidth() / 2) + xOffset;
-		var y = client.getWindow().getScaledHeight() + yOffset;
+		var x = window.getScaledWidth() / 2 + xOffset;
+		var y = window.getScaledHeight() - 48 + yOffset;
 
-		var spacingFactor = 1.5f;
-		var temperatureFraction = ((temperature / 100f) * Math.round(40 * spacingFactor));
+		var bodyTemperature = ModClient.cachedBodyTemperature;
+		var ambientTemperature = ModClient.cachedAmbientTemperature;
+		var acclimatizationRate = ModClient.cachedAcclimatizationRate;
 
-		if (((temperature / 100f) * Math.round(40 * spacingFactor)) > 59.0f) {
-			temperatureFraction = ((97 / 100f) * Math.round(40 * spacingFactor));
-		} else if ((temperature / 100f) < 0) {
-			temperatureFraction = 0f;
+		if (bodyTemperature == 0.0) {
+			return;
 		}
 
-		context.drawTexture(THERMOMETER_GAUGE, x - ((44 + 149) - Math.round(2 * spacingFactor)),
-				y - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1), 0, 0,
-				Math.round(40 * spacingFactor), Math.round(9 * spacingFactor),
-				Math.round(40 * spacingFactor), Math.round(9 * spacingFactor));
+		if (!client.player.isSpectator() && !client.player.isCreative()) {
+			var offset = applyGlassShakeForRender(bodyTemperature);
+			var glassTexture = selectGlassThermometerFillTexture(bodyTemperature);
+			var outlineTexture = selectGlassThermometerOutlineTexture(bodyTemperature, ambientTemperature, acclimatizationRate);
 
-		context.drawTexture(THERMOMETER_HAND,
-				x - (int) (((44 + 149) - Math.round(2 * spacingFactor)) - temperatureFraction),
-				y - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1), 0, 0,
-				Math.round(1), Math.round(9 * spacingFactor), Math.round(1), Math.round(9 * spacingFactor));
+			var positionX = x + offset.x;
+			var positionY = y + offset.y;
 
-		var frameY = y - (Math.round(13 * spacingFactor) + 1);
+			if (glassTexture != null) {
+				context.drawTexture(glassTexture, positionX - 8, positionY - 10, 0, 0, 16, 21, 16, 21);
+			}
 
-		context.drawTexture(THERMOMETER_FRAME, x - (44 + 149), frameY, 0, 0,
-				Math.round(44 * spacingFactor), Math.round(13 * spacingFactor),
-				Math.round(44 * spacingFactor), Math.round(13 * spacingFactor));
-
-		if (temperatureDifference > 0) {
-			context.drawTexture(THERMOMETER_FLAME, x - (17 + 149), y - (Math.round(22 * spacingFactor)),
-					0, 0, Math.round(8 * spacingFactor), Math.round(8 * spacingFactor),
-					Math.round(8 * spacingFactor), Math.round(8 * spacingFactor));
-		} else if (temperatureDifference < 0) {
-			context.drawTexture(THERMOMETER_SNOWFLAKE, x - (17 + 149),
-					y - (Math.round(22 * spacingFactor)), 0, 0, Math.round(8 * spacingFactor),
-					Math.round(8 * spacingFactor), Math.round(8 * spacingFactor),
-					Math.round(8 * spacingFactor));
-		} else {
-			context.drawTexture(THERMOMETER_STILL, x - (17 + 149), y - (Math.round(22 * spacingFactor)),
-					0, 0, Math.round(8 * spacingFactor), Math.round(8 * spacingFactor),
-					Math.round(8 * spacingFactor), Math.round(8 * spacingFactor));
-		}
-
-		// Thermometer Item
-
-		var player = client.player;
-		var mainHand = player.getMainHandStack();
-		var offHand = player.getOffHandStack();
-
-		if (Mod.CONFIG.enableThermometerTemperatureDisplay && (mainHand.isOf(Mod.THERMOMETER_ITEM) ||
-				offHand.isOf(Mod.THERMOMETER_ITEM))) {
-			var text = "§7" + (Math.round(temperature * 10.0) / 10.0);
-			var textWidth = client.textRenderer.getWidth(text);
-			var textHeight = client.textRenderer.fontHeight;
-
-			context.drawTexture(THERMOMETER_DISPLAY, (x - (x - textWidth)) + xOffset,
-					frameY + yOffset, 0, 0, Math.round(textWidth * spacingFactor),
-					Math.round(textHeight * spacingFactor), Math.round(textWidth *
-							spacingFactor),
-					Math.round(textHeight * spacingFactor));
-
-			context.drawText(client.textRenderer, "§7" + temperature,
-					((x - (x - textWidth)) + 6) + xOffset,
-					(frameY + 7) + yOffset, 16777215, true);
+			if (outlineTexture != null) {
+				context.drawTexture(outlineTexture, positionX - 8, positionY - 10, 0, 0, 16, 21, 16, 21);
+			}
 		}
 	}
 
-	public static void renderGlassThermometerHud(DrawContext context) {
-		MinecraftClient client = MinecraftClient.getInstance();
-
-		var xOffset = Mod.CONFIG.temperatureXOffset;
-		var yOffset = Mod.CONFIG.temperatureYOffset;
-
-		var tx = (client.getWindow().getScaledWidth() / 2) + xOffset;
-		var ty = client.getWindow().getScaledHeight() + yOffset;
-
-		var x = (client.getWindow().getScaledWidth() / 2) + xOffset;
-		var y = (client.getWindow().getScaledHeight() - 48) + yOffset;
-
-		var temperature = ModClient.cachedBodyTemperature;
-		var temperatureDifference = ModClient.cachedTemperatureDifference;
-
-		if (temperature == 0.0) {
-			return;
-		}
-
+	private static Point applyGlassShakeForRender(double temperature) {
 		var burnThresholdMinor = Mod.CONFIG.hyperthermiaThresholdMinor;
 		var burnThresholdMajor = Mod.CONFIG.hyperthermiaThresholdMajor;
 		var freezeThresholdMinor = Mod.CONFIG.hypothermiaThresholdMinor;
 		var freezeThresholdMajor = Mod.CONFIG.hypothermiaThresholdMajor;
 
-		if (!client.player.isSpectator() && !client.player.isCreative()) {
-			if (temperature < freezeThresholdMinor + 1
-					&& temperature > freezeThresholdMajor) {
-				ModClient.glassShakeTickMax = 4;
-				ModClient.glassShakeAxis = true;
-			} else if (temperature < freezeThresholdMajor + 1) {
-				ModClient.glassShakeTickMax = 3;
-				ModClient.glassShakeAxis = true;
-			} else if (temperature > burnThresholdMinor - 1
-					&& temperature < burnThresholdMajor) {
-				ModClient.glassShakeTickMax = 4;
-				ModClient.glassShakeAxis = false;
-			} else if (temperature > burnThresholdMajor - 1) {
-				ModClient.glassShakeTickMax = 3;
-				ModClient.glassShakeAxis = false;
-			} else {
-				ModClient.glassShakeTickMax = 0;
-			}
+		var newGlassShakeTickMax = 0;
+		var newGlassShakeAxis = false;
 
-			if (ModClient.glassShakeTickMax != 0) {
-				ModClient.glassShakeTick += 1;
-				if (ModClient.glassShakeTick >= ModClient.glassShakeTickMax) {
-					ModClient.glassShakeTick = 0;
-					if (ModClient.glassShakePM == 1) {
-						ModClient.glassShakePM = -1;
-					} else if (ModClient.glassShakePM == -1) {
-						ModClient.glassShakePM = 1;
-					}
-				}
-				if (ModClient.glassShakeAxis) {
-					x += ModClient.glassShakePM;
-				} else {
-					y += ModClient.glassShakePM;
-				}
-			}
+		// Determine shake properties based on temperature
 
-			if (temperature < burnThresholdMinor - 10
-					&& temperature > freezeThresholdMinor + 10) {
-				context.drawTexture(TEMPERATE_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temperature < freezeThresholdMinor + 11
-					&& temperature > freezeThresholdMinor + 5) {
-				context.drawTexture(COLD_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temperature < freezeThresholdMinor + 6) {
-				context.drawTexture(FROZEN_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temperature > burnThresholdMinor - 11
-					&& temperature < burnThresholdMinor - 5) {
-				context.drawTexture(HOT_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temperature > burnThresholdMinor - 6) {
-				context.drawTexture(BLAZING_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			}
-
-			if (temperatureDifference < 0
-					&& temperatureDifference > -10) {
-				context.drawTexture(COOLING_OUTLINE_SMALL, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temperatureDifference < -9) {
-				context.drawTexture(COOLING_OUTLINE, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temperatureDifference > 0
-					&& temperatureDifference < 10) {
-				context.drawTexture(HEATING_OUTLINE_SMALL, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			} else if (temperatureDifference > 9) {
-				context.drawTexture(HEATING_OUTLINE, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
-			}
+		if (temperature < freezeThresholdMinor + 1 && temperature > freezeThresholdMajor) {
+			newGlassShakeTickMax = 4;
+			newGlassShakeAxis = true;
+		} else if (temperature < freezeThresholdMajor + 1) {
+			newGlassShakeTickMax = 3;
+			newGlassShakeAxis = true;
+		} else if (temperature > burnThresholdMinor - 1 && temperature < burnThresholdMajor) {
+			newGlassShakeTickMax = 4;
+			newGlassShakeAxis = false;
+		} else if (temperature > burnThresholdMajor - 1) {
+			newGlassShakeTickMax = 3;
+			newGlassShakeAxis = false;
 		}
 
-		var player = client.player;
-		var mainHand = player.getMainHandStack();
-		var offHand = player.getOffHandStack();
+		ModClient.glassShakeTickMax = newGlassShakeTickMax;
+		ModClient.glassShakeAxis = newGlassShakeAxis;
 
-		if (Mod.CONFIG.enableThermometerTemperatureDisplay && (mainHand.isOf(Mod.THERMOMETER_ITEM) ||
-				offHand.isOf(Mod.THERMOMETER_ITEM))) {
-			var text = "§7" + (Math.round(temperature * 10.0) / 10.0);
-			var textWidth = client.textRenderer.getWidth(text);
-			var textHeight = client.textRenderer.fontHeight;
+		if (ModClient.glassShakeTickMax != 0) {
+			var newGlassShakeTick = ModClient.glassShakeTick + 1;
+			var newGlassShakePM = ModClient.glassShakePM;
 
-			float spacingFactor = 1.75f;
-			int tFrameY = ty - (Math.round(textHeight * spacingFactor) + 1);
+			if (newGlassShakeTick >= ModClient.glassShakeTickMax) {
+				newGlassShakeTick = 0;
+				newGlassShakePM = -ModClient.glassShakePM;
+			}
 
-			context.drawTexture(THERMOMETER_DISPLAY, (tx - (tx - textWidth)) + xOffset,
-					tFrameY + yOffset, 0, 0, Math.round(textWidth * spacingFactor),
-					Math.round(textHeight * spacingFactor), Math.round(textWidth *
-							spacingFactor),
-					Math.round(textHeight * spacingFactor));
+			ModClient.glassShakeTick = newGlassShakeTick;
+			ModClient.glassShakePM = newGlassShakePM;
 
-			context.drawText(client.textRenderer, text,
-					((tx - (tx - textWidth)) + 6) + xOffset,
-					(tFrameY + 7) + yOffset, 16777215, true);
+			if (ModClient.glassShakeAxis) {
+				return new Point(ModClient.glassShakePM, 0);
+			} else {
+				return new Point(0, ModClient.glassShakePM);
+			}
+		}
+		return new Point(0, 0);
+	}
+
+	private static Identifier selectGlassThermometerFillTexture(double bodyTemperature) {
+		var temperatureLevel = temperatureLevelForPlayer(bodyTemperature);
+		return THERMOMETER_FILL_TEXTURES.get(temperatureLevel);
+	}
+
+	private static TEMPERATURE_LEVEL temperatureLevelForPlayer(double bodyTemperature) {
+		// Assume temperature ranges from 0 to 90
+
+		if (bodyTemperature <= 10) {
+			return TEMPERATURE_LEVEL.EXTREMELY_COLD;
+		} else if (bodyTemperature <= 20) {
+			return TEMPERATURE_LEVEL.VERY_COLD;
+		} else if (bodyTemperature <= 30) {
+			return TEMPERATURE_LEVEL.COLD;
+		} else if (bodyTemperature <= 40) {
+			return TEMPERATURE_LEVEL.SLIGHTLY_COLD;
+		} else if (bodyTemperature <= 50) {
+			return TEMPERATURE_LEVEL.NEUTRAL;
+		} else if (bodyTemperature <= 60) {
+			return TEMPERATURE_LEVEL.SLIGHTLY_HOT;
+		} else if (bodyTemperature <= 70) {
+			return TEMPERATURE_LEVEL.HOT;
+		} else if (bodyTemperature <= 80) {
+			return TEMPERATURE_LEVEL.VERY_HOT;
+		} else {
+			return TEMPERATURE_LEVEL.EXTREMELY_HOT;
 		}
 	}
 
+	private static Identifier selectGlassThermometerOutlineTexture(double bodyTemperature, double ambientTemperature, double acclimatizationRate) {
+		// Temperature difference is positive if warming up.
+		var temperatureDifference = ambientTemperature - bodyTemperature;
+		var temperatureThresholdMargin = 2;
+		var acclimatizationRateThreshold = PlayerTemperatureUtil.applicableAcclimatizationRate(Mod.CONFIG.acclimatizationRate) * 1.5;
+
+		// If body temperature is decreasing at a regular rate, render minor cooling.
+		if (acclimatizationRate <= acclimatizationRateThreshold && temperatureDifference < -temperatureThresholdMargin) {
+			return THERMOMETER_OUTLINE_TEXTURES.get(TEMPERATURE_CHANGE_INDICATOR.REGULAR_COOLING);
+		}
+
+		// If body temperature is decreasing at an elevated rate, render major cooling.
+		if (acclimatizationRate > acclimatizationRateThreshold && temperatureDifference < -temperatureThresholdMargin) {
+			return THERMOMETER_OUTLINE_TEXTURES.get(TEMPERATURE_CHANGE_INDICATOR.EXTREME_COOLING);
+		}
+
+		// If body temperature is increasing at a regular rate, render minor heating.
+		if (acclimatizationRate <= acclimatizationRateThreshold && temperatureDifference > temperatureThresholdMargin) {
+			return THERMOMETER_OUTLINE_TEXTURES.get(TEMPERATURE_CHANGE_INDICATOR.REGULAR_HEATING);
+		}
+
+		// If body temperature is increasing at an elevated rate, render major heating.
+		if (acclimatizationRate > acclimatizationRateThreshold && temperatureDifference > temperatureThresholdMargin) {
+			return THERMOMETER_OUTLINE_TEXTURES.get(TEMPERATURE_CHANGE_INDICATOR.EXTREME_HEATING);
+		}
+
+		// If body temperature is safe and ambient temperature is within margins, render neutral.
+		return THERMOMETER_OUTLINE_TEXTURES.get(TEMPERATURE_CHANGE_INDICATOR.NEUTRAL);
+	}
+
+	// Rendering (Gauge Thermometer)
+
+	public static void renderGaugeThermometerHud(DrawContext context) {
+		var client = MinecraftClient.getInstance();
+		var window = client.getWindow();
+
+		var temperature = ModClient.cachedBodyTemperature;
+		var temperatureDifference = ModClient.cachedTemperatureDifference;
+
+		if (temperature == 0.0) {
+			return;
+		}
+
+		var xOffset = Mod.CONFIG.temperatureXOffset;
+		var yOffset = Mod.CONFIG.temperatureYOffset;
+
+		var centerX = window.getScaledWidth() / 2 + xOffset;
+		var centerY = window.getScaledHeight() + yOffset;
+
+		var spacingFactor = 1.5f;
+		var temperatureFraction = calculateTemperatureFraction(temperature, spacingFactor);
+
+		context.drawTexture(THERMOMETER_GAUGE_TEXTURE, centerX - ((44 + 149) - Math.round(2 * spacingFactor)),
+				centerY - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1), 0, 0, Math.round(40 * spacingFactor),
+				Math.round(9 * spacingFactor), Math.round(40 * spacingFactor), Math.round(9 * spacingFactor));
+
+		context.drawTexture(THERMOMETER_HAND_TEXTURE, centerX - (int) (((44 + 149) - Math.round(2 * spacingFactor)) - temperatureFraction),
+				centerY - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1), 0, 0, Math.round(1), Math.round(9 * spacingFactor),
+				Math.round(1), Math.round(9 * spacingFactor));
+
+		var frameY = centerY - (Math.round(13 * spacingFactor) + 1);
+		context.drawTexture(THERMOMETER_FRAME_TEXTURE, centerX - (44 + 149), frameY, 0, 0, Math.round(44 * spacingFactor), Math.round(13 * spacingFactor),
+				Math.round(44 * spacingFactor), Math.round(13 * spacingFactor));
+
+		var indicatorTexture = selectIndicatorTexture(temperatureDifference);
+		if (indicatorTexture != null) {
+			context.drawTexture(indicatorTexture, centerX - (17 + 149), centerY - (Math.round(22 * spacingFactor)), 0, 0, Math.round(8 * spacingFactor),
+					Math.round(8 * spacingFactor), Math.round(8 * spacingFactor), Math.round(8 * spacingFactor));
+		}
+	}
+
+	private static double calculateTemperatureFraction(double temperature, double spacingFactor) {
+		var scaledValue = (temperature / 100f) * Math.round(40 * spacingFactor);
+
+		if (scaledValue > 59.0f) {
+			return (97f / 100f) * Math.round(40 * spacingFactor);
+		}
+
+		if ((temperature / 100f) < 0f) {
+			return 0f;
+		}
+
+		return scaledValue;
+	}
+
+	private static Identifier selectIndicatorTexture(double temperatureDifference) {
+		if (temperatureDifference > 0) {
+			return THERMOMETER_FLAME_TEXTURE;
+		}
+
+		if (temperatureDifference < 0) {
+			return THERMOMETER_SNOWFLAKE_TEXTURE;
+		}
+
+		return THERMOMETER_STILL_TEXTURE;
+	}
+
+	// Resource Utility
+
+	private static Identifier textureIdentifierForGlassStyle(String textureName) {
+		return textureIdentifier(THERMOMETER_STYLE.GLASS, textureName);
+	}
+
+	private static Identifier textureIdentifierForGaugeStyle(String textureName) {
+		return textureIdentifier(THERMOMETER_STYLE.GAUGE, textureName);
+	}
+
+	private static Identifier textureIdentifierForThermometer(String textureName) {
+		return new Identifier(Mod.modId, "textures/thermometer" + textureName);
+	}
+
+	private static Identifier textureIdentifier(THERMOMETER_STYLE style, String textureName) {
+		return new Identifier(Mod.modId, "textures/" + textureGroupForThermometerStyle(style) + "/" + textureName);
+	}
+
+	private static String textureGroupForThermometerStyle(THERMOMETER_STYLE style) {
+		switch (style) {
+		case GLASS:
+			return "glass_thermometer";
+		case GAUGE:
+			return "thermometer";
+		default:
+			throw new IllegalArgumentException("Invalid thermometer style: " + style);
+		}
+	}
 }

@@ -7,8 +7,7 @@ import net.saint.acclimatize.server.ServerState;
 
 public class PlayerTemperatureUtil {
 
-	public static void tickPlayerTemperature(ServerPlayerEntity player, ServerState serverState,
-			PlayerState playerState) {
+	public static void tickPlayerTemperature(ServerPlayerEntity player, ServerState serverState, PlayerState playerState) {
 		// Prerequisites
 
 		var isInInterior = SpaceUtil.checkPlayerIsInInterior(player);
@@ -51,8 +50,6 @@ public class PlayerTemperatureUtil {
 			acclimatizationRate += ItemTemperatureUtil.acclimatizationRateDeltaForItemTemperature(itemTemperatureDelta);
 		}
 
-		acclimatizationRate = MathUtil.clamp(acclimatizationRate, Mod.CONFIG.itemAcclimatizationRateMinimum, 1.0);
-
 		if (player.isWet()) {
 			// Increase acclimatization rate when wet.
 			acclimatizationRate *= Mod.CONFIG.wetAcclimatizationRateBoostFactor;
@@ -60,8 +57,10 @@ public class PlayerTemperatureUtil {
 
 		// Player Temperature
 
+		acclimatizationRate = applicableAcclimatizationRate(acclimatizationRate);
+
 		var bodyTemperature = playerState.bodyTemperature;
-		bodyTemperature += (effectiveTemperature - bodyTemperature) * (acclimatizationRate / 10.0);
+		bodyTemperature += (effectiveTemperature - bodyTemperature) * acclimatizationRate;
 
 		// State
 
@@ -73,6 +72,10 @@ public class PlayerTemperatureUtil {
 		playerState.blockTemperature = blockTemperatureDelta;
 		playerState.itemTemperature = itemTemperatureDelta;
 		playerState.windTemperature = windTemperatureDelta;
+	}
+
+	public static double applicableAcclimatizationRate(double acclimatizationRate) {
+		return MathUtil.clamp(acclimatizationRate / 10.0, Mod.CONFIG.acclimatizationRateMinimum, 1.0);
 	}
 
 }
