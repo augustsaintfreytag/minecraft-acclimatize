@@ -63,8 +63,9 @@ public final class TemperatureHudOverlayUtil {
 			isDisplayingOverlay = shouldDisplayOverlay;
 		}
 
-		var progress = Math.min(1f, (System.currentTimeMillis() - animationStartTime) / (float) ANIMATION_DURATION);
-		var alpha = shouldDisplayOverlay ? lastTargetAlpha * progress : lastTargetAlpha * (1f - progress);
+		var maxAlpha = MathUtil.clamp((float) Mod.CONFIG.temperatureVignetteAlpha, 0, 1);
+		var progress = Math.min(maxAlpha, (System.currentTimeMillis() - animationStartTime) / (float) ANIMATION_DURATION);
+		var alpha = shouldDisplayOverlay ? lastTargetAlpha * progress : lastTargetAlpha * (maxAlpha - progress);
 
 		// Bail if not supposed to draw and fade out has already completed.
 		if (!shouldDisplayOverlay && progress >= 1f) {
@@ -97,19 +98,19 @@ public final class TemperatureHudOverlayUtil {
 
 	private static RGBAColor overlayColorForTemperature(double temperature) {
 		if (temperature <= Mod.CONFIG.hypothermiaThresholdMinor && temperature > Mod.CONFIG.hypothermiaThresholdMajor) {
-			return HYPOTHERMIA_COLOR.withAlpha((float) (Mod.CONFIG.temperatureVignetteAlpha * 0.8));
+			return HYPOTHERMIA_COLOR;
 		}
 
 		if (temperature <= Mod.CONFIG.hypothermiaThresholdMajor) {
-			return HYPOTHERMIA_COLOR.withAlpha((float) Mod.CONFIG.temperatureVignetteAlpha);
+			return HYPOTHERMIA_COLOR;
 		}
 
 		if (temperature >= Mod.CONFIG.hyperthermiaThresholdMinor && temperature < Mod.CONFIG.hyperthermiaThresholdMajor) {
-			return HYPERTHERMIA_COLOR.withAlpha((float) (Mod.CONFIG.temperatureVignetteAlpha * 0.8));
+			return HYPERTHERMIA_COLOR;
 		}
 
 		if (temperature >= Mod.CONFIG.hyperthermiaThresholdMajor) {
-			return HYPERTHERMIA_COLOR.withAlpha((float) Mod.CONFIG.temperatureVignetteAlpha);
+			return HYPERTHERMIA_COLOR;
 		}
 
 		return null;
