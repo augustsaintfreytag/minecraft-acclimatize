@@ -46,13 +46,13 @@ public class ModConfig implements ConfigData {
 	// Player
 
 	@ConfigEntry.Category("player") @Comment("The rate by which body temperature adapts to ambient temperatures. (Default: 0.25)")
-	public double acclimatizationRate = 0.25;
+	public double acclimatizationRate = 0.2;
 
 	@ConfigEntry.Category("player") @Comment("The lowest possible value for player acclimatization after all factors have been applied. (Default: 0.001)")
 	public double acclimatizationRateMinimum = 0.001;
 
-	@ConfigEntry.Category("player") @Comment("The factor by which player acclimatization rate is boosted when wet. (Default: 5.0)")
-	public double wetAcclimatizationRateBoostFactor = 5.0;
+	@ConfigEntry.Category("player") @Comment("The factor by which player acclimatization rate is boosted when wet. (Default: 4.0)")
+	public double wetAcclimatizationRateBoostFactor = 4.0;
 
 	@ConfigEntry.Category("player") @Comment("First threshold for hypothermia, being below this you will start to freeze (Default: 35.0)")
 	public double hypothermiaThresholdMinor = 35.0;
@@ -131,16 +131,18 @@ public class ModConfig implements ConfigData {
 	public double blockTemperatureAcclimatizationBoostThreshold = 10.0;
 
 	@ConfigEntry.Category("blocks") @Comment("Blocks that will heat you up when near.")
-	public String heatingBlocks = String.join(", ", "minecraft:fire = 5.0", "minecraft:lava = 8.0", "minecraft:campfire = 18.0", "minecraft:torch = 2.0",
-			"minecraft:wall_torch = 2.0", "minecraft:soul_torch = 2.0", "minecraft:soul_wall_torch = 2.0", "minecraft:soul_campfire = 18.0",
-			"minecraft:lava_cauldron = 5.0", "minecraft:furnace = 10.0", "minecraft:blast_furnace = 8.0", "minecraft:smoker = 10.0",
-			"minecraft:redstone_lamp = 2.0", "hardcore_torches:lit_torch = 2.0", "hardcore_torches:lit_wall_torch = 2.0", "hardcore_torches:lit_lantern = 1.0",
-			"farmersdelight:stove = 18.0", "refurbished_furniture:light_ceiling_light = 10.0", "refurbished_furniture:dark_ceiling_light = 10.0",
+	public String heatingBlocks = String.join(", ", "minecraft:fire = 5.0", "minecraft:lava = 8.0", "minecraft:campfire = 18.0",
+			"minecraft:torch = 2.0", "minecraft:wall_torch = 2.0", "minecraft:soul_torch = 2.0", "minecraft:soul_wall_torch = 2.0",
+			"minecraft:soul_campfire = 18.0", "minecraft:lava_cauldron = 5.0", "minecraft:furnace = 10.0", "minecraft:blast_furnace = 8.0",
+			"minecraft:smoker = 10.0", "minecraft:redstone_lamp = 2.0", "hardcore_torches:lit_torch = 2.0",
+			"hardcore_torches:lit_wall_torch = 2.0", "hardcore_torches:lit_lantern = 1.0", "farmersdelight:stove = 18.0",
+			"refurbished_furniture:light_ceiling_light = 10.0", "refurbished_furniture:dark_ceiling_light = 10.0",
 			"refurbished_furniture:black_lamp = 10.0", "refurbished_furniture:blue_lamp = 10.0", "refurbished_furniture:brown_lamp = 10.0",
 			"refurbished_furniture:cyan_lamp = 10.0", "refurbished_furniture:gray_lamp = 10.0", "refurbished_furniture:green_lamp = 10.0",
-			"refurbished_furniture:light_blue_lamp = 10.0", "refurbished_furniture:light_gray_lamp = 10.0", "refurbished_furniture:lime_lamp = 10.0",
-			"refurbished_furniture:magenta_lamp = 10.0", "refurbished_furniture:orange_lamp = 10.0", "refurbished_furniture:pink_lamp = 10.0",
-			"refurbished_furniture:red_lamp = 10.0", "refurbished_furniture:white_lamp = 10.0", "refurbished_furniture:yellow_lamp = 10.0");
+			"refurbished_furniture:light_blue_lamp = 10.0", "refurbished_furniture:light_gray_lamp = 10.0",
+			"refurbished_furniture:lime_lamp = 10.0", "refurbished_furniture:magenta_lamp = 10.0",
+			"refurbished_furniture:orange_lamp = 10.0", "refurbished_furniture:pink_lamp = 10.0", "refurbished_furniture:red_lamp = 10.0",
+			"refurbished_furniture:white_lamp = 10.0", "refurbished_furniture:yellow_lamp = 10.0");
 
 	@ConfigEntry.Category("blocks") @Comment("Blocks that will cool you down when near.")
 	public String coolingBlocks = String.join(", ", "minecraft:ice = -0.5", "minecraft:packed_ice = -1.0", "minecraft:blue_ice = -2.0",
@@ -158,17 +160,17 @@ public class ModConfig implements ConfigData {
 	public double coldProtectionCoolingFactor = 1.0;
 
 	@ConfigEntry.Category("items") @Comment("Item temperature values that add to body temperature calculation when actively held.")
-	public String heldTemperatureItems = String.join(", ", "minecraft:torch = 2.0", "minecraft:lava_bucket = 1.0", "hardcore_torches:lit_torch = 2.0",
-			"hardcore_torches:lit_lantern = 1.0");
+	public String heldTemperatureItems = String.join(", ", "minecraft:torch = 2.0", "minecraft:lava_bucket = 1.0",
+			"hardcore_torches:lit_torch = 2.0", "hardcore_torches:lit_lantern = 1.0");
 
 	@ConfigEntry.Category("items") @Comment("Item temperature values that add to body temperature calculation when worn.")
 	public String wornTemperatureItems = String.join(", ", "");
 
 	@ConfigEntry.Category("items") @Comment("Material temperature values used to auto-assign values to wearable items.")
-	public String materialAutoTemperature = String.join(", ", "leather = 3.0", "iron = 2.0", "gold = 2.0", "diamond = 1.0", "netherite = 3.0",
-			"chainmail = 1.0", "aeternium = 2.0", "brass = 1.0", "bronze = 1.0", "cincinnasite = 2.0", "copper = 1.0", "crystalite = 3.0", "flaming_ruby = 5.0",
-			"nether_ruby = 4.0", "resonarium = 3.0", "rose_quartz = 2.0", "steel = 2.0", "sturdy = 3.0", "terminite = 3.0", "thallasium = 2.0", "warden = 3.0",
-			"turtle = 1.0");
+	public String materialAutoTemperature = String.join(", ", "leather = 3.0", "iron = 2.0", "gold = 2.0", "diamond = 1.0",
+			"netherite = 3.0", "chainmail = 1.0", "aeternium = 2.0", "brass = 1.0", "bronze = 1.0", "cincinnasite = 2.0", "copper = 1.0",
+			"crystalite = 3.0", "flaming_ruby = 5.0", "nether_ruby = 4.0", "resonarium = 3.0", "rose_quartz = 2.0", "steel = 2.0",
+			"sturdy = 3.0", "terminite = 3.0", "thallasium = 2.0", "warden = 3.0", "turtle = 1.0");
 
 	@ConfigEntry.Category("items") @Comment("Temperature factor for helmets with auto-assigned material-based values. (Default: 1.0)")
 	public double helmetAutoTemperatureFactor = 1.0;
@@ -185,8 +187,8 @@ public class ModConfig implements ConfigData {
 	@ConfigEntry.Category("items") @Comment("The factor for how much the raw temperature value of worn items adds to player temperature. (Default: 0.25)")
 	public double itemTemperatureFactor = 0.25;
 
-	@ConfigEntry.Category("items") @Comment("Factor for how much player acclimatization is affected by the temperature value of worn items. (Default: -0.005)")
-	public double itemAcclimatizationRateFactor = -0.005;
+	@ConfigEntry.Category("items") @Comment("Factor for how much player acclimatization is affected by the temperature value of worn items. (Default: -0.003)")
+	public double itemAcclimatizationRateFactor = -0.003;
 
 	@ConfigEntry.Category("items") @Comment("Duration of the cooling effect of ice water drinks in ticks. (Default: 6000)")
 	public int iceWaterEffectDuration = 6000;
