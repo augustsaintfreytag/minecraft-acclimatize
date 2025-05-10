@@ -2,6 +2,8 @@ package net.saint.acclimatize.util;
 
 public final class MathUtil {
 
+	// Trigonometric Approximations
+
 	public static double approximateSin(double x) {
 		// Range reduction to [-π, π]
 		x = x % (2 * Math.PI);
@@ -23,6 +25,28 @@ public final class MathUtil {
 		return approximateSin(x + Math.PI / 2);
 	}
 
+	// Clamp
+
+	public static int clamp(int value, int min, int max) {
+		if (value < min) {
+			return min;
+		} else if (value > max) {
+			return max;
+		} else {
+			return value;
+		}
+	}
+
+	public static float clamp(float value, float min, float max) {
+		if (value < min) {
+			return min;
+		} else if (value > max) {
+			return max;
+		} else {
+			return value;
+		}
+	}
+
 	public static double clamp(double value, double min, double max) {
 		if (value < min) {
 			return min;
@@ -32,6 +56,8 @@ public final class MathUtil {
 			return value;
 		}
 	}
+
+	// Linear Interpolation
 
 	public static double lerp(double a, double b, double t) {
 		return a + (b - a) * t;
