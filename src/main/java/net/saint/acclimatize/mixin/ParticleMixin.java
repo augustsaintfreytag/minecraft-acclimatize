@@ -17,6 +17,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.saint.acclimatize.ModClient;
+import net.saint.acclimatize.util.MathUtil;
 import net.vibzz.immersivewind.config.ParticleBlacklist;
 import net.vibzz.immersivewind.wind.WindManager;
 
@@ -47,15 +48,10 @@ public abstract class ParticleMixin {
 
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	private double modifyDx(double dx) {
-		String particleName = ParticleBlacklist.formatParticleName(this.getClass().getSimpleName());
-		if (ParticleBlacklist.isBlacklisted(particleName)) {
-			return dx;
-		}
-
 		Vec3d windEffect = calculateWindEffect();
 		Vec3d particlePos = new Vec3d(this.x, this.y, this.z);
-		Vec3d windDirection = new Vec3d(Math.cos(Math.toRadians(ModClient.cachedWindDirection)), 0,
-				Math.sin(Math.toRadians(WindManager.getWindDirection())));
+		Vec3d windDirection = new Vec3d(MathUtil.cos(Math.toRadians(ModClient.cachedWindDirection)), 0,
+				MathUtil.sin(Math.toRadians(WindManager.getWindDirection())));
 
 		double windInfluenceFactor = getWindInfluenceFactor(particlePos, windDirection);
 		updateHeatValue(particlePos);
@@ -76,19 +72,22 @@ public abstract class ParticleMixin {
 
 		Vec3d windEffect = calculateWindEffect();
 		Vec3d particlePos = new Vec3d(this.x, this.y, this.z);
-		Vec3d windDirection = new Vec3d(Math.cos(Math.toRadians(WindManager.getWindDirection())), 0,
-				Math.sin(Math.toRadians(WindManager.getWindDirection())));
+		Vec3d windDirection = new Vec3d(MathUtil.cos(Math.toRadians(WindManager.getWindDirection())), 0,
+				MathUtil.sin(Math.toRadians(WindManager.getWindDirection())));
 
 		double windInfluenceFactor = getWindInfluenceFactor(particlePos, windDirection);
 		updateHeatValue(particlePos);
+
 		return dz + windEffect.z * windInfluenceFactor;
 	}
 
 	@Unique
 	private double getWindInfluenceFactor(Vec3d particlePosition, Vec3d windDirection) {
-		int range = 5; // Define how far back in the direction from which the wind comes we should
-						// check
-		Vec3d invertedWindDirection = windDirection.multiply(-1); // Invert wind direction for checking
+		// Define how far back in wind origin direction we should check.
+		int range = 5;
+
+		// Invert wind direction for checking.
+		Vec3d invertedWindDirection = windDirection.multiply(-1);
 
 		for (int i = 1; i <= range; i++) {
 			Vec3d checkPosition = particlePosition.add(invertedWindDirection.multiply(i));
@@ -99,6 +98,7 @@ public abstract class ParticleMixin {
 			if (state.isAir()) {
 				// Check if particle is within 0.5 blocks away from a fluid block
 				BlockPos fluidPos = getFluidBlockNearby(pos);
+
 				if (fluidPos != null) {
 					Vec3d fluidVec = new Vec3d(fluidPos.getX(), fluidPos.getY(), fluidPos.getZ());
 					double distance = particlePosition.distanceTo(fluidVec);
@@ -106,11 +106,13 @@ public abstract class ParticleMixin {
 						return 0.0; // No influence if within 0.5 blocks away from fluid
 					}
 				}
+
 				return 1; // Full influence if wind exposure is confirmed
 			} else if (isNonSolidBlock(state)) {
 				return 0.0; // No influence if in water or lava
 			}
 		}
+
 		return 0.0;
 	}
 
@@ -122,6 +124,7 @@ public abstract class ParticleMixin {
 				for (int z = -1; z <= 1; z++) {
 					BlockPos nearbyPos = pos.add(x, y, z);
 					BlockState nearbyState = world.getBlockState(nearbyPos);
+
 					if (isNonSolidBlock(nearbyState)) {
 						return nearbyPos;
 					}
@@ -180,7 +183,7 @@ public abstract class ParticleMixin {
 
 	@Unique
 	private double randomizeDeflection(double incidenceAngle) {
-		return Math.random() * Math.cos(Math.toRadians(incidenceAngle)) * 0.05;
+		return Math.random() * MathUtil.cos(Math.toRadians(incidenceAngle)) * 0.05;
 	}
 
 	@Unique
@@ -203,10 +206,12 @@ public abstract class ParticleMixin {
 	private Direction getWallFacingDirection(BlockPos pos, Direction windDirection) {
 		for (Direction dir : Direction.values()) {
 			BlockState state = world.getBlockState(pos.offset(dir));
+
 			if (state.isSolidBlock(world, pos.offset(dir)) && dir.getAxis().isHorizontal()) {
 				return dir;
 			}
 		}
+
 		return windDirection;
 	}
 
@@ -229,15 +234,16 @@ public abstract class ParticleMixin {
 			case NORTH -> 180;
 			case WEST -> 270;
 			case EAST -> 90;
-			default -> 0; // SOUTH
+			default -> 0;
 		};
 	}
 
 	@Unique
 	private double calculateDeflectionFactor(double incidenceAngle, double windX, double windZ) {
 		double baseDeflection = 0.01;
-		double velocityFactor = Math.sqrt(windX * windX + windZ * windZ) * 0.01;
-		double angleFactor = Math.cos(Math.toRadians(incidenceAngle));
+		double velocityFactor = MathUtil.sqrt(windX * windX + windZ * windZ) * 0.01;
+		double angleFactor = MathUtil.sqrt(Math.toRadians(incidenceAngle));
+
 		return baseDeflection * angleFactor * velocityFactor;
 	}
 
@@ -275,7 +281,7 @@ public abstract class ParticleMixin {
 		double incidenceAngle = calculateIncidenceAngle(windDirection, wallDirection);
 
 		if (incidenceAngle >= 45 && incidenceAngle <= 135) {
-			double funnelFactor = 1.0 + (1.0 - Math.cos(Math.toRadians(incidenceAngle))) * 0.5;
+			double funnelFactor = 1.0 + (1.0 - MathUtil.cos(Math.toRadians(incidenceAngle))) * 0.5;
 			return windEffect.multiply(funnelFactor);
 		}
 
@@ -311,6 +317,7 @@ public abstract class ParticleMixin {
 			double attractionFactor = 1.5;
 			return windEffect.multiply(attractionFactor);
 		}
+
 		return windEffect;
 	}
 
@@ -319,6 +326,7 @@ public abstract class ParticleMixin {
 		if (checkForWallInteraction(pos)) {
 			windEffect = adjustWindFlow(windEffect, pos, windEffect.x, windEffect.z);
 		}
+
 		windEffect = funnelWindAroundStructure(windEffect, pos);
 		return adjustForTunnelAttraction(windEffect, pos);
 	}
@@ -340,13 +348,19 @@ public abstract class ParticleMixin {
 			if (isHeatSource(state)) {
 				double distance = particlePos
 						.distanceTo(new Vec3d(checkPos.getX() + 0.5, checkPos.getY() + 0.5, checkPos.getZ() + 0.5));
+
 				if (distance <= maxHeatInfluenceDistance) {
 					double influence = (maxHeatInfluenceDistance - distance) / maxHeatInfluenceDistance;
 					heatValue += heatValueIncrement * influence;
+
 					// Max heat that can be accumulated
 					double maxHeatValue = 1.0;
-					heatValue = Math.min(heatValue, maxHeatValue); // Cap the heat value to maxHeatValue
-					break; // Break after finding the first heat source for performance
+
+					// Cap the heat value to maxHeatValue
+					heatValue = Math.min(heatValue, maxHeatValue);
+
+					// Break after finding the first heat source for performance
+					break;
 				}
 			}
 		}
@@ -361,7 +375,8 @@ public abstract class ParticleMixin {
 
 	@Unique
 	private double calculateLift() {
-		return heatValue * 0.1; // Multiply heatValue by a factor to determine lift strength
+		// Multiply heatValue by a factor to determine lift strength
+		return heatValue * 0.1;
 	}
 
 	@Unique
