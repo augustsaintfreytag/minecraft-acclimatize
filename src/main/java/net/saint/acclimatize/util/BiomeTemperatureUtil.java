@@ -1,12 +1,47 @@
 package net.saint.acclimatize.util;
 
+import java.util.HashMap;
+
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Precipitation;
 import net.saint.acclimatize.Mod;
 
 public final class BiomeTemperatureUtil {
+
+	// Configuration
+
+	private static final HashMap<String, Double> biomeRawTemperatureOverrides = new HashMap<String, Double>() {
+		{
+			// Cold Biomes
+
+			put("minecraft:deep_frozen_ocean", -0.4);
+			put("minecraft:deep_cold_ocean", -0.2);
+			put("minecraft:cold_ocean", -0.1);
+			put("minecraft:deep_ocean", 0.0);
+			put("minecraft:ocean", 0.1);
+			put("minecraft:deep_lukewarm_ocean", 0.15);
+			put("minecraft:lukewarm_ocean", 0.2);
+			put("minecraft:warm_ocean", 0.3);
+
+			// Humid Biomes
+
+			put("minecraft:swamp", 0.85);
+			put("minecraft:mangrove_swamp", 0.8);
+
+			// Hot Biomes
+
+			put("minecraft:savanna", 1.2);
+			put("minecraft:savanna_plateau", 1.18);
+			put("minecraft:windswept_savanna", 1.15);
+			put("minecraft:desert", 1.35);
+			put("minecraft:badlands", 1.45);
+			put("minecraft:wooded_badlands", 1.42);
+			put("minecraft:eroded_badlands", 1.55);
+		}
+	};
 
 	// Biome
 
@@ -51,10 +86,29 @@ public final class BiomeTemperatureUtil {
 	// Biome
 
 	public static double baseTemperatureForBiome(RegistryEntry<Biome> biomeEntry) {
-		var rawBiomeTemperature = (double) biomeEntry.value().getTemperature();
+		var rawBiomeTemperature = rawTemperatureForBiome(biomeEntry);
 		var baseTemperature = ((rawBiomeTemperature + Mod.CONFIG.biomeTemperatureZeroingAnchor) / 3) * 100;
 
 		return baseTemperature;
+	}
+
+	public static double rawTemperatureForBiome(RegistryEntry<Biome> biomeEntry) {
+		var biome = biomeEntry.value();
+		var rawBiomeTemperature = (double) biome.getTemperature();
+
+		rawBiomeTemperature = rawTemperatureOverrideForBiome(biomeEntry, rawBiomeTemperature);
+
+		return rawBiomeTemperature;
+	}
+
+	public static double rawTemperatureOverrideForBiome(RegistryEntry<Biome> biomeEntry, double baseTemperature) {
+		var biomeId = biomeEntry.getKey().get().toString();
+
+		if (!biomeRawTemperatureOverrides.containsKey(biomeId)) {
+			return baseTemperature;
+		}
+
+		return biomeRawTemperatureOverrides.get(biomeId);
 	}
 
 	// Precipitation
