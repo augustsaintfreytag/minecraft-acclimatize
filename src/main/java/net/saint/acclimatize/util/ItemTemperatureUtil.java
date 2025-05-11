@@ -60,7 +60,7 @@ public final class ItemTemperatureUtil {
 	// Acclimatization Rate
 
 	public static double acclimatizationRateDeltaForItemTemperature(double temperatureDelta) {
-		return ((temperatureDelta / 100.0) * Mod.CONFIG.itemAcclimatizationRateFactor);
+		return ((temperatureDelta / 10.0) * Mod.CONFIG.itemAcclimatizationRateFactor);
 	}
 
 	// Temperature (Auto-Assignment)

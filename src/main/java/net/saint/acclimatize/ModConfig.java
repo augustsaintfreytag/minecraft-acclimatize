@@ -62,8 +62,8 @@ public class ModConfig implements ConfigData {
 	// Player
 
 	@ConfigEntry.Category("player")
-	@Comment("The rate by which body temperature adapts to ambient temperatures. (Default: 0.25)")
-	public double acclimatizationRate = 0.2;
+	@Comment("The rate by which body temperature adapts to ambient temperatures. (Default: 0.05)")
+	public double acclimatizationRate = 0.05;
 
 	@ConfigEntry.Category("player")
 	@Comment("The lowest possible value for player acclimatization after all factors have been applied. (Default: 0.001)")
@@ -194,8 +194,8 @@ public class ModConfig implements ConfigData {
 			"minecraft:snow_block = -0.5");
 
 	@ConfigEntry.Category("blocks")
-	@Comment("Temperature value applied when the player is submerged in water. (Default: -8.0)")
-	public double waterBlockTemperature = -8.0;
+	@Comment("Temperature value applied when the player is submerged in water. (Default: -15.0)")
+	public double waterBlockTemperature = -15.0;
 
 	// Items
 
