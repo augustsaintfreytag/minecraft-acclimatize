@@ -2,6 +2,13 @@ package net.saint.acclimatize.util;
 
 public final class MathUtil {
 
+	// Square Root Approximation
+
+	public static double sqrt(double x) {
+		// Native implementation preferred.
+		return Math.sqrt(x);
+	}
+
 	// Trigonometric Approximations
 
 	public static double sin(double x) {
