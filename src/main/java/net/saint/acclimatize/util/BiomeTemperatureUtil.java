@@ -1,9 +1,10 @@
 package net.saint.acclimatize.util;
 
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.Precipitation;
 import net.saint.acclimatize.Mod;
-import net.saint.acclimatize.library.ClimateKind;
 
 public final class BiomeTemperatureUtil {
 
@@ -14,13 +15,10 @@ public final class BiomeTemperatureUtil {
 		var position = player.getBlockPos();
 
 		var dimension = world.getDimension();
-		var biome = world.getBiome(position).value();
-		var precipitation = biome.getPrecipitation(player.getBlockPos());
+		var biomeEntry = world.getBiome(position);
+		var biomeTemperature = baseTemperatureForBiome(biomeEntry);
 
-		var internalTemperatureValue = biome.getTemperature();
-		var climateKind = climateKindForTemperature(internalTemperatureValue);
-
-		var biomeTemperature = baseTemperatureForClimate(climateKind);
+		// Nether & End
 
 		if (!dimension.natural()) {
 			return biomeTemperature;
@@ -29,81 +27,70 @@ public final class BiomeTemperatureUtil {
 		// Height
 
 		var height = position.getY();
-		var heightTemperatureDelta = heightTemperatureDeltaForPosition(height);
+		var heightTemperatureDelta = temperatureDeltaForAltitude(height);
 
 		biomeTemperature += heightTemperatureDelta;
 
 		// Daylight/Nighttime
 
 		var dayTick = world.getTimeOfDay();
-		var dayNightTemperatureDelta = dayNightTemperatureDeltaForTime(climateKind, dayTick);
+		var dayNightTemperatureDelta = temperatureDeltaForDayNightTime(dayTick);
 
 		biomeTemperature += dayNightTemperatureDelta;
 
 		// Precipitation
 
-		if (precipitation == Biome.Precipitation.RAIN && world.isRaining()) {
-			biomeTemperature += Mod.CONFIG.rainTemperatureDelta;
-		} else if (precipitation == Biome.Precipitation.SNOW && world.isRaining()) {
-			biomeTemperature += Mod.CONFIG.snowTemperatureDelta;
-		}
+		var precipitation = biomeEntry.value().getPrecipitation(position);
+		var precipitationTemperatureDelta = temperatureDeltaForPrecipitation(precipitation);
+
+		biomeTemperature += precipitationTemperatureDelta;
 
 		return biomeTemperature;
 	}
 
-	// Height
+	// Biome
 
-	private static double heightTemperatureDeltaForPosition(double height) {
+	public static double baseTemperatureForBiome(RegistryEntry<Biome> biomeEntry) {
+		var rawBiomeTemperature = (double) biomeEntry.value().getTemperature();
+		var baseTemperature = ((rawBiomeTemperature + Mod.CONFIG.biomeTemperatureZeroingAnchor) / 3) * 100;
+
+		return baseTemperature;
+	}
+
+	// Precipitation
+
+	public static double temperatureDeltaForPrecipitation(Precipitation precipitation) {
+		var temperatureDelta = 0.0;
+
+		if (precipitation == Biome.Precipitation.RAIN) {
+			temperatureDelta = Mod.CONFIG.rainTemperatureDelta;
+		} else if (precipitation == Biome.Precipitation.SNOW) {
+			temperatureDelta = Mod.CONFIG.snowTemperatureDelta;
+		}
+
+		return temperatureDelta;
+	}
+
+	// Altitude
+
+	private static double temperatureDeltaForAltitude(double altitude) {
 		var coefficient = -0.02;
 		var growthFactor = 1.5;
 		var softeningFactor = 15.0;
 		var lowerBound = -20.0;
 		var upperBound = 15.0;
 
-		var heightValue = height - 62.0;
+		var normalizedAltitude = altitude - 62.0;
 
-		var delta = coefficient * Math.signum(heightValue) * Math.pow(Math.abs(heightValue), growthFactor)
+		var delta = coefficient * Math.signum(normalizedAltitude) * Math.pow(Math.abs(normalizedAltitude), growthFactor)
 				- coefficient * Math.pow(softeningFactor, growthFactor);
 
 		return MathUtil.clamp(delta, lowerBound, upperBound);
 	}
 
-	// Climate
+	// Day/Night
 
-	public static ClimateKind climateKindForTemperature(float temperature) {
-		if (temperature < 0.0) {
-			return ClimateKind.FRIGID;
-		} else if (temperature < 0.31 && temperature >= 0.0) {
-			return ClimateKind.COLD;
-		} else if (temperature < 0.9 && temperature >= 0.31) {
-			return ClimateKind.TEMPERATE;
-		} else if (temperature < 2.0 && temperature > 0.8) {
-			return ClimateKind.HOT;
-		} else if (temperature >= 2.0) {
-			return ClimateKind.ARID;
-		}
-
-		return ClimateKind.ARID;
-	}
-
-	private static double baseTemperatureForClimate(ClimateKind climateKind) {
-		switch (climateKind) {
-			case FRIGID:
-				return Mod.CONFIG.frigidClimateTemperature;
-			case COLD:
-				return Mod.CONFIG.coldClimateTemperature;
-			case TEMPERATE:
-				return Mod.CONFIG.temperateClimateTemperature;
-			case HOT:
-				return Mod.CONFIG.hotClimateTemperature;
-			case ARID:
-				return Mod.CONFIG.aridClimateTemperature;
-			default:
-				return Mod.CONFIG.aridClimateTemperature;
-		}
-	}
-
-	public static double dayNightTemperatureDeltaForTime(ClimateKind climateKind, long dayTick) {
+	public static double temperatureDeltaForDayNightTime(long dayTick) {
 		var phaseValue = phaseValueForAsymmetricTime(dayTick); // Phase shift phi: φ
 		var plateau = 2; // Plateau: p
 		var offset = 1.65 * Math.PI; // Offset delta: δ
