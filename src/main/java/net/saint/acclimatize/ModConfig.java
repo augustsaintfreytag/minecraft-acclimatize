@@ -70,24 +70,24 @@ public class ModConfig implements ConfigData {
 	public double acclimatizationRateMinimum = 0.001;
 
 	@ConfigEntry.Category("player")
-	@Comment("The factor by which player acclimatization rate is boosted when wet. (Default: 4.0)")
-	public double wetAcclimatizationRateBoostFactor = 4.0;
+	@Comment("The factor by which player acclimatization rate is boosted when wet. (Default: 5.0)")
+	public double wetAcclimatizationRateBoostFactor = 5.0;
 
 	@ConfigEntry.Category("player")
 	@Comment("First threshold for hypothermia, being below this you will start to freeze (Default: 35.0)")
 	public double hypothermiaThresholdMinor = 35.0;
 
 	@ConfigEntry.Category("player")
-	@Comment("Second threshold for hypothermia, being below this you will freeze faster. (Default: 20.0)")
-	public double hypothermiaThresholdMajor = 20.0;
+	@Comment("Second threshold for hypothermia, being below this you will freeze faster. (Default: 15.0)")
+	public double hypothermiaThresholdMajor = 15.0;
 
 	@ConfigEntry.Category("player")
 	@Comment("First threshold for hyperthermia, being above this you will start to burn (Default: 65.0)")
 	public double hyperthermiaThresholdMinor = 65.0;
 
 	@ConfigEntry.Category("player")
-	@Comment("Second threshold for hyperthermia, being above this you will burn faster (Default: 75.0)")
-	public double hyperthermiaThresholdMajor = 75.0;
+	@Comment("Second threshold for hyperthermia, being above this you will burn faster (Default: 85.0)")
+	public double hyperthermiaThresholdMajor = 85.0;
 
 	// World
 
@@ -110,6 +110,14 @@ public class ModConfig implements ConfigData {
 	@ConfigEntry.Category("world")
 	@Comment("The temperature delta gradually applied between sunset and sunrise. (Default: -10.0)")
 	public double nightTemperatureDelta = -10.0;
+
+	@ConfigEntry.Category("world")
+	@Comment("The raw biome temperature value of all nether biomes. (Between -2.0 and +2.0) (Default: 1.8)")
+	public double netherBiomeTemperature = 1.8;
+
+	@ConfigEntry.Category("world")
+	@Comment("The raw biome temperature value of all end biomes. (Between -2.0 and +2.0) (Default: 0.5)")
+	public double endBiomeTemperature = -0.7;
 
 	@ConfigEntry.Category("world")
 	@Comment("The number of rays cast in a cone shape around the player to check for an interior space. Higher number means more precision but higher cost. (Default: 12)")
