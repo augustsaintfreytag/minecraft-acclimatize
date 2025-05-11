@@ -31,9 +31,7 @@ public final class ItemTemperatureUtil {
 
 		for (var itemStack : player.getArmorItems()) {
 			var temperatureValue = temperatureValueForItem(itemStack);
-
-			temperatureValue *= Mod.CONFIG.itemTemperatureFactor;
-			temperature += temperatureValue;
+			temperature += temperatureValue * Mod.CONFIG.itemTemperatureFactor;
 		}
 
 		return temperature;
@@ -82,16 +80,16 @@ public final class ItemTemperatureUtil {
 
 	private static double temperatureFactorForItemKind(WearableKind itemKind) {
 		switch (itemKind) {
-			case BOOTS:
-				return Mod.CONFIG.bootsAutoTemperatureFactor;
-			case LEGGINGS:
-				return Mod.CONFIG.leggingsAutoTemperatureFactor;
-			case CHESTPLATE:
-				return Mod.CONFIG.chestplateAutoTemperatureFactor;
-			case HELMET:
-				return Mod.CONFIG.helmetAutoTemperatureFactor;
-			default:
-				return 1.0;
+		case BOOTS:
+			return Mod.CONFIG.bootsAutoTemperatureFactor;
+		case LEGGINGS:
+			return Mod.CONFIG.leggingsAutoTemperatureFactor;
+		case CHESTPLATE:
+			return Mod.CONFIG.chestplateAutoTemperatureFactor;
+		case HELMET:
+			return Mod.CONFIG.helmetAutoTemperatureFactor;
+		default:
+			return 1.0;
 		}
 	}
 
