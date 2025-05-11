@@ -7,20 +7,6 @@ import net.saint.acclimatize.library.ClimateKind;
 
 public final class BiomeTemperatureUtil {
 
-	// Library
-
-	public static class TemperatureRange {
-		public double minimum;
-		public double median;
-		public double maximum;
-
-		public TemperatureRange(double minTemperature, double medTemperature, double maxTemperature) {
-			this.minimum = minTemperature;
-			this.median = medTemperature;
-			this.maximum = maxTemperature;
-		}
-	}
-
 	// Biome
 
 	public static double biomeTemperatureForPlayer(ServerPlayerEntity player, boolean isInInterior) {
