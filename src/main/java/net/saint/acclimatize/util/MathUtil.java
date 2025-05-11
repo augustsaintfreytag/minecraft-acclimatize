@@ -4,7 +4,7 @@ public final class MathUtil {
 
 	// Trigonometric Approximations
 
-	public static double approximateSin(double x) {
+	public static double sin(double x) {
 		// Range reduction to [-π, π]
 		x = x % (2 * Math.PI);
 
@@ -20,9 +20,9 @@ public final class MathUtil {
 		return 1.27323954 * x - 0.405284735 * x * Math.abs(x);
 	}
 
-	public static double approximateCos(double x) {
+	public static double cos(double x) {
 		// cos(x)=sin(x+π/2)
-		return approximateSin(x + Math.PI / 2);
+		return sin(x + Math.PI / 2);
 	}
 
 	// Clamp

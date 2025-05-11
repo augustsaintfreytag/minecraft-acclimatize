@@ -226,8 +226,8 @@ public final class WindTemperatureUtil {
 
 		var windDirection = serverState.windDirection;
 		var turbulentAngle = windDirection + Math.PI + random.nextTriangular(0, WIND_TURBULENCE);
-		var directionVector = new Vec3d(MathUtil.approximateSin(turbulentAngle), 0,
-				MathUtil.approximateCos(turbulentAngle));
+		var directionVector = new Vec3d(MathUtil.sin(turbulentAngle), 0,
+				MathUtil.cos(turbulentAngle));
 
 		var startVector = new Vec3d(player.getPos().x, player.getPos().y + 1, player.getPos().z);
 		var endVector = startVector.add(directionVector.multiply(Mod.CONFIG.windRayLength));

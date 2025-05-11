@@ -165,7 +165,7 @@ public final class BiomeTemperatureUtil {
 		var offset = 1.65 * Math.PI; // Offset delta: δ
 
 		// Formula: Tdf(x) = ((1 + cos(φ - δ)) / 2) ^ p
-		var dropFactor = Math.pow(((1 + MathUtil.approximateCos(phaseValue - offset)) / 2), plateau);
+		var dropFactor = Math.pow(((1 + MathUtil.cos(phaseValue - offset)) / 2), plateau);
 		var temperatureDelta = Mod.CONFIG.nightTemperatureDelta * dropFactor;
 
 		return temperatureDelta;
