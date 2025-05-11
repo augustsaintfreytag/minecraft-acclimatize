@@ -48,16 +48,18 @@ public final class BiomeTemperatureUtil {
 	public static double biomeTemperatureForPlayer(ServerPlayerEntity player, boolean isInInterior) {
 		var world = player.getWorld();
 		var position = player.getBlockPos();
-
 		var dimension = world.getDimension();
-		var biomeEntry = world.getBiome(position);
-		var biomeTemperature = baseTemperatureForBiome(biomeEntry);
 
 		// Nether & End
 
 		if (!dimension.natural()) {
-			return biomeTemperature;
+			return baseTemperatureForUnnaturalDimension(world);
 		}
+
+		// Overworld
+
+		var biomeEntry = world.getBiome(position);
+		var biomeTemperature = baseTemperatureForBiome(biomeEntry);
 
 		// Height
 
@@ -81,6 +83,22 @@ public final class BiomeTemperatureUtil {
 		biomeTemperature += precipitationTemperatureDelta;
 
 		return biomeTemperature;
+	}
+
+	// Dimension
+
+	public static double baseTemperatureForUnnaturalDimension(World world) {
+		var dimensionKey = world.getRegistryKey();
+
+		if (dimensionKey == World.NETHER) {
+			return Mod.CONFIG.netherBiomeTemperature;
+		}
+
+		if (dimensionKey == World.END) {
+			return Mod.CONFIG.endBiomeTemperature;
+		}
+
+		return 50.0;
 	}
 
 	// Biome
