@@ -107,7 +107,7 @@ public final class WindTemperatureUtil {
 	private static void tickWindIntensity(ServerWorld world, ServerState serverState) {
 		var random = world.getRandom();
 
-		serverState.windIntensity = random.nextTriangular(3.0, 6.0);
+		serverState.windIntensity = random.nextTriangular(4.0, 8.0);
 		serverState.markDirty();
 	}
 
