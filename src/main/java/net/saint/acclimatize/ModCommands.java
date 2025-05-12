@@ -28,24 +28,21 @@ public final class ModCommands {
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
 				.register(literal("acclimatize:randomize_wind").requires(source -> source.hasPermissionLevel(4))
-						.then(argument("player", EntityArgumentType.player())
-								.executes(context -> {
+						.executes(context -> {
+							var server = context.getSource().getServer();
+							var serverWorld = server.getOverworld();
 
-									var player = EntityArgumentType.getPlayer(context, "player");
-									var server = player.getServer();
-									var serverWorld = server.getOverworld();
+							var serverState = ServerStateUtil.getServerState(server);
+							WindTemperatureUtil.tickWindDirectionAndIntensity(serverWorld, serverState);
 
-									var serverState = ServerStateUtil.getServerState(server);
-									WindTemperatureUtil.tickWindDirectionAndIntensity(serverWorld, serverState);
+							context.getSource().sendMessage(Text.literal("Wind randomized."));
+							context.getSource().sendMessage(Text
+									.literal("Wind Direction: " + serverState.windDirection * 180 / Math.PI));
+							context.getSource()
+									.sendMessage(Text.literal("Wind Intensity: " + serverState.windIntensity));
 
-									context.getSource().sendMessage(Text.literal("Wind randomized."));
-									context.getSource().sendMessage(Text
-											.literal("Wind Direction: " + serverState.windDirection * 180 / Math.PI));
-									context.getSource()
-											.sendMessage(Text.literal("Wind Intensity: " + serverState.windIntensity));
-
-									return 1;
-								}))));
+							return 1;
+						})));
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
 				.register(literal("acclimatize:log_wind_info").requires(source -> source.hasPermissionLevel(4))
