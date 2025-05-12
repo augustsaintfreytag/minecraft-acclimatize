@@ -4,9 +4,9 @@ import java.util.HashMap;
 
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.Precipitation;
 import net.saint.acclimatize.Mod;
 
 public final class BiomeTemperatureUtil {
@@ -16,7 +16,6 @@ public final class BiomeTemperatureUtil {
 	private static final HashMap<String, Double> biomeRawTemperatureOverrides = new HashMap<String, Double>() {
 		{
 			// Cold Biomes
-
 			put("minecraft:deep_frozen_ocean", -0.4);
 			put("minecraft:deep_cold_ocean", -0.2);
 			put("minecraft:cold_ocean", -0.1);
@@ -27,12 +26,10 @@ public final class BiomeTemperatureUtil {
 			put("minecraft:warm_ocean", 0.3);
 
 			// Humid Biomes
-
 			put("minecraft:swamp", 0.85);
 			put("minecraft:mangrove_swamp", 0.8);
 
 			// Hot Biomes
-
 			put("minecraft:savanna", 1.2);
 			put("minecraft:savanna_plateau", 1.18);
 			put("minecraft:windswept_savanna", 1.15);
@@ -43,25 +40,22 @@ public final class BiomeTemperatureUtil {
 		}
 	};
 
-	// Biome
+	// Aggregate Temperature
 
 	public static double biomeTemperatureForPlayer(ServerPlayerEntity player, boolean isInInterior) {
 		var world = player.getWorld();
 		var position = player.getBlockPos();
 		var dimension = world.getDimension();
 
+		var biomeTemperature = baseTemperatureForBiomeAtPosition(world, position);
+
 		// Nether & End
 
 		if (!dimension.natural()) {
-			return baseTemperatureForUnnaturalDimension(world);
+			return biomeTemperature;
 		}
 
-		// Overworld
-
-		var biomeEntry = world.getBiome(position);
-		var biomeTemperature = baseTemperatureForBiome(biomeEntry);
-
-		// Height
+		// Altitude
 
 		var height = position.getY();
 		var heightTemperatureDelta = temperatureDeltaForAltitude(height);
@@ -77,17 +71,17 @@ public final class BiomeTemperatureUtil {
 
 		// Precipitation
 
-		var precipitation = biomeEntry.value().getPrecipitation(position);
-		var precipitationTemperatureDelta = temperatureDeltaForPrecipitation(precipitation);
-
+		var precipitationTemperatureDelta = temperatureDeltaForPrecipitation(world, position);
 		biomeTemperature += precipitationTemperatureDelta;
+
+		// Return
 
 		return biomeTemperature;
 	}
 
-	// Dimension
+	// Base Temperature
 
-	public static double baseTemperatureForUnnaturalDimension(World world) {
+	public static double baseTemperatureForBiomeAtPosition(World world, BlockPos position) {
 		var dimensionKey = world.getRegistryKey();
 
 		if (dimensionKey == World.NETHER) {
@@ -98,19 +92,20 @@ public final class BiomeTemperatureUtil {
 			return Mod.CONFIG.endBiomeTemperature;
 		}
 
-		return 50.0;
+		var biomeEntry = world.getBiome(position);
+		var biomeTemperature = baseTemperatureForBiome(biomeEntry);
+
+		return biomeTemperature;
 	}
 
-	// Biome
-
-	public static double baseTemperatureForBiome(RegistryEntry<Biome> biomeEntry) {
+	private static double baseTemperatureForBiome(RegistryEntry<Biome> biomeEntry) {
 		var rawBiomeTemperature = rawTemperatureForBiome(biomeEntry);
 		var baseTemperature = ((rawBiomeTemperature + Mod.CONFIG.biomeTemperatureZeroingAnchor) / 3) * 100;
 
 		return baseTemperature;
 	}
 
-	public static double rawTemperatureForBiome(RegistryEntry<Biome> biomeEntry) {
+	private static double rawTemperatureForBiome(RegistryEntry<Biome> biomeEntry) {
 		var biome = biomeEntry.value();
 		var rawBiomeTemperature = (double) biome.getTemperature();
 
@@ -119,7 +114,7 @@ public final class BiomeTemperatureUtil {
 		return rawBiomeTemperature;
 	}
 
-	public static double rawTemperatureOverrideForBiome(RegistryEntry<Biome> biomeEntry, double baseTemperature) {
+	private static double rawTemperatureOverrideForBiome(RegistryEntry<Biome> biomeEntry, double baseTemperature) {
 		var biomeId = biomeEntry.getKey().get().toString();
 
 		if (!biomeRawTemperatureOverrides.containsKey(biomeId)) {
@@ -131,7 +126,9 @@ public final class BiomeTemperatureUtil {
 
 	// Precipitation
 
-	public static double temperatureDeltaForPrecipitation(Precipitation precipitation) {
+	private static double temperatureDeltaForPrecipitation(World world, BlockPos position) {
+		var biomeEntry = world.getBiome(position);
+		var precipitation = biomeEntry.value().getPrecipitation(position);
 		var temperatureDelta = 0.0;
 
 		if (precipitation == Biome.Precipitation.RAIN) {
@@ -162,7 +159,7 @@ public final class BiomeTemperatureUtil {
 
 	// Day/Night
 
-	public static double temperatureDeltaForDayNightTime(long dayTick) {
+	private static double temperatureDeltaForDayNightTime(long dayTick) {
 		var phaseValue = phaseValueForAsymmetricTime(dayTick); // Phase shift phi: φ
 		var plateau = 2; // Plateau: p
 		var offset = 1.65 * Math.PI; // Offset delta: δ

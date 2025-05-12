@@ -137,11 +137,6 @@ public final class WindTemperatureUtil {
 
 		var windTemperature = serverState.windIntensity * -1.0;
 
-		// Biome Wind Chill
-
-		var biomeWindChillFactor = biomeWindChillFactorForPlayer(player);
-		windTemperature *= biomeWindChillFactor;
-
 		// Precipitation Wind Chill
 
 		var precipitationWindFactor = precipitationTemperatureFactorForPlayer(serverState, player);
@@ -160,22 +155,6 @@ public final class WindTemperatureUtil {
 		windTemperature *= windHitTemperatureFactor;
 
 		return windTemperature;
-	}
-
-	private static double biomeWindChillFactorForPlayer(ServerPlayerEntity player) {
-		var world = player.getWorld();
-		var biome = world.getBiome(player.getBlockPos()).value();
-		var internalBiomeTemperature = biome.getTemperature();
-		var climateKind = BiomeTemperatureUtil.climateKindForTemperature(internalBiomeTemperature);
-
-		switch (climateKind) {
-			case ARID:
-				return 1.15;
-			case HOT:
-				return 0.9;
-			default:
-				return 1.0;
-		}
 	}
 
 	private static double precipitationTemperatureFactorForPlayer(ServerState serverState, ServerPlayerEntity player) {

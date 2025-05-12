@@ -5,8 +5,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
+import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.ModBlocks;
-import net.saint.acclimatize.library.ClimateKind;
 import net.saint.acclimatize.util.BiomeTemperatureUtil;
 
 public class IceBoxFreezingBlock extends Block {
@@ -21,14 +21,12 @@ public class IceBoxFreezingBlock extends Block {
 			return;
 		}
 
-		var biome = world.getBiome(position).value();
-		var biomeTemperature = biome.getTemperature();
-		var climateKind = BiomeTemperatureUtil.climateKindForTemperature(biomeTemperature);
+		var biomeBaseTemperature = BiomeTemperatureUtil.baseTemperatureForBiomeAtPosition(world, position);
+		var biomeIsCold = biomeBaseTemperature <= Mod.CONFIG.hypothermiaThresholdMinor;
 
-		if (climateKind == ClimateKind.COLD || climateKind == ClimateKind.FRIGID) {
-			if (random.nextInt(5) == 0) {
-				world.setBlockState(position, ModBlocks.ICE_BOX_FROZEN_BLOCK.getDefaultState());
-			}
+		if (biomeIsCold && random.nextFloat() < 0.2) {
+			world.setBlockState(position, ModBlocks.ICE_BOX_FROZEN_BLOCK.getDefaultState());
 		}
 	}
+
 }

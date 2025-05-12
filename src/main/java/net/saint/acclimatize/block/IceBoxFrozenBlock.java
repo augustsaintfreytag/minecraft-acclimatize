@@ -12,8 +12,8 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.ModBlocks;
-import net.saint.acclimatize.library.ClimateKind;
 import net.saint.acclimatize.util.BiomeTemperatureUtil;
 
 public class IceBoxFrozenBlock extends Block {
@@ -39,23 +39,17 @@ public class IceBoxFrozenBlock extends Block {
 			return;
 		}
 
-		var biome = world.getBiome(position).value();
-		var biomeTemperature = biome.getTemperature();
-		var climateKind = BiomeTemperatureUtil.climateKindForTemperature(biomeTemperature);
+		var biomeBaseTemperature = BiomeTemperatureUtil.baseTemperatureForBiomeAtPosition(world, position);
+		var biomeIsCold = biomeBaseTemperature <= Mod.CONFIG.hypothermiaThresholdMinor;
+		var biomeIsVeryCold = biomeBaseTemperature <= Mod.CONFIG.hypothermiaThresholdMajor;
 
-		if (climateKind == ClimateKind.COLD || climateKind == ClimateKind.FRIGID) {
-			if (random.nextInt(7) == 0) {
-				world.setBlockState(position, ModBlocks.ICE_BOX_FREEZING_BLOCK.getDefaultState());
-			}
-
+		if (biomeIsVeryCold && random.nextFloat() < 0.02) {
+			world.setBlockState(position, ModBlocks.ICE_BOX_EMPTY_BLOCK.getDefaultState());
 			return;
 		}
 
-		if (climateKind == ClimateKind.ARID) {
-			if (random.nextInt(5) == 0) {
-				world.setBlockState(position, ModBlocks.ICE_BOX_EMPTY_BLOCK.getDefaultState());
-			}
-
+		if (biomeIsCold && random.nextFloat() < 0.15) {
+			world.setBlockState(position, ModBlocks.ICE_BOX_FREEZING_BLOCK.getDefaultState());
 			return;
 		}
 	}
