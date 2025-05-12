@@ -49,7 +49,8 @@ public class ModClient implements ClientModInitializer {
 
 	private static void setUpKeybindings() {
 		enableHUDKeyBinding = KeyBindingHelper
-				.registerKeyBinding(new KeyBinding("Toggle Temperature GUI", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "Acclimatize"));
+				.registerKeyBinding(new KeyBinding("Toggle Temperature GUI", InputUtil.Type.KEYSYM,
+						GLFW.GLFW_KEY_UNKNOWN, "Acclimatize"));
 
 		if (enableHUDKeyBinding.wasPressed()) {
 			enableHUD = !enableHUD;
@@ -73,8 +74,10 @@ public class ModClient implements ClientModInitializer {
 			// Temperature Tick
 
 			if (++temperatureUpdateTick >= Mod.CONFIG.temperatureTickInterval) {
-				if (!isPaused && !client.player.isCreative() && !client.player.isSpectator()) {
-					ClientPlayNetworking.send(TemperaturePackets.PLAYER_TEMPERATURE_TICK_C2S_PACKET_ID, PacketByteBufs.create());
+				if (!isPaused) {
+					ClientPlayNetworking.send(
+							TemperaturePackets.PLAYER_TEMPERATURE_TICK_C2S_PACKET_ID,
+							PacketByteBufs.create());
 				}
 
 				temperatureUpdateTick = 0;
