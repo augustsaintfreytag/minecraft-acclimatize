@@ -18,10 +18,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.saint.acclimatize.ModClient;
 import net.saint.acclimatize.util.MathUtil;
-import net.vibzz.immersivewind.config.ParticleBlacklist;
-import net.vibzz.immersivewind.wind.WindManager;
 
-// Code fragments ported from *Immersive Winds* by Vibzz.
+// Code originally ported from *Immersive Winds* by Vibzz.
 
 @Mixin(Particle.class)
 public abstract class ParticleMixin {
@@ -48,14 +46,18 @@ public abstract class ParticleMixin {
 
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
 	private double modifyDx(double dx) {
-		var windEffect = calculateWindEffect();
-		var particlePos = new Vec3d(this.x, this.y, this.z);
-		var windDirection = new Vec3d(MathUtil.cos(Math.toRadians(ModClient.cachedWindDirection)), 0,
-				MathUtil.sin(Math.toRadians(WindManager.getWindDirection())));
+		var windDirection = ModClient.cachedWindDirection;
+		var windDirectionRadians = Math.toRadians(windDirection);
 
-		var windInfluenceFactor = getWindInfluenceFactor(particlePos, windDirection);
-		updateHeatValue(particlePos);
-		return dx + windEffect.x * windInfluenceFactor;
+		var windEffect = calculateWindEffect();
+		var particlePosition = new Vec3d(this.x, this.y, this.z);
+		var particleDirection = new Vec3d(MathUtil.cos(windDirectionRadians), 0, MathUtil.sin(windDirectionRadians));
+		var windInfluenceFactor = getWindInfluenceFactor(particlePosition, particleDirection);
+
+		updateHeatValue(particlePosition);
+
+		var finalX = dx + windEffect.x * windInfluenceFactor;
+		return finalX;
 	}
 
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 1, argsOnly = true)
@@ -65,20 +67,18 @@ public abstract class ParticleMixin {
 
 	@ModifyVariable(method = "move(DDD)V", at = @At("HEAD"), ordinal = 2, argsOnly = true)
 	private double modifyDz(double dz) {
-		var particleName = ParticleBlacklist.formatParticleName(this.getClass().getSimpleName());
-		if (ParticleBlacklist.isBlacklisted(particleName)) {
-			return dz;
-		}
+		var windDirection = ModClient.cachedWindDirection;
+		var windDirectionRadians = Math.toRadians(windDirection);
 
 		var windEffect = calculateWindEffect();
 		var particlePos = new Vec3d(this.x, this.y, this.z);
-		var windDirection = new Vec3d(MathUtil.cos(Math.toRadians(WindManager.getWindDirection())), 0,
-				MathUtil.sin(Math.toRadians(WindManager.getWindDirection())));
+		var particleDirection = new Vec3d(MathUtil.cos(windDirectionRadians), 0, MathUtil.sin(windDirectionRadians));
 
-		var windInfluenceFactor = getWindInfluenceFactor(particlePos, windDirection);
+		var windInfluenceFactor = getWindInfluenceFactor(particlePos, particleDirection);
 		updateHeatValue(particlePos);
 
-		return dz + windEffect.z * windInfluenceFactor;
+		var finalZ = dz + windEffect.z * windInfluenceFactor;
+		return finalZ;
 	}
 
 	@Unique
@@ -96,27 +96,29 @@ public abstract class ParticleMixin {
 			var state = world.getBlockState(pos);
 
 			if (state.isAir()) {
-				// Check if particle is within 0.5 blocks away from a fluid block
+				// Check if particle is within 0.5 blocks away from a fluid block.
 				var fluidPos = getFluidBlockNearby(pos);
 
 				if (fluidPos != null) {
 					var fluidVec = new Vec3d(fluidPos.getX(), fluidPos.getY(), fluidPos.getZ());
 					var distance = particlePosition.distanceTo(fluidVec);
 					if (distance < 0.5) {
-						return 0.0; // No influence if within 0.5 blocks away from fluid
+						// No influence if within 0.5 blocks away from fluid.
+						return 0.0;
 					}
 				}
 
-				return 1; // Full influence if wind exposure is confirmed
+				// Full influence if wind exposure is confirmed.
+				return 1;
 			} else if (isNonSolidBlock(state)) {
-				return 0.0; // No influence if in water or lava
+				// No influence if in water or lava.
+				return 0.0;
 			}
 		}
 
 		return 0.0;
 	}
 
-	// New method to get the fluid block nearby
 	@Unique
 	private BlockPos getFluidBlockNearby(BlockPos pos) {
 		for (var x = -1; x <= 1; x++) {
@@ -142,12 +144,16 @@ public abstract class ParticleMixin {
 	@Unique
 	private Vec3d calculateWindEffect() {
 		if (!world.getRegistryKey().equals(World.OVERWORLD)) {
-			return new Vec3d(0, 0, 0); // Return 0 wind strength if not in over-world
+			// Return 0 wind strength if not in overworld.
+			return new Vec3d(0, 0, 0);
 		}
 
-		var angleRadians = Math.toRadians(WindManager.getWindDirection());
-		var windX = Math.cos(angleRadians) * WindManager.getWindStrength() * 0.01;
-		var windZ = Math.sin(angleRadians) * WindManager.getWindStrength() * 0.01;
+		var windDirection = ModClient.cachedWindDirection;
+		var windDirectionRadians = Math.toRadians(windDirection);
+		var windIntensity = ModClient.cachedWindIntensity;
+
+		var windX = Math.cos(windDirectionRadians) * windIntensity * 0.01;
+		var windZ = Math.sin(windDirectionRadians) * windIntensity * 0.01;
 		var initialWindEffect = new Vec3d(windX, 0, windZ);
 		var pos = new BlockPos((int) this.x, (int) this.y, (int) this.z);
 
@@ -363,10 +369,10 @@ public abstract class ParticleMixin {
 
 					var maxHeatValue = 1.0;
 
-					// Cap the heat value to maxHeatValue
+					// Cap the heat value to `maxHeatValue`.
 					heatValue = Math.min(heatValue, maxHeatValue);
 
-					// Break after finding the first heat source for performance
+					// Bail after finding the first heat source.
 					break;
 				}
 			}
