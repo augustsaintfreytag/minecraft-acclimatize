@@ -32,31 +32,34 @@ public interface ParticleMixinLogic {
 	// Logic
 
 	default double calculateDeltaX(double dx) {
-		var windDirection = ModClient.cachedWindDirection;
-		var windDirectionRadians = Math.toRadians(windDirection);
-
 		var windEffect = calculateWindEffect();
-		var particlePosition = new Vec3d(getX(), getY(), getZ());
-		var particleDirection = new Vec3d(MathUtil.cos(windDirectionRadians), 0, MathUtil.sin(windDirectionRadians));
-		var windInfluenceFactor = getWindInfluenceFactor(particlePosition, particleDirection);
+		// Rotate 90° CCW so that 0° (east) → north
+		var adjustedWind = new Vec3d(windEffect.z, 0, -windEffect.x);
 
+		var particlePosition = new Vec3d(getX(), getY(), getZ());
+		var directionRadians = Math.toRadians(ModClient.cachedWindDirection);
+		var particleDirection = new Vec3d(MathUtil.cos(directionRadians), 0, MathUtil.sin(directionRadians));
+		var influence = getWindInfluenceFactor(particlePosition, particleDirection);
+
+		// update heat/lift
 		updateHeatValue(particlePosition);
 
-		return dx + windEffect.x * windInfluenceFactor;
+		return dx + adjustedWind.x * influence;
 	}
 
 	default double calculateDeltaZ(double dz) {
-		var windDirection = ModClient.cachedWindDirection;
-		var windDirectionRadians = Math.toRadians(windDirection);
-
 		var windEffect = calculateWindEffect();
-		var particlePos = new Vec3d(getX(), getY(), getZ());
-		var particleDirection = new Vec3d(MathUtil.cos(windDirectionRadians), 0, MathUtil.sin(windDirectionRadians));
+		// Rotate 90° CCW so that 0° (east) → north
+		var adjustedWind = new Vec3d(windEffect.z, 0, -windEffect.x);
 
-		var windInfluenceFactor = getWindInfluenceFactor(particlePos, particleDirection);
-		updateHeatValue(particlePos);
+		var particlePosition = new Vec3d(getX(), getY(), getZ());
+		var directionRadians = Math.toRadians(ModClient.cachedWindDirection);
+		var particleDirection = new Vec3d(MathUtil.cos(directionRadians), 0, MathUtil.sin(directionRadians));
+		var influence = getWindInfluenceFactor(particlePosition, particleDirection);
 
-		return dz + windEffect.z * windInfluenceFactor;
+		updateHeatValue(particlePosition);
+
+		return dz + adjustedWind.z * influence;
 	}
 
 	private double getWindInfluenceFactor(Vec3d particlePosition, Vec3d windDirection) {
