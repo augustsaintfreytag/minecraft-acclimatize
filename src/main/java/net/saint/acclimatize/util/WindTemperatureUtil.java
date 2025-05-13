@@ -16,8 +16,8 @@ public final class WindTemperatureUtil {
 
 	// Configuration
 
-	private static final double WIND_BASE_TURBULENCE = 10.0;
-	private static final double WIND_TURBULENCE = WIND_BASE_TURBULENCE * Math.PI / 180d;
+	private static final double WIND_RAY_BASE_TURBULENCE = 10.0;
+	private static final double WIND_RAY_TURBULENCE = WIND_RAY_BASE_TURBULENCE * Math.PI / 180d;
 
 	// State
 
@@ -131,7 +131,7 @@ public final class WindTemperatureUtil {
 		var random = world.getRandom();
 
 		var windDirection = serverState.windDirection;
-		var turbulentAngle = windDirection + Math.PI + random.nextTriangular(0, WIND_TURBULENCE);
+		var turbulentAngle = windDirection + Math.PI + random.nextTriangular(0, WIND_RAY_TURBULENCE);
 		var directionVector = new Vec3d(MathUtil.sin(turbulentAngle), 0,
 				MathUtil.cos(turbulentAngle));
 
