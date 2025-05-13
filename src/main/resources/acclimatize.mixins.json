@@ -9,7 +9,8 @@
 	"client": [
 		"InGameHudMixin",
 		"PlayerStatusEffectsMixin",
-		"ParticleMixin"
+		"ParticleMixin",
+		"FallingLeafParticleMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
