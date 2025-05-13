@@ -5,6 +5,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -19,11 +20,39 @@ public interface ParticleMixinLogic {
 
 	public void setPosition(Vec3d position);
 
+	public Vec3d getLastPositionDelta();
+
+	public void setLastPositionDelta(Vec3d delta);
+
+	Box getBoundingBox();
+
 	ClientWorld getWorld();
 
 	double getHeatValue();
 
 	void setHeatValue(double value);
+
+	// Bounding Box
+
+	default void setBoundingBoxAndCachePosition(Box box) {
+		var currentBoundingBox = this.getBoundingBox();
+		var dx = box.minX - currentBoundingBox.minX;
+		var dy = box.minY - currentBoundingBox.minY;
+		var dz = box.minZ - currentBoundingBox.minZ;
+
+		var delta = new Vec3d(dx, dy, dz);
+		this.setLastPositionDelta(delta);
+	}
+
+	default void setPositionFromLastPositionDelta() {
+		var delta = this.getLastPositionDelta();
+		var x = this.calculateDeltaX(delta.getX());
+		var y = delta.getY();
+		var z = this.calculateDeltaZ(delta.getZ());
+		var position = new Vec3d(x, y, z);
+
+		this.setPosition(position);
+	}
 
 	// Delta Calculation
 
