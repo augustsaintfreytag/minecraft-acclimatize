@@ -35,8 +35,8 @@ public interface ParticleMixinLogic {
 		var adjustedWind = new Vec3d(-windEffect.z, 0, windEffect.x);
 
 		var position = getPosition();
-		var directionRadians = Math.toRadians(ModClient.cachedWindDirection);
-		var particleDirection = new Vec3d(MathUtil.cos(directionRadians), 0, MathUtil.sin(directionRadians));
+		var direction = ModClient.cachedWindDirection;
+		var particleDirection = new Vec3d(MathUtil.cos(direction), 0, MathUtil.sin(direction));
 		var influence = getWindInfluenceFactor(position, particleDirection);
 
 		// Update heat/lift for particle.
@@ -50,8 +50,8 @@ public interface ParticleMixinLogic {
 		var adjustedWind = new Vec3d(-windEffect.z, 0, windEffect.x);
 
 		var position = getPosition();
-		var directionRadians = Math.toRadians(ModClient.cachedWindDirection);
-		var particleDirection = new Vec3d(MathUtil.cos(directionRadians), 0, MathUtil.sin(directionRadians));
+		var direction = ModClient.cachedWindDirection;
+		var particleDirection = new Vec3d(MathUtil.cos(direction), 0, MathUtil.sin(direction));
 		var influence = getWindInfluenceFactor(position, particleDirection);
 
 		updateHeatValue(position);
@@ -129,11 +129,10 @@ public interface ParticleMixinLogic {
 		}
 
 		var windDirection = ModClient.cachedWindDirection;
-		var windDirectionRadians = Math.toRadians(windDirection);
 		var windIntensity = ModClient.cachedWindIntensity;
 
-		var windX = Math.cos(windDirectionRadians) * windIntensity * 0.01;
-		var windZ = Math.sin(windDirectionRadians) * windIntensity * 0.01;
+		var windX = Math.cos(windDirection) * windIntensity * 0.01;
+		var windZ = Math.sin(windDirection) * windIntensity * 0.01;
 		var initialWindEffect = new Vec3d(windX, 0, windZ);
 		var position = getPosition();
 
