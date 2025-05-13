@@ -8,7 +8,7 @@ import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.text.Text;
 import net.saint.acclimatize.server.ServerState;
 import net.saint.acclimatize.util.ServerStateUtil;
-import net.saint.acclimatize.util.WindTemperatureUtil;
+import net.saint.acclimatize.util.WindUtil;
 
 public final class ModCommands {
 
@@ -33,7 +33,7 @@ public final class ModCommands {
 							var serverWorld = server.getOverworld();
 
 							var serverState = ServerStateUtil.getServerState(server);
-							WindTemperatureUtil.tickWindDirectionAndIntensity(serverWorld, serverState);
+							WindUtil.tickWindDirectionAndIntensity(serverWorld, serverState);
 
 							context.getSource().sendMessage(Text.literal("Wind randomized."));
 							context.getSource().sendMessage(Text

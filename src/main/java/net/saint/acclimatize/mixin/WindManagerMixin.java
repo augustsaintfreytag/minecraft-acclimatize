@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.world.World;
 import net.saint.acclimatize.util.ServerStateUtil;
-import net.saint.acclimatize.util.WindTemperatureUtil;
+import net.saint.acclimatize.util.WindUtil;
 import net.vibzz.immersivewind.wind.WindManager;
 
 @Mixin(WindManager.class)
@@ -33,7 +33,7 @@ public abstract class WindManagerMixin {
 		var server = world.getServer();
 		var serverState = ServerStateUtil.getServerState(server);
 
-		WindTemperatureUtil.overrideWind(serverState, currentWindDirection, currentWindStrength.get());
+		WindUtil.overrideWind(serverState, currentWindDirection, currentWindStrength.get());
 	}
 
 }
