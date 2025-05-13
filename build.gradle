@@ -53,7 +53,12 @@ dependencies {
 	// Immersive Winds
 
 	modImplementation("maven.modrinth:immersive-winds:${project.immersive_winds_version}") {
-		// no transitive dependencies, we only care about the mod jar itself
+		transitive = false
+	}
+
+	// Falling Leaves
+
+	modImplementation("maven.modrinth:fallingleaves:${project.fallingleaves_version}") {
 		transitive = false
 	}
 
