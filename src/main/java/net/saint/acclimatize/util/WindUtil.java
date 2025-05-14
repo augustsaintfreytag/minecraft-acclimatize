@@ -1,6 +1,5 @@
 package net.saint.acclimatize.util;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.world.ServerWorld;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.server.ServerState;
@@ -27,15 +26,6 @@ public final class WindUtil {
 	// Wind Tick
 
 	public static void tickWindInSchedule(ServerWorld world, ServerState serverState) {
-		if (FabricLoader.getInstance().isModLoaded("immersivewinds")) {
-			if (Mod.CONFIG.enableLogging && !didLogWindPropertiesSource) {
-				didLogWindPropertiesSource = true;
-				Mod.LOGGER.info("Assigning deferred wind direction and intensity from loaded Immersive Winds.");
-			}
-
-			return;
-		}
-
 		var random = world.getRandom();
 		var serverTick = world.getTime();
 		var dayTimeLength = Mod.CONFIG.daylightTicks + Mod.CONFIG.nighttimeTicks;

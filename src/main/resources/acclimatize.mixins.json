@@ -3,9 +3,7 @@
 	"package": "net.saint.acclimatize.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"plugin": "net.saint.acclimatize.ModMixinPlugin",
-	"mixins": [
-		"WindManagerMixin"
-	],
+	"mixins": [],
 	"client": [
 		"InGameHudMixin",
 		"PlayerStatusEffectsMixin",
