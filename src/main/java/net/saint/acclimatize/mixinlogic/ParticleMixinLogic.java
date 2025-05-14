@@ -76,7 +76,7 @@ public interface ParticleMixinLogic {
 		}
 
 		if (this instanceof FallingLeafParticle) {
-			return 1.25;
+			return 1.5;
 		}
 
 		return 1.0;
