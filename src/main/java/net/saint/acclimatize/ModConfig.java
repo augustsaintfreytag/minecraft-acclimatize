@@ -200,12 +200,12 @@ public class ModConfig implements ConfigData {
 	// Items
 
 	@ConfigEntry.Category("items")
-	@Comment("Multiplier for how much each level of fire protection cools you (Default: -1.0)")
-	public double fireProtectionCoolingFactor = -1.0;
+	@Comment("Multiplier for how much each level of fire protection cools you (Default: -5.0)")
+	public double fireProtectionCoolingFactor = -5.0;
 
 	@ConfigEntry.Category("items")
-	@Comment("Multiplier for how much each level of cold protection warms you (Default: 1.0)")
-	public double coldProtectionCoolingFactor = 1.0;
+	@Comment("Multiplier for how much each level of cold protection warms you (Default: 5.0)")
+	public double coldProtectionCoolingFactor = 5.0;
 
 	@ConfigEntry.Category("items")
 	@Comment("Item temperature values that add to body temperature calculation when actively held.")
