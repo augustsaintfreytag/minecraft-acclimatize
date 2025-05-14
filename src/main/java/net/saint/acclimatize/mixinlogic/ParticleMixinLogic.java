@@ -2,6 +2,8 @@ package net.saint.acclimatize.mixinlogic;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.particle.RainSplashParticle;
+import net.minecraft.client.particle.SnowflakeParticle;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
@@ -11,6 +13,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.saint.acclimatize.ModClient;
 import net.saint.acclimatize.util.MathUtil;
+import randommcsomethin.fallingleaves.particle.FallingLeafParticle;
 
 public interface ParticleMixinLogic {
 
@@ -37,12 +40,13 @@ public interface ParticleMixinLogic {
 		var position = getPosition();
 		var direction = ModClient.cachedWindDirection;
 		var particleDirection = new Vec3d(MathUtil.cos(direction), 0, MathUtil.sin(direction));
-		var influence = getWindInfluenceFactor(position, particleDirection);
+		var baseFactor = getWindInfluenceFactor(position, particleDirection);
+		var typeFactor = getWindInfluenceFactorForParticleType();
 
 		// Update heat/lift for particle.
 		updateHeatValue(position);
 
-		return dx + adjustedWind.x * influence;
+		return dx + adjustedWind.x * baseFactor * typeFactor;
 	}
 
 	default double calculateDeltaZ(double dz) {
@@ -52,14 +56,31 @@ public interface ParticleMixinLogic {
 		var position = getPosition();
 		var direction = ModClient.cachedWindDirection;
 		var particleDirection = new Vec3d(MathUtil.cos(direction), 0, MathUtil.sin(direction));
-		var influence = getWindInfluenceFactor(position, particleDirection);
+		var baseFactor = getWindInfluenceFactor(position, particleDirection);
+		var typeFactor = getWindInfluenceFactorForParticleType();
 
 		updateHeatValue(position);
 
-		return dz + adjustedWind.z * influence;
+		return dz + adjustedWind.z * baseFactor * typeFactor;
 	}
 
 	// Calculation Details
+
+	private double getWindInfluenceFactorForParticleType() {
+		if (this instanceof SnowflakeParticle) {
+			return 1.25;
+		}
+
+		if (this instanceof RainSplashParticle) {
+			return 0.5;
+		}
+
+		if (this instanceof FallingLeafParticle) {
+			return 1.25;
+		}
+
+		return 1.0;
+	}
 
 	private double getWindInfluenceFactor(Vec3d particlePosition, Vec3d windDirection) {
 		var world = getWorld();
