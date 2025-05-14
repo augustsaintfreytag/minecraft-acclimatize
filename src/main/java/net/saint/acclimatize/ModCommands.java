@@ -48,10 +48,9 @@ public final class ModCommands {
 				.register(literal("acclimatize:force_north_wind").requires(source -> source.hasPermissionLevel(4))
 						.executes(context -> {
 							var server = context.getSource().getServer();
-
 							var serverState = ServerStateUtil.getServerState(server);
-							serverState.windDirection = 0.0;
-							serverState.windIntensity = 5.0;
+
+							WindUtil.overrideWind(Math.toRadians(0), 5.0);
 
 							context.getSource().sendMessage(Text.literal("Wind set to straight north."));
 							context.getSource().sendMessage(Text
