@@ -70,8 +70,8 @@ public class ModConfig implements ConfigData {
 	public double acclimatizationRateMinimum = 0.001;
 
 	@ConfigEntry.Category("player")
-	@Comment("The factor by which player acclimatization rate is boosted when wet. (Default: 5.0)")
-	public double wetAcclimatizationRateBoostFactor = 5.0;
+	@Comment("The factor by which player acclimatization rate is boosted when wet. (Default: 2.5)")
+	public double wetAcclimatizationRateBoostFactor = 2.5;
 
 	@ConfigEntry.Category("player")
 	@Comment("First threshold for hypothermia, being below this you will start to freeze (Default: 35.0)")
@@ -269,8 +269,20 @@ public class ModConfig implements ConfigData {
 	public int windDirectionUpdateInterval = 6000;
 
 	@ConfigEntry.Category("wind")
-	@Comment("The base number of ticks until wind intensity is updated, plus randomization. (Default: 1200)")
-	public int windIntensityUpdateInterval = 1200;
+	@Comment("The base number of ticks until wind intensity is updated, plus randomization. (Default: 300)")
+	public int windIntensityUpdateInterval = 300;
+
+	@ConfigEntry.Category("wind")
+	@Comment("The number of ticks to transition from one wind intensity or direction to a new value. (Default: 200)")
+	public int windTransitionInterval = 200;
+
+	@ConfigEntry.Category("wind")
+	@Comment("The minimum intensity wind can be transitioned to in random tick assignment.")
+	public double windIntensityMin = 0.5;
+
+	@ConfigEntry.Category("wind")
+	@Comment("The maximum intensity wind can be transitioned to in random tick assignment.")
+	public double windIntensityMax = 5.0;
 
 	@ConfigEntry.Category("wind")
 	@Comment("The factor for how much wind exposure affects ambient temperature. (Default: 1.25)")
@@ -281,7 +293,7 @@ public class ModConfig implements ConfigData {
 	public int windRayCount = 6;
 
 	@ConfigEntry.Category("wind")
-	@Comment("How many blocks long wind rays are. Increase for larger spaces. (Default: 16)")
-	public int windRayLength = 16;
+	@Comment("How many blocks long wind rays are. Increase for larger spaces. (Default: 8)")
+	public int windRayLength = 8;
 
 }

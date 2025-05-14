@@ -12,15 +12,18 @@ public final class WindUtil {
 
 	// State
 
-	private static boolean didLogWindPropertiesSource = false;
+	private static double lastWindDirection = 0;
+	private static double targetWindDirection = 0;
+	private static double lastWindIntensity = 0;
+	private static double targetWindIntensity = 0;
+
+	private static long lastWindUpdateTick = 0;
 
 	// Wind Override
 
-	public static void overrideWind(ServerState serverState, double windDirection, double windIntensity) {
-		serverState.windDirection = windDirection;
-		serverState.windIntensity = windIntensity;
-
-		serverState.setDirty(true);
+	public static void overrideWind(double windDirection, double windIntensity) {
+		targetWindDirection = windDirection;
+		targetWindIntensity = windIntensity;
 	}
 
 	// Wind Tick
@@ -31,7 +34,7 @@ public final class WindUtil {
 		var dayTimeLength = Mod.CONFIG.daylightTicks + Mod.CONFIG.nighttimeTicks;
 
 		if (dayTimeLength > serverState.nextWindIntensityTick) {
-			tickWindIntensity(world, serverState);
+			tickWindIntensity(world);
 
 			var intervalJitter = (int) (WIND_INTERVAL_JITTER_FACTOR * Mod.CONFIG.windIntensityUpdateInterval);
 			serverState.nextWindIntensityTick = serverTick + Mod.CONFIG.windIntensityUpdateInterval
@@ -45,7 +48,7 @@ public final class WindUtil {
 		}
 
 		if (dayTimeLength > serverState.nextWindDirectionTick) {
-			tickWindDirection(world, serverState);
+			tickWindDirection(world);
 
 			var intervalJitter = (int) (WIND_INTERVAL_JITTER_FACTOR * Mod.CONFIG.windDirectionUpdateInterval);
 			serverState.nextWindDirectionTick = serverTick + Mod.CONFIG.windDirectionUpdateInterval
@@ -56,31 +59,57 @@ public final class WindUtil {
 						+ serverState.nextWindDirectionTick + ".");
 			}
 		}
+
+		tickWindTransition(world, serverState);
+	}
+
+	public static void tickWindTransition(ServerWorld world, ServerState serverState) {
+		var serverTick = world.getTime();
+		var deltaTime = serverTick - lastWindUpdateTick;
+
+		if (deltaTime > Mod.CONFIG.windTransitionInterval || !needsWindTransitionUpdate(serverState)) {
+			lastWindUpdateTick = serverTick;
+			lastWindDirection = targetWindDirection;
+			lastWindIntensity = targetWindIntensity;
+
+			targetWindDirection = serverState.windDirection;
+			targetWindIntensity = serverState.windIntensity;
+		}
+
+		var transitionFactor = (double) deltaTime / (double) Mod.CONFIG.windTransitionInterval;
+
+		serverState.windDirection = MathUtil.lerp(lastWindDirection, targetWindDirection, transitionFactor);
+		serverState.windIntensity = MathUtil.lerp(lastWindIntensity, targetWindIntensity, transitionFactor);
+		serverState.setDirty(true);
+	}
+
+	private static boolean needsWindTransitionUpdate(ServerState serverState) {
+		return serverState.windDirection != lastWindDirection || serverState.windIntensity != lastWindIntensity;
 	}
 
 	public static void tickWindDirectionAndIntensity(ServerWorld world, ServerState serverState) {
-		tickWindDirection(world, serverState);
-		tickWindIntensity(world, serverState);
+		tickWindDirection(world);
+		tickWindIntensity(world);
 	}
 
-	private static void tickWindDirection(ServerWorld world, ServerState serverState) {
+	private static void tickWindDirection(ServerWorld world) {
 		var random = world.getRandom();
+		var randomWindDirection = random.nextDouble() * 2 * Math.PI;
 
-		serverState.windDirection = random.nextDouble() * 2 * Math.PI;
-		serverState.markDirty();
+		targetWindDirection = randomWindDirection;
 	}
 
-	private static void tickWindIntensity(ServerWorld world, ServerState serverState) {
+	private static void tickWindIntensity(ServerWorld world) {
 		var random = world.getRandom();
-		var windIntensity = random.nextTriangular(3.0, 6.0);
+		var windIntensity = random.nextDouble() * (Mod.CONFIG.windIntensityMax + Mod.CONFIG.windIntensityMin)
+				- Mod.CONFIG.windIntensityMin;
 
 		if (world.isThundering()) {
-			windIntensity *= 1.65;
+			windIntensity *= 1.85;
 		} else if (world.isRaining()) {
 			windIntensity *= 1.4;
 		}
 
-		serverState.windIntensity = windIntensity;
-		serverState.markDirty();
+		targetWindIntensity = windIntensity;
 	}
 }

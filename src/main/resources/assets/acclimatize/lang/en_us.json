@@ -82,6 +82,9 @@
     "text.autoconfig.acclimatize.option.multidimensionalWind": "Multidimensional Wind",
 	"text.autoconfig.acclimatize.option.windDirectionUpdateInterval": "Wind Direction Update Interval",
 	"text.autoconfig.acclimatize.option.windIntensityUpdateInterval": "Wind Intensity Update Interval",
+	"text.autoconfig.acclimatize.option.windTransitionInterval": "Wind Transition Interval",
+	"text.autoconfig.acclimatize.option.windIntensityMin": "Minimum Wind Intensity",
+	"text.autoconfig.acclimatize.option.windIntensityMax": "Maximum Wind Intensity",
 	"text.autoconfig.acclimatize.option.windChillFactor": "Wind Chill Factor",
     "text.autoconfig.acclimatize.option.windRayCount": "Wind Ray Count",
     "text.autoconfig.acclimatize.option.windRayLength": "Wind Ray Length"
