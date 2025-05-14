@@ -49,11 +49,10 @@ dependencies {
 	modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
+	
+	// Falling Leaves
 
-	// Immersive Winds
-
-	modImplementation("maven.modrinth:immersive-winds:${project.immersive_winds_version}") {
-		// no transitive dependencies, we only care about the mod jar itself
+	modImplementation("maven.modrinth:fallingleaves:${project.fallingleaves_version}") {
 		transitive = false
 	}
 

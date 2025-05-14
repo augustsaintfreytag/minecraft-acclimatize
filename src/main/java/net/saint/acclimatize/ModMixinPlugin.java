@@ -18,8 +18,8 @@ public final class ModMixinPlugin implements IMixinConfigPlugin {
 	private static final Supplier<Boolean> TRUE = () -> true;
 
 	private static final Map<String, Supplier<Boolean>> CONDITIONS = ImmutableMap.of(
-			"net.saint.acclimatize.mixin.WindManagerMixin",
-			() -> FabricLoader.getInstance().isModLoaded("immersivewind"));
+			"net.saint.acclimatize.mixin.FallingLeafParticleMixin",
+			() -> FabricLoader.getInstance().isModLoaded("fallingleaves"));
 
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {

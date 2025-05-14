@@ -18,8 +18,8 @@ public final class SpaceUtil {
 	// Configuration
 
 	private static final double CONE_ANGLE = Math.toRadians(45);
-	private static final double BASE_COS_ANGLE = MathUtil.approximateCos(CONE_ANGLE);
-	private static final double BASE_SIN_ANGLE = MathUtil.approximateSin(CONE_ANGLE);
+	private static final double BASE_COS_ANGLE = MathUtil.cos(CONE_ANGLE);
+	private static final double BASE_SIN_ANGLE = MathUtil.sin(CONE_ANGLE);
 
 	// State
 
@@ -129,9 +129,9 @@ public final class SpaceUtil {
 		var origin = player.getPos();
 		var theta = 2 * Math.PI * offset / Mod.CONFIG.spaceNumberOfRays;
 		var direction = new Vec3d(
-				BASE_SIN_ANGLE * MathUtil.approximateCos(theta),
+				BASE_SIN_ANGLE * MathUtil.cos(theta),
 				BASE_COS_ANGLE,
-				BASE_SIN_ANGLE * MathUtil.approximateSin(theta));
+				BASE_SIN_ANGLE * MathUtil.sin(theta));
 		var target = origin.add(direction.multiply(Mod.CONFIG.spaceRayLength));
 
 		var hitResult = world.raycast(new RaycastContext(

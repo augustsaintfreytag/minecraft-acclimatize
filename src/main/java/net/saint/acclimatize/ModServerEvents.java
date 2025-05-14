@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.saint.acclimatize.util.ServerStateUtil;
 import net.saint.acclimatize.util.SpaceUtil;
 import net.saint.acclimatize.util.WindTemperatureUtil;
+import net.saint.acclimatize.util.WindUtil;
 
 public final class ModServerEvents {
 
@@ -38,14 +39,14 @@ public final class ModServerEvents {
 			var serverWorld = server.getOverworld();
 
 			Mod.LOGGER.info("Randomizing new wind direction and intensity at server start.");
-			WindTemperatureUtil.tickWindInSchedule(serverWorld, serverState);
+			WindUtil.tickWindInSchedule(serverWorld, serverState);
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register((server) -> {
 			var serverState = ServerStateUtil.getServerState(server);
 			var serverWorld = server.getOverworld();
 
-			WindTemperatureUtil.tickWindInSchedule(serverWorld, serverState);
+			WindUtil.tickWindInSchedule(serverWorld, serverState);
 		});
 	}
 
