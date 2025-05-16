@@ -172,6 +172,25 @@ public final class BiomeTemperatureUtil {
 	}
 
 	private static double phaseValueForAsymmetricTime(double time) {
+	private static double phaseValueForSymmetricTime(long tick) {
+		// Wrap around day/night cycle using total configured duration
+		var dayLengthTicks = Mod.CONFIG.daylightTicks;
+		var nightLengthTicks = Mod.CONFIG.nighttimeTicks;
+		var cycleLength = dayLengthTicks + nightLengthTicks;
+
+		// Get "tick within this cycle" in [0 … cycleLength)
+		var cycleTick = tick % cycleLength;
+		if (cycleTick < 0) {
+			cycleTick += cycleLength; // Ensure positive for modulo result
+		}
+
+		// Normalize ticks into [0 … 1)
+		var normalizedTime = cycleTick / (double) cycleLength;
+
+		// For symmetric time, phase φ maps linearly from 0 to 2π
+		// as normalizedTime goes from 0 to 1. φ ∈ [0, 2π)
+		return normalizedTime * 2.0 * Math.PI;
+	}
 		// Wrap around day/night cycle
 		var dayLength = Mod.CONFIG.daylightTicks;
 		var nightLength = Mod.CONFIG.nighttimeTicks;
