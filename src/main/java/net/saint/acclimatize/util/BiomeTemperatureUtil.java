@@ -143,35 +143,35 @@ public final class BiomeTemperatureUtil {
 	// Altitude
 
 	private static double temperatureDeltaForAltitude(double altitude) {
-		var coefficient = -0.02;
-		var growthFactor = 1.5;
-		var softeningFactor = 15.0;
-		var lowerBound = -20.0;
-		var upperBound = 15.0;
+		var scalingFactor = -0.02; // Scaling factor: α
+		var growthFactor = 1.5; // Growth factor: γ
+		var softeningFactor = 15.0; // Softening factor: σ
+		var altitudeAnchor = 62.0; // Altitude anchor: h_n
+		var lowerBound = -20.0; // Lower bound: L
+		var upperBound = 15.0; // Upper bound: U
 
-		var normalizedAltitude = altitude - 62.0;
-
-		var delta = coefficient * Math.signum(normalizedAltitude) * Math.pow(Math.abs(normalizedAltitude), growthFactor)
-				- coefficient * Math.pow(softeningFactor, growthFactor);
+		// Formula: ΔT_alt = α * (sgn(h - h_n) * |h - h_n|^γ - α * σ^γ) - 1
+		var delta = scalingFactor * Math.signum(altitude - altitudeAnchor)
+				* Math.pow(Math.abs(altitude - altitudeAnchor), growthFactor)
+				- scalingFactor * Math.pow(softeningFactor, growthFactor) - 1;
 
 		return MathUtil.clamp(delta, lowerBound, upperBound);
 	}
 
 	// Day/Night
 
-	private static double temperatureDeltaForDayNightTime(long dayTick) {
-		var phaseValue = phaseValueForAsymmetricTime(dayTick); // Phase shift phi: φ
+	private static double temperatureDeltaForDayNightTime(long tick) {
+		var phaseValue = phaseValueForAsymmetricTime(tick); // Phase shift phi: φ
 		var plateau = 2; // Plateau: p
 		var offset = 1.65 * Math.PI; // Offset delta: δ
 
-		// Formula: Tdf(x) = ((1 + cos(φ - δ)) / 2) ^ p
+		// Formula: ΔT_{dn} = ((1 + cos(φ - δ)) / 2) ^ p
 		var dropFactor = Math.pow(((1 + MathUtil.cos(phaseValue - offset)) / 2), plateau);
 		var temperatureDelta = Mod.CONFIG.nightTemperatureDelta * dropFactor;
 
 		return temperatureDelta;
 	}
 
-	private static double phaseValueForAsymmetricTime(double time) {
 	private static double phaseValueForSymmetricTime(long tick) {
 		// Wrap around day/night cycle using total configured duration
 		var dayLengthTicks = Mod.CONFIG.daylightTicks;
@@ -191,13 +191,15 @@ public final class BiomeTemperatureUtil {
 		// as normalizedTime goes from 0 to 1. φ ∈ [0, 2π)
 		return normalizedTime * 2.0 * Math.PI;
 	}
+
+	private static double phaseValueForAsymmetricTime(long tick) {
 		// Wrap around day/night cycle
 		var dayLength = Mod.CONFIG.daylightTicks;
 		var nightLength = Mod.CONFIG.nighttimeTicks;
 		var cycleLength = dayLength + nightLength;
 
 		// Get "tick within this cycle" in [0 … cycleLength)
-		var cycleTick = time % cycleLength;
+		var cycleTick = tick % cycleLength;
 		if (cycleTick < 0)
 			cycleTick += cycleLength; // just in case time < 0
 
