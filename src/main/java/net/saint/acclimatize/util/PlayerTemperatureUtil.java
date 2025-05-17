@@ -74,6 +74,8 @@ public class PlayerTemperatureUtil {
 		playerState.windTemperature = windTemperatureDelta;
 	}
 
+	// Utility
+
 	public static double applicableAcclimatizationRate(double acclimatizationRate) {
 		return MathUtil.clamp(acclimatizationRate / 10.0, Mod.CONFIG.acclimatizationRateMinimum, 1.0);
 	}
