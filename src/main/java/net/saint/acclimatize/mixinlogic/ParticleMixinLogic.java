@@ -12,8 +12,8 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.saint.acclimatize.ModClient;
+import net.saint.acclimatize.compat.FallingLeafParticleCompat;
 import net.saint.acclimatize.util.MathUtil;
-import randommcsomethin.fallingleaves.particle.FallingLeafParticle;
 
 public interface ParticleMixinLogic {
 
@@ -75,7 +75,7 @@ public interface ParticleMixinLogic {
 			return 0.5;
 		}
 
-		if (this instanceof FallingLeafParticle) {
+		if (FallingLeafParticleCompat.isLeafParticle(this)) {
 			return 1.5;
 		}
 
