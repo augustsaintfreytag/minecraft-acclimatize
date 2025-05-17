@@ -331,6 +331,10 @@ public interface ParticleMixinLogic {
 	// Heat
 
 	private void updateMotionFromHeatValueAtPosition(Vec3d particlePosition) {
+		if (!shouldApplyHeatBasedWindEffects()) {
+			// No heat-based wind effects for this particle type.
+			return;
+		}
 
 		// Reset heat value for the new tick
 		setHeatValue(0.0);
