@@ -238,10 +238,10 @@ public interface ParticleMixinLogic {
 
 	private int directionToAngle(Direction direction) {
 		return switch (direction) {
-			case NORTH -> 180;
-			case WEST -> 270;
-			case EAST -> 90;
-			default -> 0;
+		case NORTH -> 180;
+		case WEST -> 270;
+		case EAST -> 90;
+		default -> 0;
 		};
 	}
 
@@ -271,9 +271,9 @@ public interface ParticleMixinLogic {
 
 	private Vec3d slideWindAlongWall(Vec3d windEffect, Direction wallDirection) {
 		return switch (wallDirection) {
-			case NORTH, SOUTH -> new Vec3d(windEffect.x, windEffect.y, 0);
-			case EAST, WEST -> new Vec3d(0, windEffect.y, windEffect.z);
-			default -> windEffect;
+		case NORTH, SOUTH -> new Vec3d(windEffect.x, windEffect.y, 0);
+		case EAST, WEST -> new Vec3d(0, windEffect.y, windEffect.z);
+		default -> windEffect;
 		};
 	}
 
@@ -348,8 +348,7 @@ public interface ParticleMixinLogic {
 			var state = getWorld().getBlockState(checkPosition);
 
 			if (isHeatSource(state)) {
-				var destinationPos = new Vec3d(checkPosition.getX() + 0.5, checkPosition.getY() + 0.5,
-						checkPosition.getZ() + 0.5);
+				var destinationPos = new Vec3d(checkPosition.getX() + 0.5, checkPosition.getY() + 0.5, checkPosition.getZ() + 0.5);
 				var distance = particlePosition.distanceTo(destinationPos);
 
 				if (distance <= maxHeatInfluenceDistance) {
@@ -381,8 +380,7 @@ public interface ParticleMixinLogic {
 	}
 
 	private boolean isHeatSource(BlockState state) {
-		return state.isOf(Blocks.LAVA) || state.isOf(Blocks.FIRE) || state.isOf(Blocks.TORCH)
-				|| state.isOf(Blocks.CAMPFIRE);
+		return state.isOf(Blocks.LAVA) || state.isOf(Blocks.FIRE) || state.isOf(Blocks.TORCH) || state.isOf(Blocks.CAMPFIRE);
 	}
 
 	private void setMotion(double motionY) {
