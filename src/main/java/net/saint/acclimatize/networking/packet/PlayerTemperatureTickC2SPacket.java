@@ -22,13 +22,13 @@ public class PlayerTemperatureTickC2SPacket {
 		ServerState serverState = ServerStateUtil.getServerState(server);
 		PlayerState playerState = ServerStateUtil.getPlayerState(player);
 
-		// Temperature
+		if (!player.isCreative() && !player.isSpectator()) {
+			// Temperature
+			PlayerTemperatureUtil.tickPlayerTemperature(player, serverState, playerState);
 
-		PlayerTemperatureUtil.tickPlayerTemperature(player, serverState, playerState);
-
-		// Damage
-
-		PlayerEffectsUtil.handlePlayerEffects(player, playerState);
+			// Damage
+			PlayerEffectsUtil.handlePlayerEffects(player, playerState);
+		}
 
 		// Finalization
 
