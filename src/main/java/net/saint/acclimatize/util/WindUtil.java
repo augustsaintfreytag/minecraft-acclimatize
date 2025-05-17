@@ -94,15 +94,14 @@ public final class WindUtil {
 
 	private static void tickWindDirection(ServerWorld world) {
 		var random = world.getRandom();
-		var randomWindDirection = random.nextDouble() * 2 * Math.PI;
+		var randomWindDirection = Math.toRadians(random.nextDouble() * 360);
 
 		targetWindDirection = randomWindDirection;
 	}
 
 	private static void tickWindIntensity(ServerWorld world) {
 		var random = world.getRandom();
-		var windIntensity = random.nextDouble() * (Mod.CONFIG.windIntensityMax + Mod.CONFIG.windIntensityMin)
-				- Mod.CONFIG.windIntensityMin;
+		var windIntensity = random.nextDouble() * (Mod.CONFIG.windIntensityMax + Mod.CONFIG.windIntensityMin) - Mod.CONFIG.windIntensityMin;
 
 		if (world.isThundering()) {
 			windIntensity *= 1.85;

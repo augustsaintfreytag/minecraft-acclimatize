@@ -85,14 +85,12 @@ public final class PlayerEffectsUtil {
 	}
 
 	private static void applyHypothermiaStatusEffect(ServerPlayerEntity player, int amplifier) {
-		var hypothermiaStatusEffect = new StatusEffectInstance(ModStatusEffects.HYPOTHERMIA, EFFECT_DURATION,
-				amplifier);
+		var hypothermiaStatusEffect = new StatusEffectInstance(ModStatusEffects.HYPOTHERMIA, EFFECT_DURATION, amplifier);
 		player.addStatusEffect(hypothermiaStatusEffect);
 	}
 
 	private static void applyHyperthermiaStatusEffect(ServerPlayerEntity player, int amplifier) {
-		var hyperthermiaStatusEffect = new StatusEffectInstance(ModStatusEffects.HYPERTHERMIA, EFFECT_DURATION,
-				amplifier);
+		var hyperthermiaStatusEffect = new StatusEffectInstance(ModStatusEffects.HYPERTHERMIA, EFFECT_DURATION, amplifier);
 		player.addStatusEffect(hyperthermiaStatusEffect);
 	}
 
@@ -112,8 +110,7 @@ public final class PlayerEffectsUtil {
 	private static TemperatureDamageTuple temperatureDamageTupleForPlayerState(PlayerState playerState) {
 		var bodyTemperature = playerState.bodyTemperature;
 
-		if (bodyTemperature <= Mod.CONFIG.hypothermiaThresholdMinor
-				&& bodyTemperature > Mod.CONFIG.hypothermiaThresholdMajor) {
+		if (bodyTemperature <= Mod.CONFIG.hypothermiaThresholdMinor && bodyTemperature > Mod.CONFIG.hypothermiaThresholdMajor) {
 			return new TemperatureDamageTuple(TemperatureDamageKind.COLD, TemperatureIntensityKind.MINOR);
 		}
 
@@ -121,8 +118,7 @@ public final class PlayerEffectsUtil {
 			return new TemperatureDamageTuple(TemperatureDamageKind.COLD, TemperatureIntensityKind.MAJOR);
 		}
 
-		if (bodyTemperature >= Mod.CONFIG.hyperthermiaThresholdMinor
-				&& bodyTemperature < Mod.CONFIG.hyperthermiaThresholdMajor) {
+		if (bodyTemperature >= Mod.CONFIG.hyperthermiaThresholdMinor && bodyTemperature < Mod.CONFIG.hyperthermiaThresholdMajor) {
 			return new TemperatureDamageTuple(TemperatureDamageKind.HEAT, TemperatureIntensityKind.MINOR);
 		}
 
