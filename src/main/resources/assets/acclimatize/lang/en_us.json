@@ -79,7 +79,6 @@
 	"text.autoconfig.acclimatize.option.waterBlockTemperature": "Water Block Temperature",
     
     "text.autoconfig.acclimatize.option.enableWind": "Enable Wind",
-    "text.autoconfig.acclimatize.option.multidimensionalWind": "Multidimensional Wind",
 	"text.autoconfig.acclimatize.option.windDirectionUpdateInterval": "Wind Direction Update Interval",
 	"text.autoconfig.acclimatize.option.windIntensityUpdateInterval": "Wind Intensity Update Interval",
 	"text.autoconfig.acclimatize.option.windTransitionInterval": "Wind Transition Interval",

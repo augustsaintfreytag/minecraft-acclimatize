@@ -195,8 +195,6 @@ public class ModConfig implements ConfigData {
 	@ConfigEntry.Category("wind") @Comment("Disables or enables wind. (Default: true)")
 	public boolean enableWind = true;
 
-	@ConfigEntry.Category("wind") @Comment("If disabled, wind will only be applied in the overworld. (Default: false)")
-	public boolean multidimensionalWind = false;
 
 	@ConfigEntry.Category("wind") @Comment("The base number of ticks until wind direction is updated, plus randomization. (Default: 6000)")
 	public int windDirectionUpdateInterval = 6000;
