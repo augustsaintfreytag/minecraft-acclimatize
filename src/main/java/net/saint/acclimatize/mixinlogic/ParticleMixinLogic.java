@@ -36,25 +36,36 @@ public interface ParticleMixinLogic {
 
 	default double calculateDeltaX(double dx) {
 		var position = getPosition();
-		var windEffect = calculateWindVector();
-		var adjustedWind = new Vec3d(-windEffect.z, 0, windEffect.x);
-		var aggregateFactor = aggregateFactorForParticle(position);
+		var motionVector = motionVectorForParticle();
 
 		updateMotionFromHeatValueAtPosition(position);
-		return dx + adjustedWind.x * aggregateFactor;
+
+		return dx + motionVector.x;
 	}
 
 	default double calculateDeltaZ(double dz) {
 		var position = getPosition();
-		var windEffect = calculateWindVector();
-		var adjustedWind = new Vec3d(-windEffect.z, 0, windEffect.x);
-		var aggregateFactor = aggregateFactorForParticle(position);
+		var motionVector = motionVectorForParticle();
 
 		updateMotionFromHeatValueAtPosition(position);
-		return dz + adjustedWind.z * aggregateFactor;
+
+		return dz + motionVector.z;
 	}
 
-	private double aggregateFactorForParticle(Vec3d particlePosition) {
+	// Motion Vector
+
+	private Vec3d motionVectorForParticle() {
+		var position = getPosition();
+		updateMotionFromHeatValueAtPosition(position);
+
+		var windVector = calculateWindVector();
+		var motionVector = new Vec3d(-windVector.z, 0, windVector.x);
+		var motionFactor = motionFactorForParticle(position);
+
+		return motionVector.multiply(motionFactor);
+	}
+
+	private double motionFactorForParticle(Vec3d particlePosition) {
 		var direction = ModClient.cachedWindDirection;
 		var particleDirection = new Vec3d(MathUtil.cos(direction), 0, MathUtil.sin(direction));
 
@@ -62,28 +73,6 @@ public interface ParticleMixinLogic {
 		var typeFactor = windInfluenceFactorForParticleType();
 
 		return baseFactor * typeFactor * Mod.CONFIG.windParticleEffectFactor;
-	}
-
-	// Particle Specifics
-
-	private double windInfluenceFactorForParticleType() {
-		if (this instanceof SnowflakeParticle) {
-			return 1.25;
-		}
-
-		if (FallingLeafParticleCompat.isLeafParticle(this)) {
-			return 1.5;
-		}
-
-		return 1.0;
-	}
-
-	private boolean shouldApplyHeatBasedWindEffects() {
-		if (this instanceof LargeFireSmokeParticle) {
-			return true;
-		}
-
-		return false;
 	}
 
 	// Calculation Details
@@ -342,12 +331,13 @@ public interface ParticleMixinLogic {
 	// Heat
 
 	private void updateMotionFromHeatValueAtPosition(Vec3d particlePosition) {
-		var blockPosition = BlockPos.ofFloored(particlePosition);
-		var maxHeatInfluenceDistance = 4.0;
-		var heatValueIncrement = 0.05;
 
 		// Reset heat value for the new tick
 		setHeatValue(0.0);
+
+		var blockPosition = BlockPos.ofFloored(particlePosition);
+		var maxHeatInfluenceDistance = 4.0;
+		var heatValueIncrement = 0.05;
 
 		var checkPosition = new BlockPos.Mutable();
 		checkPosition.set(blockPosition);
@@ -396,5 +386,27 @@ public interface ParticleMixinLogic {
 		var updatedPosition = new Vec3d(position.getX(), position.getY() + motionY, position.getZ());
 
 		setPosition(updatedPosition);
+	}
+
+	// Particle Specifics
+
+	private double windInfluenceFactorForParticleType() {
+		if (this instanceof SnowflakeParticle) {
+			return 1.25;
+		}
+
+		if (FallingLeafParticleCompat.isLeafParticle(this)) {
+			return 1.5;
+		}
+
+		return 1.0;
+	}
+
+	private boolean shouldApplyHeatBasedWindEffects() {
+		if (this instanceof LargeFireSmokeParticle) {
+			return true;
+		}
+
+		return false;
 	}
 }
