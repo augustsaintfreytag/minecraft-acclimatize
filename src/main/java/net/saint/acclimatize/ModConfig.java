@@ -192,9 +192,14 @@ public class ModConfig implements ConfigData {
 
 	// Wind
 
-	@ConfigEntry.Category("wind") @Comment("Disables or enables wind. (Default: true)")
+	@ConfigEntry.Category("wind") @Comment("Toggles wind simulation, including effects on effective temperatures and particles. (Default: true)")
 	public boolean enableWind = true;
 
+	@ConfigEntry.Category("wind") @Comment("Toggles particles being affected by wind intensity and direction. (Default: true)")
+	public boolean enableWindParticleEffects = true;
+
+	@ConfigEntry.Category("wind") @Comment("The intensity by which all particles are affected by wind if enabled. (Default: 1.0)")
+	public double windParticleEffectFactor = 1.0;
 
 	@ConfigEntry.Category("wind") @Comment("The base number of ticks until wind direction is updated, plus randomization. (Default: 6000)")
 	public int windDirectionUpdateInterval = 6000;
