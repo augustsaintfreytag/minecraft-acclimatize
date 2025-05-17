@@ -10,6 +10,7 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
 import net.saint.acclimatize.util.ServerStateUtil;
+import net.saint.acclimatize.util.TemperatureEstimationUtil;
 
 public class ThermometerItem extends Item {
 
@@ -34,17 +35,13 @@ public class ThermometerItem extends Item {
 		var playerState = ServerStateUtil.getPlayerState(player);
 		var serverState = ServerStateUtil.getServerState(server);
 
-		user.sendMessage(Text
-				.of("♜ Body: " + formattedValue(playerState.bodyTemperature) + " (↕ Acclim "
-						+ formattedValue(playerState.acclimatizationRate)
-						+ ") \n(☼ Ambient " + formattedValue(playerState.ambientTemperature)
-						+ ", ♣ Biome " + formattedValue(playerState.biomeTemperature) + ", ☰ Wind "
-						+ formattedValue(playerState.windTemperature)
-						+ " from " + Math.floor(Math.toDegrees(serverState.windDirection)) + "° at "
-						+ formattedValue(serverState.windIntensity)
-						+ ", ♢ Blocks " + formattedValue(playerState.blockTemperature)
-						+ ", ☍ Items " + formattedValue(playerState.itemTemperature) + ", ☈ Interior "
-						+ formattedValue(playerState.isInInterior) + ")"));
+		user.sendMessage(Text.of("♜ Body: " + formattedValue(playerState.bodyTemperature) + " (↕ Acclim "
+				+ formattedValue(playerState.acclimatizationRate) + ", "
+				+ TemperatureEstimationUtil.estimateTicksToExtremeTemperatureForPlayer(playerState).description() + ") \n(☼ Ambient "
+				+ formattedValue(playerState.ambientTemperature) + ", ♣ Biome " + formattedValue(playerState.biomeTemperature) + ", ☰ Wind "
+				+ formattedValue(playerState.windTemperature) + " from " + Math.floor(Math.toDegrees(serverState.windDirection)) + "° at "
+				+ formattedValue(serverState.windIntensity) + ", ♢ Blocks " + formattedValue(playerState.blockTemperature) + ", ☍ Items "
+				+ formattedValue(playerState.itemTemperature) + ", ☈ Interior " + formattedValue(playerState.isInInterior) + ")"));
 
 		return TypedActionResult.success(itemStack);
 	}
@@ -53,6 +50,8 @@ public class ThermometerItem extends Item {
 	public UseAction getUseAction(ItemStack stack) {
 		return UseAction.BLOCK;
 	}
+
+	// Formatting
 
 	private static String formattedValue(boolean value) {
 		if (value) {
