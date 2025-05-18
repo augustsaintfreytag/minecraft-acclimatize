@@ -8,30 +8,36 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.saint.acclimatize.networking.TemperaturePackets;
+import net.saint.acclimatize.networking.TemperaturePackets.TemperaturePacketTuple;
 import net.saint.acclimatize.util.ItemTemperatureUtil;
+import net.saint.acclimatize.util.MathUtil;
 import net.saint.acclimatize.util.WindParticleUtil;
 
 public class ModClient implements ClientModInitializer {
 
-	public static double cachedAcclimatizationRate = 0;
-	public static double cachedBodyTemperature = 0;
-	public static double cachedTemperatureDifference = 0;
+	// State
 
-	public static double cachedAmbientTemperature = 0;
-	public static double cachedWindTemperature = 0;
-	public static double cachedWindDirection = 0;
-	public static double cachedWindIntensity = 0;
+	private static TemperaturePacketTuple cachedTemperatureValues = new TemperaturePacketTuple();
 
-	public static int temperatureUpdateTick = 0;
+	private static long temperatureUpdateTick = 0;
 
-	public static boolean enableHUD = true;
+	private static long lastWindUpdateTick = 0;
+
+	private static double lastWindIntensity = 0;
+	private static double lastWindDirection = 0;
+
+	// References
 
 	private static KeyBinding enableHUDKeyBinding;
 
+	// Properties
+
+	public static boolean enableHUD = true;
 
 	// Init
 
@@ -41,6 +47,58 @@ public class ModClient implements ClientModInitializer {
 		setUpNetworkingPacketRegistration();
 		setUpClientTickEventHandler();
 		setUpItemTooltipCallback();
+	}
+
+	// Access
+
+	public static void updateTemperatureValues(TemperaturePacketTuple values) {
+		var world = MinecraftClient.getInstance().world;
+		var serverTick = world.getTime();
+		var previousValues = cachedTemperatureValues;
+		cachedTemperatureValues = values;
+
+		if (previousValues.windDirection != values.windDirection) {
+			lastWindDirection = previousValues.windDirection;
+			lastWindUpdateTick = serverTick;
+		}
+
+		if (previousValues.windIntensity != values.windIntensity) {
+			lastWindIntensity = previousValues.windIntensity;
+			lastWindUpdateTick = serverTick;
+		}
+	}
+
+	public static double getAcclimatizationRate() {
+		return cachedTemperatureValues.acclimatizationRate;
+	}
+
+	public static double getBodyTemperature() {
+		return cachedTemperatureValues.bodyTemperature;
+	}
+
+	public static double getAmbientTemperature() {
+		return cachedTemperatureValues.ambientTemperature;
+	}
+
+	public static double getWindTemperature() {
+		return cachedTemperatureValues.windTemperature;
+	}
+
+	public static double getWindDirection() {
+		return MathUtil.lerp(lastWindDirection, cachedTemperatureValues.windDirection, windInterpolationValue());
+	}
+
+	public static double getWindIntensity() {
+		return MathUtil.lerp(lastWindIntensity, cachedTemperatureValues.windIntensity, windInterpolationValue());
+	}
+
+	private static double windInterpolationValue() {
+		var world = MinecraftClient.getInstance().world;
+		var serverTick = world.getTime();
+		var deltaTime = serverTick - lastWindUpdateTick;
+		var transitionFactor = (double) deltaTime / (double) Mod.CONFIG.windTransitionInterval;
+
+		return transitionFactor;
 	}
 
 	// Set-Up
