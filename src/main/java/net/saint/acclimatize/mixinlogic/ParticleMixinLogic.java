@@ -2,7 +2,7 @@ package net.saint.acclimatize.mixinlogic;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.particle.RainSplashParticle;
+import net.minecraft.client.particle.LargeFireSmokeParticle;
 import net.minecraft.client.particle.SnowflakeParticle;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.fluid.Fluids;
@@ -11,6 +11,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.ModClient;
 import net.saint.acclimatize.compat.FallingLeafParticleCompat;
 import net.saint.acclimatize.util.MathUtil;
@@ -34,59 +35,58 @@ public interface ParticleMixinLogic {
 	// Delta Calculation
 
 	default double calculateDeltaX(double dx) {
-		var windEffect = calculateWindEffect();
-		var adjustedWind = new Vec3d(-windEffect.z, 0, windEffect.x);
-
 		var position = getPosition();
-		var direction = ModClient.cachedWindDirection;
-		var particleDirection = new Vec3d(MathUtil.cos(direction), 0, MathUtil.sin(direction));
-		var baseFactor = getWindInfluenceFactor(position, particleDirection);
-		var typeFactor = getWindInfluenceFactorForParticleType();
+		var motionVector = motionVectorForParticle();
 
-		// Update heat/lift for particle.
-		updateHeatValue(position);
+		updateMotionFromHeatValueAtPosition(position);
 
-		return dx + adjustedWind.x * baseFactor * typeFactor;
+		return dx + motionVector.x;
 	}
 
 	default double calculateDeltaZ(double dz) {
-		var windEffect = calculateWindEffect();
-		var adjustedWind = new Vec3d(-windEffect.z, 0, windEffect.x);
-
 		var position = getPosition();
+		var motionVector = motionVectorForParticle();
+
+		updateMotionFromHeatValueAtPosition(position);
+
+		return dz + motionVector.z;
+	}
+
+	// Motion Vector
+
+	private Vec3d motionVectorForParticle() {
+		var position = getPosition();
+		updateMotionFromHeatValueAtPosition(position);
+
+		var windVector = calculateWindVector();
+		var motionVector = new Vec3d(-windVector.z, 0, windVector.x);
+		var motionFactor = motionFactorForParticle(position);
+
+		return motionVector.multiply(motionFactor);
+	}
+
+	private double motionFactorForParticle(Vec3d particlePosition) {
 		var direction = ModClient.cachedWindDirection;
 		var particleDirection = new Vec3d(MathUtil.cos(direction), 0, MathUtil.sin(direction));
-		var baseFactor = getWindInfluenceFactor(position, particleDirection);
-		var typeFactor = getWindInfluenceFactorForParticleType();
 
-		updateHeatValue(position);
+		var baseFactor = windInfluenceFactorForUnblockedOppositeDirection(particlePosition, particleDirection);
+		var typeFactor = windInfluenceFactorForParticleType();
 
-		return dz + adjustedWind.z * baseFactor * typeFactor;
+		return baseFactor * typeFactor * Mod.CONFIG.particleWindEffectFactor;
 	}
 
 	// Calculation Details
 
-	private double getWindInfluenceFactorForParticleType() {
-		if (this instanceof SnowflakeParticle) {
-			return 1.25;
+	private double windInfluenceFactorForUnblockedOppositeDirection(Vec3d particlePosition, Vec3d windDirection) {
+		if (!Mod.CONFIG.enableParticleBlockChecks) {
+			// Block checks disabled, always return full influence.
+			return 1.0;
 		}
 
-		if (this instanceof RainSplashParticle) {
-			return 0.5;
-		}
-
-		if (FallingLeafParticleCompat.isLeafParticle(this)) {
-			return 1.5;
-		}
-
-		return 1.0;
-	}
-
-	private double getWindInfluenceFactor(Vec3d particlePosition, Vec3d windDirection) {
 		var world = getWorld();
 
 		// Define how far back in wind origin direction we should check.
-		var range = 5;
+		var range = 4;
 
 		// Invert wind direction for checking.
 		var invertedWindDirection = windDirection.multiply(-1);
@@ -97,31 +97,44 @@ public interface ParticleMixinLogic {
 			var state = world.getBlockState(blockPosition);
 
 			if (state.isAir()) {
-				// Check if particle is within 0.5 blocks away from a fluid block.
-				var fluidPosition = getFluidBlockNearby(blockPosition);
+				// If block in path is air, check for fluid or return max influence.
 
-				if (fluidPosition != null) {
-					var fluidPositionCenter = fluidPosition.toCenterPos();
-					var distance = particlePosition.distanceTo(fluidPositionCenter);
+				if (Mod.CONFIG.enableParticleFluidBlockChecks) {
+					// Check if particle is within 0.5 blocks away from a fluid block.
+					var fluidDistance = findDistanceToNearestFluidBlock(blockPosition, particlePosition);
 
-					if (distance < 0.5) {
+					if (fluidDistance < 0.5) {
 						// No influence if within 0.5 blocks away from fluid.
 						return 0.0;
 					}
 				}
 
-				// Full influence if wind exposure is confirmed.
-				return 1;
-			} else if (isNonSolidBlock(state)) {
-				// No influence if in water or lava.
+				// Continue checking until block is found.
+				continue;
+			} else {
+				// Solid block found, return influence based on distance.
+				// Not sure what checking for non-solid blocks like lava or water was about.
 				return 0.0;
 			}
 		}
 
-		return 0.0;
+		// No blocks found in path, return full influence.
+		return 1.0;
 	}
 
-	private BlockPos getFluidBlockNearby(BlockPos position) {
+	private double findDistanceToNearestFluidBlock(BlockPos blockPosition, Vec3d particlePosition) {
+		var fluidPosition = findPositionOfNearestFluidBlock(blockPosition);
+
+		if (fluidPosition == null) {
+			// No fluid block found, return max distance.
+			return 1000;
+		}
+
+		var fluidPositionCenter = fluidPosition.toCenterPos();
+		return particlePosition.distanceTo(fluidPositionCenter);
+	}
+
+	private BlockPos findPositionOfNearestFluidBlock(BlockPos position) {
 		var world = getWorld();
 
 		for (var x = -1; x <= 1; x++) {
@@ -143,8 +156,10 @@ public interface ParticleMixinLogic {
 		return state.getFluidState().getFluid() == Fluids.WATER || state.getFluidState().getFluid() == Fluids.LAVA;
 	}
 
-	private Vec3d calculateWindEffect() {
-		if (!getWorld().getRegistryKey().equals(World.OVERWORLD)) {
+	private Vec3d calculateWindVector() {
+		var world = getWorld();
+
+		if (!world.getRegistryKey().equals(World.OVERWORLD)) {
 			// Return 0 wind strength if not in overworld.
 			return new Vec3d(0, 0, 0);
 		}
@@ -154,47 +169,107 @@ public interface ParticleMixinLogic {
 
 		var windX = Math.cos(windDirection) * windIntensity * 0.01;
 		var windZ = Math.sin(windDirection) * windIntensity * 0.01;
-		var initialWindEffect = new Vec3d(windX, 0, windZ);
+		var initialWindVector = new Vec3d(windX, 0, windZ);
 		var position = getPosition();
 
-		return calculateRealisticWindFlow(initialWindEffect, position);
-	}
-
-	private boolean checkForWallInteraction(Vec3d particlePosition) {
-		var blockPosition = BlockPos.ofFloored(particlePosition);
-
-		for (var direction : Direction.values()) {
-			var state = getWorld().getBlockState(blockPosition.offset(direction));
-
-			if (state.isSolidBlock(getWorld(), blockPosition.offset(direction))) {
-				return true;
-			}
+		if (!Mod.CONFIG.enableParticleComplexInteractions) {
+			// No complex interactions, return initial wind vector.
+			return initialWindVector;
 		}
 
-		return false;
+		return windVectorFromRealisticFlow(initialWindVector, position);
 	}
 
-	private Vec3d deflectWind(double windX, double windZ, Vec3d particlePosition) {
-		var windDirection = getWindDirection(windX, windZ);
-		var wallDirection = getWallFacingDirection(particlePosition, windDirection);
+	private Vec3d windVectorFromRealisticFlow(Vec3d windVector, Vec3d particlePosition) {
+		if (checkWorldForWallProximityNearParticle(particlePosition)) {
+			windVector = adjustWindFlow(windVector, particlePosition, windVector.x, windVector.z);
+		}
+
+		windVector = windVectorForStructureAvoidance(windVector, particlePosition);
+
+		if (!Mod.CONFIG.enableParticleFunneling) {
+			return windVector;
+		}
+
+		return windVectorForFunnelAttraction(windVector, particlePosition);
+	}
+
+	private Vec3d adjustWindFlow(Vec3d windVector, Vec3d particlePosition, double windX, double windZ) {
+		var windDirection = windDirectionForComponents(windX, windZ);
+		var wallDirection = wallFacingDirectionForPosition(particlePosition, windDirection);
 		var incidenceAngle = calculateIncidenceAngle(windDirection, wallDirection);
-		var deflectionFactor = calculateDeflectionFactor(incidenceAngle, windX, windZ);
 
-		var deflectedWindX = windX * deflectionFactor;
-		var deflectedWindZ = windZ * deflectionFactor;
+		if (incidenceAngleIsLaminarFlow(incidenceAngle)) {
+			return wallGuidedDirectionForWind(windVector, wallDirection);
+		} else {
+			return deflectedDirectionForWind(windVector, particlePosition);
+		}
+	}
 
-		deflectedWindX += randomizeDeflection(incidenceAngle);
-		deflectedWindZ += randomizeDeflection(incidenceAngle);
+	private Vec3d deflectedDirectionForWind(Vec3d windEffect, Vec3d particlePosition) {
+		var windDirection = windDirectionForComponents(windEffect.x, windEffect.z);
+		var wallDirection = wallFacingDirectionForPosition(particlePosition, windDirection);
+		var incidenceAngle = calculateIncidenceAngle(windDirection, wallDirection);
+		var deflectionFactor = deflectionFactorForWindAndAngle(incidenceAngle, windEffect.x, windEffect.z);
+
+		var deflectedWindX = windEffect.x * deflectionFactor;
+		var deflectedWindZ = windEffect.z * deflectionFactor;
+
+		deflectedWindX += randomizedDeflection(incidenceAngle);
+		deflectedWindZ += randomizedDeflection(incidenceAngle);
 
 		return new Vec3d(deflectedWindX, 0, deflectedWindZ);
 	}
 
-	private double randomizeDeflection(double incidenceAngle) {
-		var random = getWorld().getRandom();
+	private double calculateIncidenceAngle(Direction windDirection, Direction wallDirection) {
+		var windAngle = angleFromDirection(windDirection);
+		var wallAngle = angleFromDirection(wallDirection);
+		var angleDifference = Math.abs(windAngle - wallAngle);
+
+		if (angleDifference > 180) {
+			angleDifference = 360 - angleDifference;
+		}
+
+		return angleDifference;
+	}
+
+	private int angleFromDirection(Direction direction) {
+		return switch (direction) {
+		case NORTH -> 180;
+		case WEST -> 270;
+		case EAST -> 90;
+		default -> 0;
+		};
+	}
+
+	private double deflectionFactorForWindAndAngle(double incidenceAngle, double windX, double windZ) {
+		var baseDeflection = 0.01;
+		var velocityFactor = MathUtil.sqrt(windX * windX + windZ * windZ) * 0.01;
+		var angleFactor = MathUtil.sqrt(Math.toRadians(incidenceAngle));
+
+		return baseDeflection * angleFactor * velocityFactor;
+	}
+
+	private double randomizedDeflection(double incidenceAngle) {
+		var world = getWorld();
+		var random = world.getRandom();
+
 		return random.nextDouble() * MathUtil.cos(Math.toRadians(incidenceAngle)) * 0.05;
 	}
 
-	private Direction getWindDirection(double windX, double windZ) {
+	private Vec3d wallGuidedDirectionForWind(Vec3d windVector, Direction wallDirection) {
+		return switch (wallDirection) {
+		case NORTH, SOUTH -> new Vec3d(windVector.x, windVector.y, 0);
+		case EAST, WEST -> new Vec3d(0, windVector.y, windVector.z);
+		default -> windVector;
+		};
+	}
+
+	private boolean incidenceAngleIsLaminarFlow(double incidenceAngle) {
+		return incidenceAngle < 45;
+	}
+
+	private Direction windDirectionForComponents(double windX, double windZ) {
 		var angle = Math.toDegrees(Math.atan2(windZ, windX));
 
 		if (angle < 0)
@@ -211,86 +286,44 @@ public interface ParticleMixinLogic {
 		return Direction.EAST;
 	}
 
-	private Direction getWallFacingDirection(Vec3d particlePosition, Direction windDirection) {
+	private Direction wallFacingDirectionForPosition(Vec3d particlePosition, Direction windDirection) {
+		var world = getWorld();
 		var blockPosition = BlockPos.ofFloored(particlePosition);
 
 		for (var direction : Direction.values()) {
-			var state = getWorld().getBlockState(blockPosition.offset(direction));
+			var state = world.getBlockState(blockPosition.offset(direction));
 
-			if (state.isSolidBlock(getWorld(), blockPosition.offset(direction)) && direction.getAxis().isHorizontal()) {
+			if (state.isSolidBlock(world, blockPosition.offset(direction)) && direction.getAxis().isHorizontal()) {
 				return direction;
 			}
 		}
+
 		return windDirection;
 	}
 
-	private double calculateIncidenceAngle(Direction windDirection, Direction wallDirection) {
-		var windAngle = directionToAngle(windDirection);
-		var wallAngle = directionToAngle(wallDirection);
-		var angleDifference = Math.abs(windAngle - wallAngle);
-
-		if (angleDifference > 180) {
-			angleDifference = 360 - angleDifference;
-		}
-
-		return angleDifference;
-	}
-
-	private int directionToAngle(Direction direction) {
-		return switch (direction) {
-		case NORTH -> 180;
-		case WEST -> 270;
-		case EAST -> 90;
-		default -> 0;
-		};
-	}
-
-	private double calculateDeflectionFactor(double incidenceAngle, double windX, double windZ) {
-		var baseDeflection = 0.01;
-		var velocityFactor = MathUtil.sqrt(windX * windX + windZ * windZ) * 0.01;
-		var angleFactor = MathUtil.sqrt(Math.toRadians(incidenceAngle));
-
-		return baseDeflection * angleFactor * velocityFactor;
-	}
-
-	private boolean checkForLaminarFlow(double incidenceAngle) {
-		return incidenceAngle < 45;
-	}
-
-	private Vec3d adjustWindFlow(Vec3d windEffect, Vec3d particlePosition, double windX, double windZ) {
-		var windDirection = getWindDirection(windX, windZ);
-		var wallDirection = getWallFacingDirection(particlePosition, windDirection);
-		var incidenceAngle = calculateIncidenceAngle(windDirection, wallDirection);
-
-		if (checkForLaminarFlow(incidenceAngle)) {
-			return slideWindAlongWall(windEffect, wallDirection);
-		} else {
-			return deflectWind(windX, windZ, particlePosition);
-		}
-	}
-
-	private Vec3d slideWindAlongWall(Vec3d windEffect, Direction wallDirection) {
-		return switch (wallDirection) {
-		case NORTH, SOUTH -> new Vec3d(windEffect.x, windEffect.y, 0);
-		case EAST, WEST -> new Vec3d(0, windEffect.y, windEffect.z);
-		default -> windEffect;
-		};
-	}
-
-	private Vec3d funnelWindAroundStructure(Vec3d windEffect, Vec3d particlePosition) {
-		var windDirection = getWindDirection(windEffect.x, windEffect.z);
-		var wallDirection = getWallFacingDirection(particlePosition, windDirection);
+	private Vec3d windVectorForStructureAvoidance(Vec3d windVector, Vec3d particlePosition) {
+		var windDirection = windDirectionForComponents(windVector.x, windVector.z);
+		var wallDirection = wallFacingDirectionForPosition(particlePosition, windDirection);
 		var incidenceAngle = calculateIncidenceAngle(windDirection, wallDirection);
 
 		if (incidenceAngle >= 45 && incidenceAngle <= 135) {
 			var funnelFactor = 1.0 + (1.0 - MathUtil.cos(Math.toRadians(incidenceAngle))) * 0.5;
-			return windEffect.multiply(funnelFactor);
+			return windVector.multiply(funnelFactor);
 		}
 
-		return windEffect;
+		return windVector;
 	}
 
-	private boolean isNearTunnel(Vec3d particlePosition) {
+	private Vec3d windVectorForFunnelAttraction(Vec3d windVector, Vec3d particlePosition) {
+		if (checkWorldForFunnelProximityNearParticle(particlePosition)) {
+			var attractionFactor = 1.5;
+			return windVector.multiply(attractionFactor);
+		}
+
+		return windVector;
+	}
+
+	private boolean checkWorldForFunnelProximityNearParticle(Vec3d particlePosition) {
 		var numberOfAirBlocks = 0;
 		var numberOfSolidBlocks = 0;
 
@@ -305,7 +338,7 @@ public interface ParticleMixinLogic {
 
 					if (state.isAir()) {
 						numberOfAirBlocks++;
-					} else if (state.isSolidBlock(getWorld(), checkPos)) {
+					} else if (state.isSolidBlock(world, checkPos)) {
 						numberOfSolidBlocks++;
 					}
 				}
@@ -315,39 +348,44 @@ public interface ParticleMixinLogic {
 		return numberOfAirBlocks >= 15 && numberOfSolidBlocks >= 10;
 	}
 
-	private Vec3d adjustForTunnelAttraction(Vec3d windEffect, Vec3d particlePosition) {
-		if (isNearTunnel(particlePosition)) {
-			var attractionFactor = 1.5;
-			return windEffect.multiply(attractionFactor);
-		}
-
-		return windEffect;
-	}
-
-	private Vec3d calculateRealisticWindFlow(Vec3d windEffect, Vec3d particlePosition) {
-		if (checkForWallInteraction(particlePosition)) {
-			windEffect = adjustWindFlow(windEffect, particlePosition, windEffect.x, windEffect.z);
-		}
-
-		windEffect = funnelWindAroundStructure(windEffect, particlePosition);
-		return adjustForTunnelAttraction(windEffect, particlePosition);
-	}
-
-	private void updateHeatValue(Vec3d particlePosition) {
+	private boolean checkWorldForWallProximityNearParticle(Vec3d particlePosition) {
+		var world = getWorld();
 		var blockPosition = BlockPos.ofFloored(particlePosition);
-		var maxHeatInfluenceDistance = 5.0;
-		var heatValueIncrement = 0.05;
 
-		// Reset heat value for the new tick
+		for (var direction : Direction.values()) {
+			var state = world.getBlockState(blockPosition.offset(direction));
+
+			if (state.isSolidBlock(world, blockPosition.offset(direction))) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	// Heat
+
+	private void updateMotionFromHeatValueAtPosition(Vec3d particlePosition) {
+		if (!Mod.CONFIG.enableParticleHeatEffects || !shouldApplyHeatBasedWindEffects()) {
+			// No heat-based wind effects for blacklisted particle type.
+			return;
+		}
+
+		// Reset heat value for new tick.
 		setHeatValue(0.0);
+
+		var world = getWorld();
+		var blockPosition = BlockPos.ofFloored(particlePosition);
+		var maxHeatInfluenceDistance = 4.0;
+		var heatValueIncrement = 0.05;
 
 		var checkPosition = new BlockPos.Mutable();
 		checkPosition.set(blockPosition);
 
 		for (; checkPosition.getY() >= 0; checkPosition.move(Direction.DOWN)) {
-			var state = getWorld().getBlockState(checkPosition);
+			var state = world.getBlockState(checkPosition);
 
-			if (isHeatSource(state)) {
+			if (blockIsHeatSource(state)) {
 				var destinationPos = new Vec3d(checkPosition.getX() + 0.5, checkPosition.getY() + 0.5, checkPosition.getZ() + 0.5);
 				var distance = particlePosition.distanceTo(destinationPos);
 
@@ -367,26 +405,48 @@ public interface ParticleMixinLogic {
 		}
 
 		if (getHeatValue() > 0) {
-			var motionY = calculateLift();
-			setMotion(motionY);
+			var motionY = liftFromHeatValue();
+			setVerticalMotion(motionY);
 		} else {
-			setMotion(0);
+			setVerticalMotion(0);
 		}
 	}
 
-	private double calculateLift() {
+	private double liftFromHeatValue() {
 		// Multiply heatValue by a factor to determine lift strength
 		return getHeatValue() * 0.1;
 	}
 
-	private boolean isHeatSource(BlockState state) {
+	private boolean blockIsHeatSource(BlockState state) {
 		return state.isOf(Blocks.LAVA) || state.isOf(Blocks.FIRE) || state.isOf(Blocks.TORCH) || state.isOf(Blocks.CAMPFIRE);
 	}
 
-	private void setMotion(double motionY) {
+	private void setVerticalMotion(double motionY) {
 		var position = getPosition();
 		var updatedPosition = new Vec3d(position.getX(), position.getY() + motionY, position.getZ());
 
 		setPosition(updatedPosition);
+	}
+
+	// Particle Specifics
+
+	private double windInfluenceFactorForParticleType() {
+		if (this instanceof SnowflakeParticle) {
+			return 1.75;
+		}
+
+		if (FallingLeafParticleCompat.isLeafParticle(this)) {
+			return 1.5;
+		}
+
+		return 1.0;
+	}
+
+	private boolean shouldApplyHeatBasedWindEffects() {
+		if (this instanceof LargeFireSmokeParticle) {
+			return true;
+		}
+
+		return false;
 	}
 }

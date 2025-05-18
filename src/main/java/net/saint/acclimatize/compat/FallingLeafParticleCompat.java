@@ -2,9 +2,9 @@ package net.saint.acclimatize.compat;
 
 public class FallingLeafParticleCompat {
 
-	public static final Class<?> FALLING_LEAF_PARTICLE = findLeafClass();
+	public static final Class<?> FALLING_LEAF_PARTICLE = initFallingLeafParticleClass();
 
-	private static Class<?> findLeafClass() {
+	private static Class<?> initFallingLeafParticleClass() {
 		try {
 			return Class.forName("randommcsomethin.fallingleaves.particle.FallingLeafParticle");
 		} catch (ClassNotFoundException e) {

@@ -27,13 +27,11 @@ public final class WindTemperatureUtil {
 
 	// Wind Effects
 
-	public static double windTemperatureForEnvironment(ServerState serverState, ServerPlayerEntity player,
-			boolean isInInterior) {
+	public static double windTemperatureForEnvironment(ServerState serverState, ServerPlayerEntity player, boolean isInInterior) {
 		var world = player.getWorld();
 		var dimension = world.getDimension();
 
-		if (!Mod.CONFIG.enableWind || isInInterior || player.isSubmergedInWater()
-				|| (!Mod.CONFIG.multidimensionalWind && !dimension.natural())) {
+		if (!Mod.CONFIG.enableWind || isInInterior || player.isSubmergedInWater() || !dimension.natural()) {
 			cleanUpPlayerData(player);
 			return 0.0;
 		}
@@ -118,8 +116,7 @@ public final class WindTemperatureUtil {
 		profile.end();
 
 		if (Mod.CONFIG.enableLogging) {
-			Mod.LOGGER.info("Wind raycast, " + numberOfUnblockedRays + " unblocked ray(s), duration: "
-					+ profile.getDescription());
+			Mod.LOGGER.info("Wind raycast, " + numberOfUnblockedRays + " unblocked ray(s), duration: " + profile.getDescription());
 		}
 
 		return numberOfUnblockedRays;
@@ -131,16 +128,13 @@ public final class WindTemperatureUtil {
 
 		var windDirection = serverState.windDirection;
 		var turbulentAngle = windDirection + Math.PI + random.nextTriangular(0, WIND_RAY_TURBULENCE);
-		var directionVector = new Vec3d(MathUtil.sin(turbulentAngle), 0,
-				MathUtil.cos(turbulentAngle));
+		var directionVector = new Vec3d(MathUtil.sin(turbulentAngle), 0, MathUtil.cos(turbulentAngle));
 
 		var startVector = new Vec3d(player.getPos().x, player.getPos().y + 1, player.getPos().z);
 		var endVector = startVector.add(directionVector.multiply(Mod.CONFIG.windRayLength));
 
-		var hitResult = world.raycast(new RaycastContext(startVector, endVector,
-				RaycastContext.ShapeType.COLLIDER,
-				RaycastContext.FluidHandling.NONE,
-				player));
+		var hitResult = world.raycast(
+				new RaycastContext(startVector, endVector, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, player));
 
 		// Return true if ray is unblocked (missed all blocks)
 		return hitResult.getType() == HitResult.Type.MISS;
