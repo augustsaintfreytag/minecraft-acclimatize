@@ -11,19 +11,17 @@ public class WindParticleUtil {
 		var player = client.player;
 		var world = client.world;
 		var random = world.getRandom();
-
-		var bound = Math.max(1, 16 + (int) ModClient.cachedWindTemperature);
+		var bound = Math.max(1, 16 + (int) ModClient.getWindTemperature());
 
 		if (random.nextInt(bound) == 0) {
-			double windDirectionRadians = Math.toRadians(ModClient.cachedWindDirection);
+			var windDirectionRadians = Math.toRadians(ModClient.getWindDirection());
+			var direction = new Vec3d(-Math.sin(windDirectionRadians), 0, Math.cos(windDirectionRadians));
 
-			Vec3d direction = new Vec3d(-Math.sin(windDirectionRadians), 0, Math.cos(windDirectionRadians));
+			var x = player.getX() + random.nextTriangular(0, 10) - direction.x * 7;
+			var y = player.getY() + random.nextTriangular(5, 7);
+			var z = player.getZ() + random.nextTriangular(0, 10) - direction.z * 7;
 
-			double x = player.getX() + random.nextTriangular(0, 10) - direction.x * 7;
-			double y = player.getY() + random.nextTriangular(5, 7);
-			double z = player.getZ() + random.nextTriangular(0, 10) - direction.z * 7;
-
-			world.addParticle(ParticleTypes.CLOUD, x, y, z, direction.x, direction.y, direction.z);
+			world.addParticle(ParticleTypes.POOF, x, y, z, direction.x, direction.y, direction.z);
 		}
 	}
 
