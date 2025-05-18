@@ -20,6 +20,7 @@
     "text.autoconfig.acclimatize.category.blocks": "Blocks",
 	"text.autoconfig.acclimatize.category.world": "World",
     "text.autoconfig.acclimatize.category.wind": "Wind",
+	"text.autoconfig.acclimatize.category.particles": "Particles",
     
 	"text.autoconfig.acclimatize.option.enableLogging": "Enable Logging",
     "text.autoconfig.acclimatize.option.temperatureXOffset": "Temperature HUD X Offset",
@@ -88,5 +89,13 @@
 	"text.autoconfig.acclimatize.option.windIntensityMax": "Maximum Wind Intensity",
 	"text.autoconfig.acclimatize.option.windChillFactor": "Wind Chill Factor",
     "text.autoconfig.acclimatize.option.windRayCount": "Wind Ray Count",
-    "text.autoconfig.acclimatize.option.windRayLength": "Wind Ray Length"
+    "text.autoconfig.acclimatize.option.windRayLength": "Wind Ray Length",
+
+	"text.autoconfig.acclimatize.option.enableParticleWindEffects": "Enable Particle Wind Effects",
+	"text.autoconfig.acclimatize.option.particleWindEffectFactor": "Particle Wind Effect Factor",
+	"text.autoconfig.acclimatize.option.enableParticleHeatEffects": "Enable Particle Heat Effects",
+	"text.autoconfig.acclimatize.option.enableParticleBlockChecks": "Enable Particle Block Checks",
+	"text.autoconfig.acclimatize.option.enableParticleFluidBlockChecks": "Enable Particle Fluid Block Checks",
+	"text.autoconfig.acclimatize.option.enableParticleComplexInteractions": "Enable Particle Complex Interactions",
+	"text.autoconfig.acclimatize.option.enableParticleFunneling": "Enable Particle Funneling"
 }
