@@ -57,4 +57,5 @@ public class PlayerState extends PersistentState {
 
 		return playerState;
 	}
+
 }

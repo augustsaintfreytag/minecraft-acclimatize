@@ -66,7 +66,7 @@ public interface ParticleMixinLogic {
 	}
 
 	private double motionFactorForParticle(Vec3d particlePosition) {
-		var direction = ModClient.cachedWindDirection;
+		var direction = ModClient.getWindDirection();
 		var particleDirection = new Vec3d(MathUtil.cos(direction), 0, MathUtil.sin(direction));
 
 		var baseFactor = windInfluenceFactorForUnblockedOppositeDirection(particlePosition, particleDirection);
@@ -164,8 +164,8 @@ public interface ParticleMixinLogic {
 			return new Vec3d(0, 0, 0);
 		}
 
-		var windDirection = ModClient.cachedWindDirection;
-		var windIntensity = ModClient.cachedWindIntensity;
+		var windDirection = ModClient.getWindDirection();
+		var windIntensity = ModClient.getWindIntensity();
 
 		var windX = Math.cos(windDirection) * windIntensity * 0.01;
 		var windZ = Math.sin(windDirection) * windIntensity * 0.01;
@@ -235,10 +235,10 @@ public interface ParticleMixinLogic {
 
 	private int angleFromDirection(Direction direction) {
 		return switch (direction) {
-		case NORTH -> 180;
-		case WEST -> 270;
-		case EAST -> 90;
-		default -> 0;
+			case NORTH -> 180;
+			case WEST -> 270;
+			case EAST -> 90;
+			default -> 0;
 		};
 	}
 
@@ -259,9 +259,9 @@ public interface ParticleMixinLogic {
 
 	private Vec3d wallGuidedDirectionForWind(Vec3d windVector, Direction wallDirection) {
 		return switch (wallDirection) {
-		case NORTH, SOUTH -> new Vec3d(windVector.x, windVector.y, 0);
-		case EAST, WEST -> new Vec3d(0, windVector.y, windVector.z);
-		default -> windVector;
+			case NORTH, SOUTH -> new Vec3d(windVector.x, windVector.y, 0);
+			case EAST, WEST -> new Vec3d(0, windVector.y, windVector.z);
+			default -> windVector;
 		};
 	}
 
@@ -386,7 +386,8 @@ public interface ParticleMixinLogic {
 			var state = world.getBlockState(checkPosition);
 
 			if (blockIsHeatSource(state)) {
-				var destinationPos = new Vec3d(checkPosition.getX() + 0.5, checkPosition.getY() + 0.5, checkPosition.getZ() + 0.5);
+				var destinationPos = new Vec3d(checkPosition.getX() + 0.5, checkPosition.getY() + 0.5,
+						checkPosition.getZ() + 0.5);
 				var distance = particlePosition.distanceTo(destinationPos);
 
 				if (distance <= maxHeatInfluenceDistance) {
@@ -418,7 +419,8 @@ public interface ParticleMixinLogic {
 	}
 
 	private boolean blockIsHeatSource(BlockState state) {
-		return state.isOf(Blocks.LAVA) || state.isOf(Blocks.FIRE) || state.isOf(Blocks.TORCH) || state.isOf(Blocks.CAMPFIRE);
+		return state.isOf(Blocks.LAVA) || state.isOf(Blocks.FIRE) || state.isOf(Blocks.TORCH)
+				|| state.isOf(Blocks.CAMPFIRE);
 	}
 
 	private void setVerticalMotion(double motionY) {

@@ -22,7 +22,7 @@ public class TemperatureItemHudUtil {
 			return;
 		}
 
-		var temperature = ModClient.cachedBodyTemperature;
+		var temperature = ModClient.getBodyTemperature();
 
 		if (temperature == 0.0) {
 			return;

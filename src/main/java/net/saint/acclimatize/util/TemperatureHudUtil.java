@@ -81,9 +81,9 @@ public final class TemperatureHudUtil {
 		var x = window.getScaledWidth() / 2 + xOffset;
 		var y = window.getScaledHeight() - 48 + yOffset;
 
-		var bodyTemperature = ModClient.cachedBodyTemperature;
-		var ambientTemperature = ModClient.cachedAmbientTemperature;
-		var acclimatizationRate = ModClient.cachedAcclimatizationRate;
+		var bodyTemperature = ModClient.getBodyTemperature();
+		var ambientTemperature = ModClient.getAmbientTemperature();
+		var acclimatizationRate = ModClient.getAcclimatizationRate();
 
 		if (bodyTemperature == 0.0) {
 			return;
@@ -226,8 +226,8 @@ public final class TemperatureHudUtil {
 		var client = MinecraftClient.getInstance();
 		var window = client.getWindow();
 
-		var temperature = ModClient.cachedBodyTemperature;
-		var temperatureDifference = ModClient.cachedTemperatureDifference;
+		var temperature = ModClient.getBodyTemperature();
+		var temperatureDifference = ModClient.getAmbientTemperature() - temperature;
 
 		if (temperature == 0.0) {
 			return;
