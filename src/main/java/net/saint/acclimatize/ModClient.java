@@ -8,14 +8,12 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.Vec3d;
 import net.saint.acclimatize.networking.TemperaturePackets;
 import net.saint.acclimatize.util.ItemTemperatureUtil;
+import net.saint.acclimatize.util.WindParticleUtil;
 
 public class ModClient implements ClientModInitializer {
 
@@ -39,6 +37,8 @@ public class ModClient implements ClientModInitializer {
 	public static int glassShakePM = -1;
 	public static boolean glassShakeAxis = false;
 
+	// Init
+
 	@Override
 	public void onInitializeClient() {
 		setUpKeybindings();
@@ -46,6 +46,8 @@ public class ModClient implements ClientModInitializer {
 		setUpClientTickEventHandler();
 		setUpItemTooltipCallback();
 	}
+
+	// Set-Up
 
 	private static void setUpKeybindings() {
 		enableHUDKeyBinding = KeyBindingHelper
@@ -86,7 +88,7 @@ public class ModClient implements ClientModInitializer {
 			// Wind Particles
 
 			if (Mod.CONFIG.enableWindParticles && !isPaused) {
-				renderWindParticles(client);
+				WindParticleUtil.renderWindParticles(client);
 			}
 		});
 	}
@@ -105,26 +107,6 @@ public class ModClient implements ClientModInitializer {
 
 			tooltip.add(Text.literal("§9+" + temperature + " Temperature"));
 		});
-	}
-
-	private static void renderWindParticles(MinecraftClient client) {
-		var player = client.player;
-		var world = client.world;
-		var random = world.getRandom();
-
-		var bound = Math.max(1, 16 + (int) cachedWindTemperature);
-
-		if (random.nextInt(bound) == 0) {
-			double windDirectionRadians = Math.toRadians(cachedWindDirection);
-
-			Vec3d direction = new Vec3d(-Math.sin(windDirectionRadians), 0, Math.cos(windDirectionRadians));
-
-			double x = player.getX() + random.nextTriangular(0, 10) - direction.x * 7;
-			double y = player.getY() + random.nextTriangular(5, 7);
-			double z = player.getZ() + random.nextTriangular(0, 10) - direction.z * 7;
-
-			world.addParticle(ParticleTypes.CLOUD, x, y, z, direction.x, direction.y, direction.z);
-		}
 	}
 
 }
