@@ -331,8 +331,8 @@ public interface ParticleMixinLogic {
 	// Heat
 
 	private void updateMotionFromHeatValueAtPosition(Vec3d particlePosition) {
-		if (!shouldApplyHeatBasedWindEffects()) {
-			// No heat-based wind effects for this particle type.
+		if (!Mod.CONFIG.enableParticleHeatEffects || !shouldApplyHeatBasedWindEffects()) {
+			// No heat-based wind effects for blacklisted particle type.
 			return;
 		}
 
