@@ -15,7 +15,8 @@ public final class TemperatureHudOverlayUtil {
 
 	// Configuration (Rendering)
 
-	public static final Identifier TEMPERATURE_OVERLAY = new Identifier(Mod.modId, "textures/overlay/temperature_overlay.png");
+	public static final Identifier TEMPERATURE_OVERLAY = new Identifier(Mod.modId,
+			"textures/overlay/temperature_overlay.png");
 
 	private static final RGBAColor HYPOTHERMIA_COLOR = new RGBAColor(0.6f, 0.75f, 1.0f, 1.0f);
 	private static final RGBAColor HYPERTHERMIA_COLOR = new RGBAColor(0.8f, 0.3f, 0.15f, 1.0f);
@@ -46,7 +47,7 @@ public final class TemperatureHudOverlayUtil {
 			return;
 		}
 
-		renderVignetteHudOverlay(context, ModClient.cachedBodyTemperature);
+		renderVignetteHudOverlay(context, ModClient.getBodyTemperature());
 	}
 
 	private static void renderVignetteHudOverlay(DrawContext context, double temperature) {
@@ -64,7 +65,8 @@ public final class TemperatureHudOverlayUtil {
 		}
 
 		var maxAlpha = MathUtil.clamp((float) Mod.CONFIG.temperatureVignetteAlpha, 0, 1);
-		var progress = Math.min(maxAlpha, (System.currentTimeMillis() - animationStartTime) / (float) ANIMATION_DURATION);
+		var progress = Math.min(maxAlpha,
+				(System.currentTimeMillis() - animationStartTime) / (float) ANIMATION_DURATION);
 		var alpha = shouldDisplayOverlay ? lastTargetAlpha * progress : lastTargetAlpha * (maxAlpha - progress);
 
 		// Bail if not supposed to draw and fade out has already completed.
@@ -105,7 +107,8 @@ public final class TemperatureHudOverlayUtil {
 			return HYPOTHERMIA_COLOR;
 		}
 
-		if (temperature >= Mod.CONFIG.hyperthermiaThresholdMinor && temperature < Mod.CONFIG.hyperthermiaThresholdMajor) {
+		if (temperature >= Mod.CONFIG.hyperthermiaThresholdMinor
+				&& temperature < Mod.CONFIG.hyperthermiaThresholdMajor) {
 			return HYPERTHERMIA_COLOR;
 		}
 

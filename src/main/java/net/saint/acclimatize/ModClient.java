@@ -11,33 +11,35 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.Vec3d;
 import net.saint.acclimatize.networking.TemperaturePackets;
+import net.saint.acclimatize.networking.TemperaturePackets.TemperaturePacketTuple;
 import net.saint.acclimatize.util.ItemTemperatureUtil;
+import net.saint.acclimatize.util.MathUtil;
+import net.saint.acclimatize.util.WindParticleUtil;
 
 public class ModClient implements ClientModInitializer {
 
-	public static double cachedAcclimatizationRate = 0;
-	public static double cachedBodyTemperature = 0;
-	public static double cachedTemperatureDifference = 0;
+	// State
 
-	public static double cachedAmbientTemperature = 0;
-	public static double cachedWindTemperature = 0;
-	public static double cachedWindDirection = 0;
-	public static double cachedWindIntensity = 0;
+	private static TemperaturePacketTuple cachedTemperatureValues = new TemperaturePacketTuple();
 
-	public static int temperatureUpdateTick = 0;
+	private static long temperatureUpdateTick = 0;
 
-	public static boolean enableHUD = true;
+	private static long lastWindUpdateTick = 0;
+
+	private static double lastWindIntensity = 0;
+	private static double lastWindDirection = 0;
+
+	// References
 
 	private static KeyBinding enableHUDKeyBinding;
 
-	public static int glassShakeTick = 0;
-	public static int glassShakeTickMax = 0;
-	public static int glassShakePM = -1;
-	public static boolean glassShakeAxis = false;
+	// Properties
+
+	public static boolean enableHUD = true;
+
+	// Init
 
 	@Override
 	public void onInitializeClient() {
@@ -46,6 +48,60 @@ public class ModClient implements ClientModInitializer {
 		setUpClientTickEventHandler();
 		setUpItemTooltipCallback();
 	}
+
+	// Access
+
+	public static void updateTemperatureValues(TemperaturePacketTuple values) {
+		var world = MinecraftClient.getInstance().world;
+		var serverTick = world.getTime();
+		var previousValues = cachedTemperatureValues;
+		cachedTemperatureValues = values;
+
+		if (previousValues.windDirection != values.windDirection) {
+			lastWindDirection = previousValues.windDirection;
+			lastWindUpdateTick = serverTick;
+		}
+
+		if (previousValues.windIntensity != values.windIntensity) {
+			lastWindIntensity = previousValues.windIntensity;
+			lastWindUpdateTick = serverTick;
+		}
+	}
+
+	public static double getAcclimatizationRate() {
+		return cachedTemperatureValues.acclimatizationRate;
+	}
+
+	public static double getBodyTemperature() {
+		return cachedTemperatureValues.bodyTemperature;
+	}
+
+	public static double getAmbientTemperature() {
+		return cachedTemperatureValues.ambientTemperature;
+	}
+
+	public static double getWindTemperature() {
+		return cachedTemperatureValues.windTemperature;
+	}
+
+	public static double getWindDirection() {
+		return MathUtil.lerp(lastWindDirection, cachedTemperatureValues.windDirection, windInterpolationValue());
+	}
+
+	public static double getWindIntensity() {
+		return MathUtil.lerp(lastWindIntensity, cachedTemperatureValues.windIntensity, windInterpolationValue());
+	}
+
+	private static double windInterpolationValue() {
+		var world = MinecraftClient.getInstance().world;
+		var serverTick = world.getTime();
+		var deltaTime = serverTick - lastWindUpdateTick;
+		var transitionFactor = (double) deltaTime / (double) Mod.CONFIG.windTransitionInterval;
+
+		return transitionFactor;
+	}
+
+	// Set-Up
 
 	private static void setUpKeybindings() {
 		enableHUDKeyBinding = KeyBindingHelper
@@ -86,7 +142,7 @@ public class ModClient implements ClientModInitializer {
 			// Wind Particles
 
 			if (Mod.CONFIG.enableWindParticles && !isPaused) {
-				renderWindParticles(client);
+				WindParticleUtil.renderWindParticles(client);
 			}
 		});
 	}
@@ -105,26 +161,6 @@ public class ModClient implements ClientModInitializer {
 
 			tooltip.add(Text.literal("§9+" + temperature + " Temperature"));
 		});
-	}
-
-	private static void renderWindParticles(MinecraftClient client) {
-		var player = client.player;
-		var world = client.world;
-		var random = world.getRandom();
-
-		var bound = Math.max(1, 16 + (int) cachedWindTemperature);
-
-		if (random.nextInt(bound) == 0) {
-			double windDirectionRadians = Math.toRadians(cachedWindDirection);
-
-			Vec3d direction = new Vec3d(-Math.sin(windDirectionRadians), 0, Math.cos(windDirectionRadians));
-
-			double x = player.getX() + random.nextTriangular(0, 10) - direction.x * 7;
-			double y = player.getY() + random.nextTriangular(5, 7);
-			double z = player.getZ() + random.nextTriangular(0, 10) - direction.z * 7;
-
-			world.addParticle(ParticleTypes.CLOUD, x, y, z, direction.x, direction.y, direction.z);
-		}
 	}
 
 }
