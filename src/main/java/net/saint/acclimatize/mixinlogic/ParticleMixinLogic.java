@@ -3,6 +3,7 @@ package net.saint.acclimatize.mixinlogic;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.particle.LargeFireSmokeParticle;
+import net.minecraft.client.particle.RainSplashParticle;
 import net.minecraft.client.particle.SnowflakeParticle;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.fluid.Fluids;
@@ -435,6 +436,10 @@ public interface ParticleMixinLogic {
 	private double windInfluenceFactorForParticleType() {
 		if (this instanceof SnowflakeParticle) {
 			return 1.75;
+		}
+
+		if (this instanceof RainSplashParticle) {
+			return 0.25;
 		}
 
 		if (FallingLeafParticleCompat.isLeafParticle(this)) {
