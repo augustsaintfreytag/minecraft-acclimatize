@@ -32,10 +32,6 @@ public class ModClient implements ClientModInitializer {
 
 	private static KeyBinding enableHUDKeyBinding;
 
-	public static int glassShakeTick = 0;
-	public static int glassShakeTickMax = 0;
-	public static int glassShakePM = -1;
-	public static boolean glassShakeAxis = false;
 
 	// Init
 
