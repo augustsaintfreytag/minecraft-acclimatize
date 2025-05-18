@@ -69,19 +69,24 @@ public interface ParticleMixinLogic {
 		var direction = ModClient.cachedWindDirection;
 		var particleDirection = new Vec3d(MathUtil.cos(direction), 0, MathUtil.sin(direction));
 
-		var baseFactor = windInfluenceFactorForBlockedEnvironment(particlePosition, particleDirection);
+		var baseFactor = windInfluenceFactorForUnblockedOppositeDirection(particlePosition, particleDirection);
 		var typeFactor = windInfluenceFactorForParticleType();
 
-		return baseFactor * typeFactor * Mod.CONFIG.windParticleEffectFactor;
+		return baseFactor * typeFactor * Mod.CONFIG.particleWindEffectFactor;
 	}
 
 	// Calculation Details
 
-	private double windInfluenceFactorForBlockedEnvironment(Vec3d particlePosition, Vec3d windDirection) {
+	private double windInfluenceFactorForUnblockedOppositeDirection(Vec3d particlePosition, Vec3d windDirection) {
+		if (!Mod.CONFIG.enableParticleBlockChecks) {
+			// Block checks disabled, always return full influence.
+			return 1.0;
+		}
+
 		var world = getWorld();
 
 		// Define how far back in wind origin direction we should check.
-		var range = 5;
+		var range = 4;
 
 		// Invert wind direction for checking.
 		var invertedWindDirection = windDirection.multiply(-1);
@@ -92,31 +97,44 @@ public interface ParticleMixinLogic {
 			var state = world.getBlockState(blockPosition);
 
 			if (state.isAir()) {
-				// Check if particle is within 0.5 blocks away from a fluid block.
-				var fluidPosition = findFluidBlockNearby(blockPosition);
+				// If block in path is air, check for fluid or return max influence.
 
-				if (fluidPosition != null) {
-					var fluidPositionCenter = fluidPosition.toCenterPos();
-					var distance = particlePosition.distanceTo(fluidPositionCenter);
+				if (Mod.CONFIG.enableParticleFluidBlockChecks) {
+					// Check if particle is within 0.5 blocks away from a fluid block.
+					var fluidDistance = findDistanceToNearestFluidBlock(blockPosition, particlePosition);
 
-					if (distance < 0.5) {
+					if (fluidDistance < 0.5) {
 						// No influence if within 0.5 blocks away from fluid.
 						return 0.0;
 					}
 				}
 
-				// Full influence if wind exposure is confirmed.
-				return 1;
-			} else if (isNonSolidBlock(state)) {
-				// No influence if in water or lava.
+				// Continue checking until block is found.
+				continue;
+			} else {
+				// Solid block found, return influence based on distance.
+				// Not sure what checking for non-solid blocks like lava or water was about.
 				return 0.0;
 			}
 		}
 
-		return 0.0;
+		// No blocks found in path, return full influence.
+		return 1.0;
 	}
 
-	private BlockPos findFluidBlockNearby(BlockPos position) {
+	private double findDistanceToNearestFluidBlock(BlockPos blockPosition, Vec3d particlePosition) {
+		var fluidPosition = findPositionOfNearestFluidBlock(blockPosition);
+
+		if (fluidPosition == null) {
+			// No fluid block found, return max distance.
+			return 1000;
+		}
+
+		var fluidPositionCenter = fluidPosition.toCenterPos();
+		return particlePosition.distanceTo(fluidPositionCenter);
+	}
+
+	private BlockPos findPositionOfNearestFluidBlock(BlockPos position) {
 		var world = getWorld();
 
 		for (var x = -1; x <= 1; x++) {
@@ -139,7 +157,9 @@ public interface ParticleMixinLogic {
 	}
 
 	private Vec3d calculateWindVector() {
-		if (!getWorld().getRegistryKey().equals(World.OVERWORLD)) {
+		var world = getWorld();
+
+		if (!world.getRegistryKey().equals(World.OVERWORLD)) {
 			// Return 0 wind strength if not in overworld.
 			return new Vec3d(0, 0, 0);
 		}
@@ -152,6 +172,11 @@ public interface ParticleMixinLogic {
 		var initialWindVector = new Vec3d(windX, 0, windZ);
 		var position = getPosition();
 
+		if (!Mod.CONFIG.enableParticleComplexInteractions) {
+			// No complex interactions, return initial wind vector.
+			return initialWindVector;
+		}
+
 		return windVectorFromRealisticFlow(initialWindVector, position);
 	}
 
@@ -161,7 +186,12 @@ public interface ParticleMixinLogic {
 		}
 
 		windVector = windVectorForStructureAvoidance(windVector, particlePosition);
-		return windVectorForTunnelAttraction(windVector, particlePosition);
+
+		if (!Mod.CONFIG.enableParticleFunneling) {
+			return windVector;
+		}
+
+		return windVectorForFunnelAttraction(windVector, particlePosition);
 	}
 
 	private Vec3d adjustWindFlow(Vec3d windVector, Vec3d particlePosition, double windX, double windZ) {
@@ -221,7 +251,9 @@ public interface ParticleMixinLogic {
 	}
 
 	private double randomizedDeflection(double incidenceAngle) {
-		var random = getWorld().getRandom();
+		var world = getWorld();
+		var random = world.getRandom();
+
 		return random.nextDouble() * MathUtil.cos(Math.toRadians(incidenceAngle)) * 0.05;
 	}
 
@@ -255,15 +287,17 @@ public interface ParticleMixinLogic {
 	}
 
 	private Direction wallFacingDirectionForPosition(Vec3d particlePosition, Direction windDirection) {
+		var world = getWorld();
 		var blockPosition = BlockPos.ofFloored(particlePosition);
 
 		for (var direction : Direction.values()) {
-			var state = getWorld().getBlockState(blockPosition.offset(direction));
+			var state = world.getBlockState(blockPosition.offset(direction));
 
-			if (state.isSolidBlock(getWorld(), blockPosition.offset(direction)) && direction.getAxis().isHorizontal()) {
+			if (state.isSolidBlock(world, blockPosition.offset(direction)) && direction.getAxis().isHorizontal()) {
 				return direction;
 			}
 		}
+
 		return windDirection;
 	}
 
@@ -280,8 +314,8 @@ public interface ParticleMixinLogic {
 		return windVector;
 	}
 
-	private Vec3d windVectorForTunnelAttraction(Vec3d windVector, Vec3d particlePosition) {
-		if (checkWorldForTunnelProximityNearParticle(particlePosition)) {
+	private Vec3d windVectorForFunnelAttraction(Vec3d windVector, Vec3d particlePosition) {
+		if (checkWorldForFunnelProximityNearParticle(particlePosition)) {
 			var attractionFactor = 1.5;
 			return windVector.multiply(attractionFactor);
 		}
@@ -289,7 +323,7 @@ public interface ParticleMixinLogic {
 		return windVector;
 	}
 
-	private boolean checkWorldForTunnelProximityNearParticle(Vec3d particlePosition) {
+	private boolean checkWorldForFunnelProximityNearParticle(Vec3d particlePosition) {
 		var numberOfAirBlocks = 0;
 		var numberOfSolidBlocks = 0;
 
@@ -304,7 +338,7 @@ public interface ParticleMixinLogic {
 
 					if (state.isAir()) {
 						numberOfAirBlocks++;
-					} else if (state.isSolidBlock(getWorld(), checkPos)) {
+					} else if (state.isSolidBlock(world, checkPos)) {
 						numberOfSolidBlocks++;
 					}
 				}
@@ -315,12 +349,13 @@ public interface ParticleMixinLogic {
 	}
 
 	private boolean checkWorldForWallProximityNearParticle(Vec3d particlePosition) {
+		var world = getWorld();
 		var blockPosition = BlockPos.ofFloored(particlePosition);
 
 		for (var direction : Direction.values()) {
-			var state = getWorld().getBlockState(blockPosition.offset(direction));
+			var state = world.getBlockState(blockPosition.offset(direction));
 
-			if (state.isSolidBlock(getWorld(), blockPosition.offset(direction))) {
+			if (state.isSolidBlock(world, blockPosition.offset(direction))) {
 				return true;
 			}
 		}
@@ -336,9 +371,10 @@ public interface ParticleMixinLogic {
 			return;
 		}
 
-		// Reset heat value for the new tick
+		// Reset heat value for new tick.
 		setHeatValue(0.0);
 
+		var world = getWorld();
 		var blockPosition = BlockPos.ofFloored(particlePosition);
 		var maxHeatInfluenceDistance = 4.0;
 		var heatValueIncrement = 0.05;
@@ -347,7 +383,7 @@ public interface ParticleMixinLogic {
 		checkPosition.set(blockPosition);
 
 		for (; checkPosition.getY() >= 0; checkPosition.move(Direction.DOWN)) {
-			var state = getWorld().getBlockState(checkPosition);
+			var state = world.getBlockState(checkPosition);
 
 			if (blockIsHeatSource(state)) {
 				var destinationPos = new Vec3d(checkPosition.getX() + 0.5, checkPosition.getY() + 0.5, checkPosition.getZ() + 0.5);
@@ -396,7 +432,7 @@ public interface ParticleMixinLogic {
 
 	private double windInfluenceFactorForParticleType() {
 		if (this instanceof SnowflakeParticle) {
-			return 1.25;
+			return 1.75;
 		}
 
 		if (FallingLeafParticleCompat.isLeafParticle(this)) {
