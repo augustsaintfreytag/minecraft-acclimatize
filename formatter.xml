@@ -8,6 +8,9 @@
 		<setting id="org.eclipse.jdt.core.formatter.sort_imports_on_save" value="true"/>
 		<setting id="org.eclipse.jdt.core.formatter.lineSplit" value="140"/>
 		<setting id="org.eclipse.jdt.core.formatter.comment.line_length" value="100"/>
+		<setting id="org.eclipse.jdt.core.formatter.insert_new_line_after_annotation_on_type_declaration" value="insert"/>
+		<setting id="org.eclipse.jdt.core.formatter.insert_new_line_after_annotation_on_method_declaration" value="insert"/>
+		<setting id="org.eclipse.jdt.core.formatter.insert_new_line_after_annotation_on_field" value="insert"/>
 		<setting id="org.eclipse.jdt.core.formatter.comment.format_line_comments" value="true"/>
 		<setting id="org.eclipse.jdt.core.formatter.comment.format_block_comments" value="true"/>
 		<setting id="org.eclipse.jdt.core.formatter.comment.format_header_comments" value="true"/>
