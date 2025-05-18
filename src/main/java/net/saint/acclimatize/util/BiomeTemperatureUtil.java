@@ -161,35 +161,18 @@ public final class BiomeTemperatureUtil {
 	// Day/Night
 
 	private static double temperatureDeltaForDayNightTime(long tick) {
-		var phaseValue = phaseValueForAsymmetricTime(tick); // Phase shift phi: φ
-		var plateau = 2; // Plateau: p
-		var offset = 1.65 * Math.PI; // Offset delta: δ
+		// phaseValue now holds the calculated phiAngle from phaseValueForAsymmetricTime
+		var phaseValue = phaseValueForAsymmetricTime(tick);
 
-		// Formula: ΔT_{dn} = ((1 + cos(φ - δ)) / 2) ^ p
+		var plateau = 1.8; // Plateau: p
+		var offset = 1.65 * Math.PI; // Offset: ε
+
+		// Formula: ΔT_{dn} = ((1 + cos(φ - ε)) / 2) ^ p
+		// Use the phaseValue (which is phiAngle) directly
 		var dropFactor = Math.pow(((1 + MathUtil.cos(phaseValue - offset)) / 2), plateau);
 		var temperatureDelta = Mod.CONFIG.nightTemperatureDelta * dropFactor;
 
 		return temperatureDelta;
-	}
-
-	private static double phaseValueForSymmetricTime(long tick) {
-		// Wrap around day/night cycle using total configured duration
-		var dayLengthTicks = Mod.CONFIG.daylightTicks;
-		var nightLengthTicks = Mod.CONFIG.nighttimeTicks;
-		var cycleLength = dayLengthTicks + nightLengthTicks;
-
-		// Get "tick within this cycle" in [0 … cycleLength)
-		var cycleTick = tick % cycleLength;
-		if (cycleTick < 0) {
-			cycleTick += cycleLength; // Ensure positive for modulo result
-		}
-
-		// Normalize ticks into [0 … 1)
-		var normalizedTime = cycleTick / (double) cycleLength;
-
-		// For symmetric time, phase φ maps linearly from 0 to 2π
-		// as normalizedTime goes from 0 to 1. φ ∈ [0, 2π)
-		return normalizedTime * 2.0 * Math.PI;
 	}
 
 	private static double phaseValueForAsymmetricTime(long tick) {
@@ -203,21 +186,29 @@ public final class BiomeTemperatureUtil {
 		if (cycleTick < 0)
 			cycleTick += cycleLength; // just in case time < 0
 
-		// 2) Normalize ticks into [0 … 1)
-		var normalizedTime = cycleTick / (double) cycleLength;
+		// Normalize ticks into [0 … 1)
+		// If cycleLength is 0, this would be division by zero. Assume cycleLength > 0.
+		var normalizedTime = (cycleLength == 0) ? 0 : (cycleTick / (double) cycleLength);
 
-		// 3) Compute day/night fractions
-		var nightFraction = nightLength / (double) cycleLength;
-		var dayFraction = dayLength / (double) cycleLength;
+		// Calculate phiAngle based on normalizedTime and day/night fractions
+		// Assuming cycleLength > 0, ensured by Mod.CONFIG validation ideally
+		var nightFraction = (cycleLength == 0) ? 0 : (nightLength / (double) cycleLength);
+		var dayFraction = (cycleLength == 0) ? 0 : (dayLength / (double) cycleLength);
 
-		// 4) Piecewise φ(x)
+		double phiAngle;
 		if (normalizedTime < nightFraction) {
 			// Night: φ ∈ [0, π)
-			return Math.PI * (normalizedTime / nightFraction);
+			// Avoid division by zero if nightFraction is 0 (i.e., nightLength is 0)
+			phiAngle = (nightFraction == 0) ? 0 : (Math.PI * (normalizedTime / nightFraction));
 		} else {
 			// Day: φ ∈ [π, 2π)
-			return Math.PI + Math.PI * ((normalizedTime - nightFraction) / dayFraction);
+			// Avoid division by zero if dayFraction is 0 (i.e., dayLength is 0)
+			phiAngle = (dayFraction == 0) ? Math.PI
+					: (Math.PI + Math.PI * ((normalizedTime - nightFraction) / dayFraction));
 		}
+
+		// Return the calculated angle phiAngle
+		return phiAngle;
 	}
 
 }
