@@ -67,7 +67,7 @@ public final class MathUtil {
 	// Linear Interpolation
 
 	public static double lerp(double a, double b, double t) {
-		return a + (b - a) * t;
+		return a + (b - a) * clamp(t, 0, 1);
 	}
 
 }
