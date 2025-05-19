@@ -56,6 +56,12 @@ dependencies {
 		transitive = false
 	}
 
+	// Particle Rain
+
+	modImplementation("maven.modrinth:particle-rain:${project.particlerain_version}") {
+		transitive = false
+	}
+
 }
 
 processResources {
