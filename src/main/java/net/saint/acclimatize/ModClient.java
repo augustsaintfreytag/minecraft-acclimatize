@@ -132,7 +132,7 @@ public class ModClient implements ClientModInitializer {
 			if (++temperatureUpdateTick >= Mod.CONFIG.temperatureTickInterval) {
 				if (!isPaused) {
 					ClientPlayNetworking.send(
-							TemperaturePackets.PLAYER_TEMPERATURE_TICK_C2S_PACKET_ID,
+							TemperaturePackets.PLAYER_C2S_PACKET_ID,
 							PacketByteBufs.create());
 				}
 
