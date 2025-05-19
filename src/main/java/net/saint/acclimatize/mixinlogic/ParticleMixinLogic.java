@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.ModClient;
 import net.saint.acclimatize.compat.FallingLeafParticleCompat;
+import net.saint.acclimatize.compat.ParticleRainParticleCompat;
 import net.saint.acclimatize.util.MathUtil;
 
 public interface ParticleMixinLogic {
@@ -440,6 +441,10 @@ public interface ParticleMixinLogic {
 
 		if (this instanceof RainSplashParticle) {
 			return 0.25;
+		}
+
+		if (ParticleRainParticleCompat.isRainParticle(this)) {
+			return 0.85;
 		}
 
 		if (FallingLeafParticleCompat.isLeafParticle(this)) {
