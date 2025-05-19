@@ -303,6 +303,10 @@ public class ModConfig implements ConfigData {
 	public double particleWindEffectFactor = 1.0;
 
 	@ConfigEntry.Category("particles")
+	@Comment("The intensity by which weather particles are titled towards wind direction. (Default: 0.1)")
+	public double particleWeatherEffectFactor = 0.1;
+
+	@ConfigEntry.Category("particles")
 	@Comment("Toggles particles being affected by heat source blocks (only applies to smoke). (Performance impact: low) (Default: true)")
 	public boolean enableParticleHeatEffects = true;
 
