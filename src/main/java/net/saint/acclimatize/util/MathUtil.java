@@ -32,6 +32,18 @@ public final class MathUtil {
 		return sin(x + Math.PI / 2);
 	}
 
+	public static double tan(double x) {
+		// tan(x)=sin(x)/cos(x)
+		double sin = sin(x);
+		double cos = cos(x);
+
+		if (cos == 0) {
+			return Double.POSITIVE_INFINITY;
+		}
+
+		return sin / cos;
+	}
+
 	// Clamp
 
 	public static int clamp(int value, int min, int max) {
