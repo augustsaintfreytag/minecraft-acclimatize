@@ -16,7 +16,8 @@ import net.saint.acclimatize.util.ServerStateUtil;
 
 public class PlayerTemperatureTickC2SPacket {
 
-	public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf,
+	public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler,
+			PacketByteBuf buf,
 			PacketSender responseSender) {
 
 		ServerState serverState = ServerStateUtil.getServerState(server);
@@ -32,18 +33,19 @@ public class PlayerTemperatureTickC2SPacket {
 
 		// Finalization
 
-		PacketByteBuf sendingdata = PacketByteBufs.create();
+		var tuple = new TemperaturePackets.TemperaturePacketTuple();
 
-		sendingdata.writeDouble(playerState.acclimatizationRate);
-		sendingdata.writeDouble(playerState.bodyTemperature);
-		sendingdata.writeDouble(playerState.ambientTemperature);
-		sendingdata.writeDouble(playerState.windTemperature);
-		sendingdata.writeDouble(serverState.windDirection);
-		sendingdata.writeDouble(serverState.windIntensity);
+		tuple.acclimatizationRate = playerState.acclimatizationRate;
+		tuple.bodyTemperature = playerState.bodyTemperature;
+		tuple.ambientTemperature = playerState.ambientTemperature;
+		tuple.windTemperature = playerState.windTemperature;
+		tuple.windDirection = serverState.windDirection;
+		tuple.windIntensity = serverState.windIntensity;
 
-		ServerPlayNetworking.send(player, TemperaturePackets.SEND_TEMPERATURE_PLAYERSTATE_S2C_PACKET_ID, sendingdata);
+		var outgoingBuffer = PacketByteBufs.create();
+		tuple.encodeValuesToBuffer(outgoingBuffer);
 
-		serverState.markDirty();
+		ServerPlayNetworking.send(player, TemperaturePackets.PLAYER_S2C_PACKET_ID, outgoingBuffer);
 	}
 
 }

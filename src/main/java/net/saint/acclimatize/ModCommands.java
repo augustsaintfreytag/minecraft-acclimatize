@@ -50,7 +50,7 @@ public final class ModCommands {
 							var server = context.getSource().getServer();
 							var serverState = ServerStateUtil.getServerState(server);
 
-							WindUtil.overrideWind(serverState, Math.toRadians(0), 5.0);
+							WindUtil.overrideWind(serverState, Math.toRadians(0.5), 5.0);
 
 							context.getSource().sendMessage(Text.literal("Wind set to straight north."));
 							context.getSource().sendMessage(Text
