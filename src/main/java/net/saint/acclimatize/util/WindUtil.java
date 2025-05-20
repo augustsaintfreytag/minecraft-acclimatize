@@ -71,9 +71,9 @@ public final class WindUtil {
 				- Mod.CONFIG.windIntensityMin;
 
 		if (world.isThundering()) {
-			windIntensity *= 1.85;
+			windIntensity *= 2.0;
 		} else if (world.isRaining()) {
-			windIntensity *= 1.4;
+			windIntensity *= 1.65;
 		}
 
 		serverState.windIntensity = windIntensity;
