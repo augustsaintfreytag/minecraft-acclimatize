@@ -94,6 +94,7 @@
 	"text.autoconfig.acclimatize.option.enableParticleWindEffects": "Enable Particle Wind Effects",
 	"text.autoconfig.acclimatize.option.particleWindEffectFactor": "Particle Wind Effect Factor",
 	"text.autoconfig.acclimatize.option.particleWeatherEffectFactor": "Particle Weather Effect Factor",
+	"text.autoconfig.acclimatize.option.particleRainMaxAngle": "Particle Rain Max Angle",
 	"text.autoconfig.acclimatize.option.enableParticleHeatEffects": "Enable Particle Heat Effects",
 	"text.autoconfig.acclimatize.option.enableParticleBlockChecks": "Enable Particle Block Checks",
 	"text.autoconfig.acclimatize.option.enableParticleFluidBlockChecks": "Enable Particle Fluid Block Checks",

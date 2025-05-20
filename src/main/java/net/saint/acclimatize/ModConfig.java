@@ -265,20 +265,20 @@ public class ModConfig implements ConfigData {
 	public int windDirectionUpdateInterval = 6000;
 
 	@ConfigEntry.Category("wind")
-	@Comment("The base number of ticks until wind intensity is updated, plus randomization. (Default: 300)")
-	public int windIntensityUpdateInterval = 300;
+	@Comment("The base number of ticks until wind intensity is updated, plus randomization. (Default: 400)")
+	public int windIntensityUpdateInterval = 400;
 
 	@ConfigEntry.Category("wind")
 	@Comment("The number of ticks to transition from one wind intensity or direction to a new value. (Default: 200)")
 	public int windTransitionInterval = 200;
 
 	@ConfigEntry.Category("wind")
-	@Comment("The minimum intensity wind can be transitioned to in random tick assignment.")
-	public double windIntensityMin = 0.5;
+	@Comment("The minimum intensity wind can be transitioned to in random tick assignment. (Default: 0.25)")
+	public double windIntensityMin = 0.25;
 
 	@ConfigEntry.Category("wind")
-	@Comment("The maximum intensity wind can be transitioned to in random tick assignment.")
-	public double windIntensityMax = 5.0;
+	@Comment("The maximum intensity wind can be transitioned to in random tick assignment. (Default: 3.5)")
+	public double windIntensityMax = 3.5;
 
 	@ConfigEntry.Category("wind")
 	@Comment("The factor for how much wind exposure affects ambient temperature. (Default: 1.25)")
@@ -305,6 +305,10 @@ public class ModConfig implements ConfigData {
 	@ConfigEntry.Category("particles")
 	@Comment("The intensity by which weather particles are titled towards wind direction. (Default: 0.1)")
 	public double particleWeatherEffectFactor = 0.1;
+
+	@ConfigEntry.Category("particles")
+	@Comment("The maximum angle a rain particle can get skewed by wind intensity and angle, in degrees. (Default: 30)")
+	public double particleRainMaxAngle = 30.0;
 
 	@ConfigEntry.Category("particles")
 	@Comment("Toggles particles being affected by heat source blocks (only applies to smoke). (Performance impact: low) (Default: true)")
