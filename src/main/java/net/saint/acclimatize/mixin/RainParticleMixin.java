@@ -8,6 +8,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.math.Vec3d;
+import net.saint.acclimatize.mixinlogic.ParticleAccessor;
 import net.saint.acclimatize.mixinlogic.RainParticleMixinLogic;
 import pigcart.particlerain.particle.RainParticle;
 import pigcart.particlerain.particle.WeatherParticle;
@@ -27,10 +29,12 @@ public abstract class RainParticleMixin extends WeatherParticle implements RainP
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void mixinInit(ClientWorld world, double x, double y, double z,
 			CallbackInfo callbackInfo) {
-		var values = windAffectedVelocityForParticle((RainParticle) (Object) this);
+		var accessor = (ParticleAccessor) this;
+		var velocity = new Vec3d(accessor.getVelocityX(), accessor.getVelocityY(), accessor.getVelocityZ());
+		var values = windAffectedVelocityForParticle((RainParticle) (Object) this, velocity);
 
 		this.velocityX = values.velocityX;
-		this.velocityY = values.velocityY;
+		this.velocityZ = values.velocityZ;
 		this.angle = (float) values.angle;
 	}
 

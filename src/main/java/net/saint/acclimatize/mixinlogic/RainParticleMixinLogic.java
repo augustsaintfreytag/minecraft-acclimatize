@@ -1,5 +1,6 @@
 package net.saint.acclimatize.mixinlogic;
 
+import net.minecraft.util.math.Vec3d;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.ModClient;
 import net.saint.acclimatize.util.MathUtil;
@@ -9,28 +10,41 @@ public interface RainParticleMixinLogic {
 
 	public static class ValueTuple {
 		public double velocityX;
-		public double velocityY;
+		public double velocityZ;
 		public double angle;
 
 		public ValueTuple(double velocityX, double velocityY, double angle) {
 			this.velocityX = velocityX;
-			this.velocityY = velocityY;
+			this.velocityZ = velocityY;
 			this.angle = angle;
 		}
 	}
 
-	public default ValueTuple windAffectedVelocityForParticle(RainParticle particle) {
+	public default ValueTuple windAffectedVelocityForParticle(RainParticle particle, Vec3d velocity) {
 		// Fetch our mod's wind parameters
-		var windDirection = ModClient.getWindDirection(); // radians, 0 = north
-		var windIntensity = ModClient.getWindIntensity(); // e.g. 0..6 scale
-		var effectFactor = Mod.CONFIG.particleWeatherEffectFactor;
+		double windDirection = ModClient.getWindDirection(); // radians, 0 = north→south
+		double windIntensity = ModClient.getWindIntensity();
+		double effectFactor = Mod.CONFIG.particleWeatherEffectFactor;
 
-		// Compute horizontal velocities based on wind direction and intensity
-		var vx = effectFactor * windIntensity * MathUtil.cos(windDirection);
-		var vz = effectFactor * windIntensity * MathUtil.sin(windDirection);
+		// Build a horizontal vector so 0 rad → +Z
+		double speed = effectFactor * windIntensity;
+		double vx = MathUtil.sin(windDirection) * speed;
+		double vz = MathUtil.cos(windDirection) * speed;
 
-		// Recompute angle so the particle quad faces into the wind
-		var angle = windDirection + Math.PI / 2;
+		// Clamp so the slant angle never exceeds maxAngle (e.g. 45°)
+		double maxAngleRad = Math.toRadians(Mod.CONFIG.particleRainMaxAngle);
+		double vertical = Math.abs(velocity.y);
+		double maxH = vertical * MathUtil.tan(maxAngleRad);
+		double hLen = Math.hypot(vx, vz);
+
+		if (hLen > maxH) {
+			double scale = maxH / hLen;
+			vx *= scale;
+			vz *= scale;
+		}
+
+		// Quad yaw: rotate particle‐quad to face *into* the wind
+		double angle = windDirection;
 
 		return new ValueTuple(vx, vz, angle);
 	}
