@@ -9,12 +9,13 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.Vec3d;
+import net.saint.acclimatize.mixinlogic.ParticleAccessor;
 import net.saint.acclimatize.mixinlogic.ParticleMixinLogic;
 
 // Code originally ported from *Immersive Winds* by Vibzz.
 
 @Mixin(Particle.class)
-public abstract class ParticleMixin implements ParticleMixinLogic {
+public abstract class ParticleMixin implements ParticleMixinLogic, ParticleAccessor {
 
 	// Shadowed Properties
 
@@ -28,12 +29,38 @@ public abstract class ParticleMixin implements ParticleMixinLogic {
 	protected double z;
 
 	@Shadow
+	protected double velocityX;
+
+	@Shadow
+	protected double velocityY;
+
+	@Shadow
+	protected double velocityZ;
+
+	@Shadow
 	protected ClientWorld world;
 
 	// Injected Properties
 
 	@Unique
 	private double heatValue = 0.0;
+
+	// Accessors
+
+	@Unique
+	public double getVelocityX() {
+		return this.velocityX;
+	}
+
+	@Unique
+	public double getVelocityY() {
+		return this.velocityY;
+	}
+
+	@Unique
+	public double getVelocityZ() {
+		return this.velocityZ;
+	}
 
 	// Logic
 
