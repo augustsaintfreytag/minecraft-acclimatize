@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.Text;
 import net.saint.acclimatize.networking.TemperaturePackets;
 import net.saint.acclimatize.networking.TemperaturePackets.TemperaturePacketTuple;
@@ -38,6 +39,10 @@ public class ModClient implements ClientModInitializer {
 	// Properties
 
 	public static boolean enableHUD = true;
+
+	private static ClientWorld getWorld() {
+		return MinecraftClient.getInstance().world;
+	}
 
 	// Init
 
@@ -89,16 +94,28 @@ public class ModClient implements ClientModInitializer {
 	}
 
 	public static double getWindIntensity() {
-		return MathUtil.lerp(lastWindIntensity, cachedTemperatureValues.windIntensity, windInterpolationValue());
+		return MathUtil.lerp(lastWindIntensity, cachedTemperatureValues.windIntensity, windInterpolationValue())
+				* windPrecipitationFactor();
 	}
 
 	private static double windInterpolationValue() {
-		var world = MinecraftClient.getInstance().world;
-		var serverTick = world.getTime();
+		var serverTick = getWorld().getTime();
 		var deltaTime = serverTick - lastWindUpdateTick;
 		var transitionFactor = (double) deltaTime / (double) Mod.CONFIG.windTransitionInterval;
 
 		return transitionFactor;
+	}
+
+	private static double windPrecipitationFactor() {
+		var world = getWorld();
+
+		if (world.isThundering()) {
+			return 5.0;
+		} else if (world.isRaining()) {
+			return 3.0;
+		}
+
+		return 1.0;
 	}
 
 	// Set-Up
