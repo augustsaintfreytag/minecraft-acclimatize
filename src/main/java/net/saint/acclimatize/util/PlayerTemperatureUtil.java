@@ -7,6 +7,16 @@ import net.saint.acclimatize.server.ServerState;
 
 public class PlayerTemperatureUtil {
 
+	public static void tickPlayerTemperatureInSchedule(ServerPlayerEntity player, ServerState serverState, PlayerState playerState) {
+		var world = player.getWorld();
+
+		if (world.getTime() % Mod.CONFIG.temperatureTickInterval != 0) {
+			return;
+		}
+
+		tickPlayerTemperature(player, serverState, playerState);
+	}
+
 	public static void tickPlayerTemperature(ServerPlayerEntity player, ServerState serverState, PlayerState playerState) {
 		// Prerequisites
 

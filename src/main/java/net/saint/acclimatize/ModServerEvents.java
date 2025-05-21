@@ -3,6 +3,13 @@ package net.saint.acclimatize;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.saint.acclimatize.networking.StateNetworkingPackets;
+import net.saint.acclimatize.player.PlayerState;
+import net.saint.acclimatize.server.ServerState;
+import net.saint.acclimatize.util.PlayerEffectsUtil;
+import net.saint.acclimatize.util.PlayerTemperatureUtil;
 import net.saint.acclimatize.util.ServerStateUtil;
 import net.saint.acclimatize.util.SpaceUtil;
 import net.saint.acclimatize.util.WindTemperatureUtil;
@@ -30,6 +37,7 @@ public final class ModServerEvents {
 
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
 			var player = handler.player;
+
 			SpaceUtil.cleanUpPlayerData(player);
 			WindTemperatureUtil.cleanUpPlayerData(player);
 		});
@@ -43,11 +51,41 @@ public final class ModServerEvents {
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register((server) -> {
-			var serverState = ServerStateUtil.getServerState(server);
-			var serverWorld = server.getOverworld();
-
-			WindUtil.tickWindInSchedule(serverWorld, serverState);
+			tickServerInSchedule(server);
+			tickAllPlayersInSchedule(server);
 		});
+	}
+
+	private static void tickServerInSchedule(MinecraftServer server) {
+		var serverState = ServerStateUtil.getServerState(server);
+		var serverWorld = server.getOverworld();
+
+		WindUtil.tickWindInSchedule(serverWorld, serverState);
+	}
+
+	private static void tickAllPlayersInSchedule(MinecraftServer server) {
+		var serverState = ServerStateUtil.getServerState(server);
+
+		for (var player : server.getPlayerManager().getPlayerList()) {
+			var playerState = ServerStateUtil.getPlayerState(player);
+			tickPlayerInSchedule(serverState, playerState, player);
+
+			if (serverState.isDirty() || playerState.isDirty()) {
+				StateNetworkingPackets.sendStateToClient(server, player);
+			}
+		}
+	}
+
+	private static void tickPlayerInSchedule(ServerState serverState, PlayerState playerState, ServerPlayerEntity player) {
+		if (player.isCreative() || player.isSpectator()) {
+			return;
+		}
+
+		// Temperature
+		PlayerTemperatureUtil.tickPlayerTemperatureInSchedule(player, serverState, playerState);
+
+		// Damage
+		PlayerEffectsUtil.tickPlayerEffectsInSchedule(player, playerState);
 	}
 
 }

@@ -38,7 +38,17 @@ public final class PlayerEffectsUtil {
 
 	// Handling
 
-	public static void handlePlayerEffects(ServerPlayerEntity player, PlayerState playerState) {
+	public static void tickPlayerEffectsInSchedule(ServerPlayerEntity player, PlayerState playerState) {
+		var world = player.getWorld();
+
+		if (world.getTime() % Mod.CONFIG.temperatureTickInterval != 0) {
+			return;
+		}
+
+		tickPlayerEffects(player, playerState);
+	}
+
+	public static void tickPlayerEffects(ServerPlayerEntity player, PlayerState playerState) {
 		effectTick++;
 
 		if (effectTick != 0 && effectTick < EFFECT_TICK_INTERVAL) {
