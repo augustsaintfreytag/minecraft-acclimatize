@@ -146,13 +146,14 @@ public final class BiomeTemperatureUtil {
 		var scalingFactor = -0.02; // Scaling factor: α
 		var growthFactor = 1.5; // Growth factor: γ
 		var softeningFactor = 15.0; // Softening factor: σ
-		var altitudeAnchor = 62.0; // Altitude anchor: h_n
+
 		var lowerBound = -20.0; // Lower bound: L
 		var upperBound = 15.0; // Upper bound: U
 
+		var altitudeAnchor = (double) Mod.CONFIG.altitudeZeroingAnchor; // Altitude anchor: h_n
+
 		// Formula: ΔT_alt = α * (sgn(h - h_n) * |h - h_n|^γ - α * σ^γ) - 1
-		var delta = scalingFactor * Math.signum(altitude - altitudeAnchor)
-				* Math.pow(Math.abs(altitude - altitudeAnchor), growthFactor)
+		var delta = scalingFactor * Math.signum(altitude - altitudeAnchor) * Math.pow(Math.abs(altitude - altitudeAnchor), growthFactor)
 				- scalingFactor * Math.pow(softeningFactor, growthFactor) - 1;
 
 		return MathUtil.clamp(delta, lowerBound, upperBound);
@@ -203,8 +204,7 @@ public final class BiomeTemperatureUtil {
 		} else {
 			// Day: φ ∈ [π, 2π)
 			// Avoid division by zero if dayFraction is 0 (i.e., dayLength is 0)
-			phiAngle = (dayFraction == 0) ? Math.PI
-					: (Math.PI + Math.PI * ((normalizedTime - nightFraction) / dayFraction));
+			phiAngle = (dayFraction == 0) ? Math.PI : (Math.PI + Math.PI * ((normalizedTime - nightFraction) / dayFraction));
 		}
 
 		// Return the calculated angle phiAngle
