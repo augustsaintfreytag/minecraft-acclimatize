@@ -9,7 +9,8 @@
 		"PlayerStatusEffectsMixin",
 		"ParticleMixin",
 		"FallingLeafParticleMixin",
-		"RainParticleMixin"
+		"RainParticleMixin",
+		"SuspendedParticleMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
