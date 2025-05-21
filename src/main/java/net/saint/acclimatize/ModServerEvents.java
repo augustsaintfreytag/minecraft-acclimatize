@@ -70,7 +70,7 @@ public final class ModServerEvents {
 			var playerState = ServerStateUtil.getPlayerState(player);
 			tickPlayerInSchedule(serverState, playerState, player);
 
-			if (playerState.isDirty()) {
+			if (serverState.isDirty() || playerState.isDirty()) {
 				StateNetworkingPackets.sendStateToClient(server, player);
 			}
 		}
