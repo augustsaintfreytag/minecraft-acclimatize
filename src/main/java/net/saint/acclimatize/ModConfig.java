@@ -100,6 +100,10 @@ public class ModConfig implements ConfigData {
 	public double biomeTemperatureZeroingAnchor = 1.0;
 
 	@ConfigEntry.Category("world")
+	@Comment("The presumed sea level for the world, used to calculate altitude temperature deltas. Should be set to the median y coordinate players spend time at. (Default: 62)")
+	public int altitudeZeroingAnchor = 62;
+
+	@ConfigEntry.Category("world")
 	@Comment("The temperature delta applied when the player is exposed to rainfall. (Default: -4.0)")
 	public double rainTemperatureDelta = -4.0;
 
