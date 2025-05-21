@@ -5,8 +5,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
-@Config(name = Mod.modId)
-@Config.Gui.Background("minecraft:textures/block/ice.png")
+@Config(name = Mod.modId) @Config.Gui.Background("minecraft:textures/block/ice.png")
 public class ModConfig implements ConfigData {
 
 	// HUD
@@ -170,36 +169,30 @@ public class ModConfig implements ConfigData {
 	public double blockTemperatureAcclimatizationBoostThreshold = 10.0;
 
 	@ConfigEntry.Category("blocks")
+	@Comment("Temperature value applied when the player is submerged in water. (Default: -15.0)")
+	public double waterBlockTemperature = -15.0;
+
+	@ConfigEntry.Category("blocks")
 	@Comment("Blocks that will heat you up when near.")
-	public String heatingBlocks = String.join(", ", "minecraft:fire = 5.0", "minecraft:lava = 8.0",
-			"minecraft:campfire = 18.0",
-			"minecraft:torch = 2.0", "minecraft:wall_torch = 2.0", "minecraft:soul_torch = 2.0",
-			"minecraft:soul_wall_torch = 2.0",
-			"minecraft:soul_campfire = 18.0", "minecraft:lava_cauldron = 5.0", "minecraft:furnace = 10.0",
-			"minecraft:blast_furnace = 8.0",
-			"minecraft:smoker = 10.0", "minecraft:redstone_lamp = 2.0", "hardcore_torches:lit_torch = 2.0",
-			"hardcore_torches:lit_wall_torch = 2.0", "hardcore_torches:lit_lantern = 1.0",
-			"farmersdelight:stove = 18.0",
+	public String heatingBlocks = String.join(", ", "minecraft:fire = 5.0", "minecraft:lava = 8.0", "minecraft:campfire = 18.0",
+			"minecraft:torch = 4.0", "minecraft:wall_torch = 4.0", "minecraft:redstone_torch = 1.0", "minecraft:redstone_wall_torch = 1.0",
+			"minecraft:soul_torch = 4.0", "minecraft:soul_wall_torch = 4.0", "minecraft:soul_campfire = 18.0",
+			"minecraft:lava_cauldron = 5.0", "minecraft:furnace = 10.0", "minecraft:blast_furnace = 10.0", "minecraft:smoker = 10.0",
+			"minecraft:redstone_lamp = 2.0", "minecraft:ochre_froglight = 3.0", "minecraft:pearlescent_froglight = 3.0",
+			"minecraft:verdant_froglight = 3.0", "minecraft:end_rod = 2.0", "hardcore_torches:lit_torch = 4.0",
+			"hardcore_torches:lit_wall_torch = 4.0", "hardcore_torches:lit_lantern = 2.0", "farmersdelight:stove = 18.0",
 			"refurbished_furniture:light_ceiling_light = 10.0", "refurbished_furniture:dark_ceiling_light = 10.0",
-			"refurbished_furniture:black_lamp = 10.0", "refurbished_furniture:blue_lamp = 10.0",
-			"refurbished_furniture:brown_lamp = 10.0",
-			"refurbished_furniture:cyan_lamp = 10.0", "refurbished_furniture:gray_lamp = 10.0",
-			"refurbished_furniture:green_lamp = 10.0",
+			"refurbished_furniture:black_lamp = 10.0", "refurbished_furniture:blue_lamp = 10.0", "refurbished_furniture:brown_lamp = 10.0",
+			"refurbished_furniture:cyan_lamp = 10.0", "refurbished_furniture:gray_lamp = 10.0", "refurbished_furniture:green_lamp = 10.0",
 			"refurbished_furniture:light_blue_lamp = 10.0", "refurbished_furniture:light_gray_lamp = 10.0",
 			"refurbished_furniture:lime_lamp = 10.0", "refurbished_furniture:magenta_lamp = 10.0",
-			"refurbished_furniture:orange_lamp = 10.0", "refurbished_furniture:pink_lamp = 10.0",
-			"refurbished_furniture:red_lamp = 10.0",
+			"refurbished_furniture:orange_lamp = 10.0", "refurbished_furniture:pink_lamp = 10.0", "refurbished_furniture:red_lamp = 10.0",
 			"refurbished_furniture:white_lamp = 10.0", "refurbished_furniture:yellow_lamp = 10.0");
 
 	@ConfigEntry.Category("blocks")
 	@Comment("Blocks that will cool you down when near.")
-	public String coolingBlocks = String.join(", ", "minecraft:ice = -0.5", "minecraft:packed_ice = -1.0",
-			"minecraft:blue_ice = -2.0",
+	public String coolingBlocks = String.join(", ", "minecraft:ice = -0.5", "minecraft:packed_ice = -1.0", "minecraft:blue_ice = -2.0",
 			"minecraft:snow_block = -0.5");
-
-	@ConfigEntry.Category("blocks")
-	@Comment("Temperature value applied when the player is submerged in water. (Default: -15.0)")
-	public double waterBlockTemperature = -15.0;
 
 	// Items
 
@@ -222,12 +215,9 @@ public class ModConfig implements ConfigData {
 
 	@ConfigEntry.Category("items")
 	@Comment("Material temperature values used to auto-assign values to wearable items.")
-	public String materialAutoTemperature = String.join(", ", "leather = 3.0", "iron = 2.0", "gold = 2.0",
-			"diamond = 1.0",
-			"netherite = 3.0", "chainmail = 1.0", "aeternium = 2.0", "brass = 1.0", "bronze = 1.0",
-			"cincinnasite = 2.0", "copper = 1.0",
-			"crystalite = 3.0", "flaming_ruby = 5.0", "nether_ruby = 4.0", "resonarium = 3.0", "rose_quartz = 2.0",
-			"steel = 2.0",
+	public String materialAutoTemperature = String.join(", ", "leather = 3.0", "iron = 2.0", "gold = 2.0", "diamond = 1.0",
+			"netherite = 3.0", "chainmail = 1.0", "aeternium = 2.0", "brass = 1.0", "bronze = 1.0", "cincinnasite = 2.0", "copper = 1.0",
+			"crystalite = 3.0", "flaming_ruby = 5.0", "nether_ruby = 4.0", "resonarium = 3.0", "rose_quartz = 2.0", "steel = 2.0",
 			"sturdy = 3.0", "terminite = 3.0", "thallasium = 2.0", "warden = 3.0", "turtle = 1.0");
 
 	@ConfigEntry.Category("items")
