@@ -10,26 +10,15 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.saint.acclimatize.networking.TemperaturePackets;
 import net.saint.acclimatize.player.PlayerState;
 import net.saint.acclimatize.server.ServerState;
-import net.saint.acclimatize.util.PlayerEffectsUtil;
-import net.saint.acclimatize.util.PlayerTemperatureUtil;
 import net.saint.acclimatize.util.ServerStateUtil;
 
 public class PlayerTemperatureTickC2SPacket {
 
-	public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler,
-			PacketByteBuf buf,
+	public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf,
 			PacketSender responseSender) {
 
 		ServerState serverState = ServerStateUtil.getServerState(server);
 		PlayerState playerState = ServerStateUtil.getPlayerState(player);
-
-		if (!player.isCreative() && !player.isSpectator()) {
-			// Temperature
-			PlayerTemperatureUtil.tickPlayerTemperature(player, serverState, playerState);
-
-			// Damage
-			PlayerEffectsUtil.handlePlayerEffects(player, playerState);
-		}
 
 		// Finalization
 

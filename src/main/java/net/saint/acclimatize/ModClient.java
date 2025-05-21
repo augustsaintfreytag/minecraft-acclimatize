@@ -25,8 +25,6 @@ public class ModClient implements ClientModInitializer {
 
 	private static TemperaturePacketTuple cachedTemperatureValues = new TemperaturePacketTuple();
 
-	private static long temperatureUpdateTick = 0;
-
 	private static long lastWindUpdateTick = 0;
 
 	private static double lastWindIntensity = 0;
@@ -122,8 +120,7 @@ public class ModClient implements ClientModInitializer {
 
 	private static void setUpKeybindings() {
 		enableHUDKeyBinding = KeyBindingHelper
-				.registerKeyBinding(new KeyBinding("Toggle Temperature GUI", InputUtil.Type.KEYSYM,
-						GLFW.GLFW_KEY_UNKNOWN, "Acclimatize"));
+				.registerKeyBinding(new KeyBinding("Toggle Temperature GUI", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "Acclimatize"));
 
 		if (enableHUDKeyBinding.wasPressed()) {
 			enableHUD = !enableHUD;
@@ -146,14 +143,10 @@ public class ModClient implements ClientModInitializer {
 
 			// Temperature Tick
 
-			if (++temperatureUpdateTick >= Mod.CONFIG.temperatureTickInterval) {
+			if (world.getTime() % Mod.CONFIG.temperatureTickInterval == 0) {
 				if (!isPaused) {
-					ClientPlayNetworking.send(
-							TemperaturePackets.PLAYER_C2S_PACKET_ID,
-							PacketByteBufs.create());
+					ClientPlayNetworking.send(TemperaturePackets.PLAYER_C2S_PACKET_ID, PacketByteBufs.create());
 				}
-
-				temperatureUpdateTick = 0;
 			}
 
 			// Wind Particles
