@@ -20,7 +20,6 @@ import net.saint.acclimatize.item.GoldSweetBerriesItem;
 import net.saint.acclimatize.item.IceWaterItem;
 import net.saint.acclimatize.item.ThermometerItem;
 import net.saint.acclimatize.item.WoolClothItem;
-import net.saint.acclimatize.networking.TemperaturePackets;
 import net.saint.acclimatize.profiler.Profiler;
 import net.saint.acclimatize.recipe.LeatherArmorWoolRecipe;
 import net.saint.acclimatize.util.BlockTemperatureUtil;
@@ -99,7 +98,6 @@ public class Mod implements ModInitializer {
 		registerStatusEffects();
 		registerItems();
 		registerBlocks();
-		registerNetworkPackets();
 		registerServerEvents();
 		registerCommands();
 
@@ -153,10 +151,6 @@ public class Mod implements ModInitializer {
 		Registry.register(Registries.ITEM, new Identifier(modId, "ice_box_empty_item"), ICE_BOX_EMPTY_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modId, "ice_box_freezing_item"), ICE_BOX_FREEZING_ITEM);
 		Registry.register(Registries.ITEM, new Identifier(modId, "ice_box_frozen_item"), ICE_BOX_FROZEN_ITEM);
-	}
-
-	private static void registerNetworkPackets() {
-		TemperaturePackets.registerC2SPackets();
 	}
 
 	private static void registerServerEvents() {

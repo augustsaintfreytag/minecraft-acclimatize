@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.saint.acclimatize.networking.StateNetworkingPackets;
 import net.saint.acclimatize.player.PlayerState;
 import net.saint.acclimatize.server.ServerState;
 import net.saint.acclimatize.util.PlayerEffectsUtil;
@@ -66,12 +67,12 @@ public final class ModServerEvents {
 		var serverState = ServerStateUtil.getServerState(server);
 
 		for (var player : server.getPlayerManager().getPlayerList()) {
-			if (!(player instanceof ServerPlayerEntity)) {
-				continue;
-			}
-
 			var playerState = ServerStateUtil.getPlayerState(player);
-			tickPlayerInSchedule(serverState, playerState, (ServerPlayerEntity) player);
+			tickPlayerInSchedule(serverState, playerState, player);
+
+			if (playerState.isDirty()) {
+				StateNetworkingPackets.sendStateToClient(server, player);
+			}
 		}
 	}
 

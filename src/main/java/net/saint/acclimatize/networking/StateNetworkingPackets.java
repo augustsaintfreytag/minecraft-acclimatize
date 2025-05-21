@@ -1,14 +1,19 @@
 package net.saint.acclimatize.networking;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.ModClient;
-import net.saint.acclimatize.networking.packet.PlayerTemperatureTickC2SPacket;
+import net.saint.acclimatize.player.PlayerState;
+import net.saint.acclimatize.server.ServerState;
+import net.saint.acclimatize.util.ServerStateUtil;
 
-public class TemperaturePackets {
+public class StateNetworkingPackets {
 
 	public static class TemperaturePacketTuple {
 		public double acclimatizationRate;
@@ -50,29 +55,40 @@ public class TemperaturePackets {
 		}
 	}
 
-	// Client to Server
-
-	public static final Identifier PLAYER_C2S_PACKET_ID = new Identifier(Mod.modId, "player_c2s_packet");
-
-	// Server to Client
+	// Packets
 
 	public static final Identifier PLAYER_S2C_PACKET_ID = new Identifier(Mod.modId, "player_s2c_packet");
 
-	public static void registerC2SPackets() {
-		ServerPlayNetworking.registerGlobalReceiver(PLAYER_C2S_PACKET_ID,
-				PlayerTemperatureTickC2SPacket::receive);
-	}
-
-	// Registration
+	// Reception
 
 	public static void registerS2CPackets() {
-		ClientPlayNetworking.registerGlobalReceiver(PLAYER_S2C_PACKET_ID,
-				(client, handler, buffer, responseSender) -> {
-					var receivedValues = TemperaturePacketTuple.valuesFromBuffer(buffer);
+		ClientPlayNetworking.registerGlobalReceiver(PLAYER_S2C_PACKET_ID, (client, handler, buffer, responseSender) -> {
+			var receivedValues = TemperaturePacketTuple.valuesFromBuffer(buffer);
 
-					client.execute(() -> {
-						ModClient.updateTemperatureValues(receivedValues);
-					});
-				});
+			client.execute(() -> {
+				ModClient.updateTemperatureValues(receivedValues);
+			});
+		});
+	}
+
+	// Transmission
+
+	public static void sendStateToClient(MinecraftServer server, ServerPlayerEntity player) {
+		ServerState serverState = ServerStateUtil.getServerState(server);
+		PlayerState playerState = ServerStateUtil.getPlayerState(player);
+
+		var tuple = new TemperaturePacketTuple();
+
+		tuple.acclimatizationRate = playerState.acclimatizationRate;
+		tuple.bodyTemperature = playerState.bodyTemperature;
+		tuple.ambientTemperature = playerState.ambientTemperature;
+		tuple.windTemperature = playerState.windTemperature;
+		tuple.windDirection = serverState.windDirection;
+		tuple.windIntensity = serverState.windIntensity;
+
+		var outgoingBuffer = PacketByteBufs.create();
+		tuple.encodeValuesToBuffer(outgoingBuffer);
+
+		ServerPlayNetworking.send(player, PLAYER_S2C_PACKET_ID, outgoingBuffer);
 	}
 }

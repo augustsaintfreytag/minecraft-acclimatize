@@ -6,15 +6,13 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.Text;
-import net.saint.acclimatize.networking.TemperaturePackets;
-import net.saint.acclimatize.networking.TemperaturePackets.TemperaturePacketTuple;
+import net.saint.acclimatize.networking.StateNetworkingPackets;
+import net.saint.acclimatize.networking.StateNetworkingPackets.TemperaturePacketTuple;
 import net.saint.acclimatize.util.ItemTemperatureUtil;
 import net.saint.acclimatize.util.MathUtil;
 import net.saint.acclimatize.util.WindParticleUtil;
@@ -128,7 +126,7 @@ public class ModClient implements ClientModInitializer {
 	}
 
 	private static void setUpNetworkingPacketRegistration() {
-		TemperaturePackets.registerS2CPackets();
+		StateNetworkingPackets.registerS2CPackets();
 	}
 
 	private static void setUpClientTickEventHandler() {
@@ -140,16 +138,6 @@ public class ModClient implements ClientModInitializer {
 			}
 
 			var isPaused = client.isInSingleplayer() && client.isPaused();
-
-			// Temperature Tick
-
-			if (world.getTime() % Mod.CONFIG.temperatureTickInterval == 0) {
-				if (!isPaused) {
-					ClientPlayNetworking.send(TemperaturePackets.PLAYER_C2S_PACKET_ID, PacketByteBufs.create());
-				}
-			}
-
-			// Wind Particles
 
 			if (Mod.CONFIG.enableWindParticles && !isPaused) {
 				WindParticleUtil.renderWindParticles(client);
