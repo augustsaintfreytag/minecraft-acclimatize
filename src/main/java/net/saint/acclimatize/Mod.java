@@ -38,26 +38,21 @@ public class Mod implements ModInitializer {
 
 	// Items
 
-	public static final GoldSweetBerriesItem GOLDEN_SWEET_BERRIES_ITEM = new GoldSweetBerriesItem(
-			new FabricItemSettings().maxCount(64));
+	public static final GoldSweetBerriesItem GOLDEN_SWEET_BERRIES_ITEM = new GoldSweetBerriesItem(new FabricItemSettings().maxCount(64));
 	public static final IceWaterItem ICE_WATER_ITEM = new IceWaterItem(new FabricItemSettings().maxCount(16));
 	public static final ThermometerItem THERMOMETER_ITEM = new ThermometerItem(new FabricItemSettings().maxCount(1));
 	public static final WoolClothItem WOOL_CLOTH_ITEM = new WoolClothItem(new FabricItemSettings().maxCount(64));
 
 	// Block Items
 
-	public static final BlockItem ICE_BOX_EMPTY_ITEM = new BlockItem(ModBlocks.ICE_BOX_EMPTY_BLOCK,
-			new FabricItemSettings());
-	public static final BlockItem ICE_BOX_FREEZING_ITEM = new BlockItem(ModBlocks.ICE_BOX_FREEZING_BLOCK,
-			new FabricItemSettings());
-	public static final BlockItem ICE_BOX_FROZEN_ITEM = new BlockItem(ModBlocks.ICE_BOX_FROZEN_BLOCK,
-			new FabricItemSettings());
+	public static final BlockItem ICE_BOX_EMPTY_ITEM = new BlockItem(ModBlocks.ICE_BOX_EMPTY_BLOCK, new FabricItemSettings());
+	public static final BlockItem ICE_BOX_FREEZING_ITEM = new BlockItem(ModBlocks.ICE_BOX_FREEZING_BLOCK, new FabricItemSettings());
+	public static final BlockItem ICE_BOX_FROZEN_ITEM = new BlockItem(ModBlocks.ICE_BOX_FROZEN_BLOCK, new FabricItemSettings());
 
 	// Special Recipes
 
-	public static final RecipeSerializer<LeatherArmorWoolRecipe> LEATHER_ARMOR_WOOL_RECIPE_SERIALIZER = RecipeSerializer
-			.register("crafting_special_leather_armor_wool",
-					new SpecialRecipeSerializer<LeatherArmorWoolRecipe>(LeatherArmorWoolRecipe::new));
+	public static final RecipeSerializer<LeatherArmorWoolRecipe> LEATHER_ARMOR_WOOL_RECIPE_SERIALIZER = RecipeSerializer.register(
+			"crafting_special_leather_armor_wool", new SpecialRecipeSerializer<LeatherArmorWoolRecipe>(LeatherArmorWoolRecipe::new));
 
 	// Modules
 
@@ -81,12 +76,11 @@ public class Mod implements ModInitializer {
 		AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
 		CONFIG = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
 
-		AutoConfig.getConfigHolder(ModConfig.class).registerSaveListener(
-				(config, data) -> {
-					ItemTemperatureUtil.reloadItems();
-					BlockTemperatureUtil.reloadBlocks();
-					return null;
-				});
+		AutoConfig.getConfigHolder(ModConfig.class).registerSaveListener((config, data) -> {
+			ItemTemperatureUtil.reloadItems();
+			BlockTemperatureUtil.reloadBlocks();
+			return null;
+		});
 
 		// Reload
 
@@ -104,12 +98,9 @@ public class Mod implements ModInitializer {
 	}
 
 	private static void registerStatusEffects() {
-		Registry.register(Registries.STATUS_EFFECT, new Identifier(modId, "cold_resistance"),
-				ModStatusEffects.COLD_RESISTANCE);
-		Registry.register(Registries.STATUS_EFFECT, new Identifier(modId, "hypothermia"),
-				ModStatusEffects.HYPOTHERMIA);
-		Registry.register(Registries.STATUS_EFFECT, new Identifier(modId, "hyperthermia"),
-				ModStatusEffects.HYPERTHERMIA);
+		Registry.register(Registries.STATUS_EFFECT, new Identifier(modId, "cold_resistance"), ModStatusEffects.COLD_RESISTANCE);
+		Registry.register(Registries.STATUS_EFFECT, new Identifier(modId, "hypothermia"), ModStatusEffects.HYPOTHERMIA);
+		Registry.register(Registries.STATUS_EFFECT, new Identifier(modId, "hyperthermia"), ModStatusEffects.HYPERTHERMIA);
 	}
 
 	private static void registerItems() {
@@ -141,8 +132,7 @@ public class Mod implements ModInitializer {
 		// Blocks
 
 		Registry.register(Registries.BLOCK, new Identifier(modId, "ice_box_empty"), ModBlocks.ICE_BOX_EMPTY_BLOCK);
-		Registry.register(Registries.BLOCK, new Identifier(modId, "ice_box_freezing"),
-				ModBlocks.ICE_BOX_FREEZING_BLOCK);
+		Registry.register(Registries.BLOCK, new Identifier(modId, "ice_box_freezing"), ModBlocks.ICE_BOX_FREEZING_BLOCK);
 		Registry.register(Registries.BLOCK, new Identifier(modId, "ice_box_frozen"), ModBlocks.ICE_BOX_FROZEN_BLOCK);
 		Registry.register(Registries.BLOCK, new Identifier(modId, "smoke"), ModBlocks.SMOKE_BLOCK);
 

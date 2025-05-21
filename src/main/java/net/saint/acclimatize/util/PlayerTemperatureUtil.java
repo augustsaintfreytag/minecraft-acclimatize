@@ -55,15 +55,16 @@ public class PlayerTemperatureUtil {
 				|| blockTemperatureDelta < -Mod.CONFIG.blockTemperatureAcclimatizationBoostThreshold) {
 			// Boost acclimatization when excessively heated or cooled by blocks.
 			acclimatizationRate *= Mod.CONFIG.blockAcclimatizationBoostFactor;
-		} else {
-			// Reduce acclimatization when wearing items.
-			acclimatizationRate += ItemTemperatureUtil.acclimatizationRateDeltaForItemTemperature(itemTemperatureDelta);
 		}
 
 		if (player.isWet()) {
 			// Increase acclimatization rate when wet.
 			acclimatizationRate *= Mod.CONFIG.wetAcclimatizationRateBoostFactor;
 		}
+
+		// Worn Items
+
+		acclimatizationRate += ItemTemperatureUtil.acclimatizationRateDeltaForItemTemperature(itemTemperatureDelta);
 
 		// Player Temperature
 
@@ -82,6 +83,8 @@ public class PlayerTemperatureUtil {
 		playerState.blockTemperature = blockTemperatureDelta;
 		playerState.itemTemperature = itemTemperatureDelta;
 		playerState.windTemperature = windTemperatureDelta;
+
+		playerState.markDirty();
 	}
 
 	// Utility

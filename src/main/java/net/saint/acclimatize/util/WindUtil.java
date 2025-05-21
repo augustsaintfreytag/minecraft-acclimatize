@@ -22,9 +22,8 @@ public final class WindUtil {
 	public static void tickWindInSchedule(ServerWorld world, ServerState serverState) {
 		var random = world.getRandom();
 		var serverTick = world.getTime();
-		var dayTimeLength = Mod.CONFIG.daylightTicks + Mod.CONFIG.nighttimeTicks;
 
-		if (dayTimeLength > serverState.nextWindIntensityTick) {
+		if (serverTick > serverState.nextWindIntensityTick) {
 			tickWindIntensity(world, serverState);
 
 			var intervalJitter = (int) (WIND_INTERVAL_JITTER_FACTOR * Mod.CONFIG.windIntensityUpdateInterval);
@@ -38,7 +37,7 @@ public final class WindUtil {
 
 		}
 
-		if (dayTimeLength > serverState.nextWindDirectionTick) {
+		if (serverTick > serverState.nextWindDirectionTick) {
 			tickWindDirection(world, serverState);
 
 			var intervalJitter = (int) (WIND_INTERVAL_JITTER_FACTOR * Mod.CONFIG.windDirectionUpdateInterval);
@@ -67,8 +66,7 @@ public final class WindUtil {
 
 	private static void tickWindIntensity(ServerWorld world, ServerState serverState) {
 		var random = world.getRandom();
-		var windIntensity = random.nextDouble() * (Mod.CONFIG.windIntensityMax + Mod.CONFIG.windIntensityMin)
-				- Mod.CONFIG.windIntensityMin;
+		var windIntensity = random.nextDouble() * (Mod.CONFIG.windIntensityMax + Mod.CONFIG.windIntensityMin) - Mod.CONFIG.windIntensityMin;
 
 		if (world.isThundering()) {
 			windIntensity *= 2.0;

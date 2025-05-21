@@ -11,7 +11,7 @@ import net.saint.acclimatize.player.PlayerState;
 
 public final class PlayerEffectsUtil {
 
-	private static final int EFFECT_DURATION = 420; // 20+1 seconds
+	private static final int EFFECT_DURATION = 320; // 15+1 seconds
 	private static final int EFFECT_TICK_INTERVAL = 10; // 10 seconds
 
 	private static int effectTick = -1;
