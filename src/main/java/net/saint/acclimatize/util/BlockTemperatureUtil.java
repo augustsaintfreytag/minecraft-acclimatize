@@ -117,8 +117,8 @@ public final class BlockTemperatureUtil {
 	private static HashMap<String, Double> allBlockTemperatureById() {
 		var allBlocks = new HashMap<String, Double>();
 
-		allBlocks.putAll(ConfigCodingUtil.decodeTemperatureMapFromRaw(Mod.CONFIG.heatingBlocks));
-		allBlocks.putAll(ConfigCodingUtil.decodeTemperatureMapFromRaw(Mod.CONFIG.coolingBlocks));
+		allBlocks.putAll(ConfigCodingUtil.decodeDoubleValueMapFromRaw(Mod.CONFIG.heatingBlocks));
+		allBlocks.putAll(ConfigCodingUtil.decodeDoubleValueMapFromRaw(Mod.CONFIG.coolingBlocks));
 
 		return allBlocks;
 	}

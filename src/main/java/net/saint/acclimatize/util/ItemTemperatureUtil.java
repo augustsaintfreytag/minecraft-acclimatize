@@ -150,11 +150,11 @@ public final class ItemTemperatureUtil {
 	// Config Access
 
 	private static HashMap<String, Double> allArmorItemsFromConfig() {
-		return ConfigCodingUtil.decodeTemperatureMapFromRaw(Mod.CONFIG.wornTemperatureItems);
+		return ConfigCodingUtil.decodeDoubleValueMapFromRaw(Mod.CONFIG.wornTemperatureItems);
 	}
 
 	private static HashMap<String, Double> allMaterialsFromConfig() {
-		return ConfigCodingUtil.decodeTemperatureMapFromRaw(Mod.CONFIG.materialAutoTemperature);
+		return ConfigCodingUtil.decodeDoubleValueMapFromRaw(Mod.CONFIG.materialAutoTemperature);
 	}
 
 }
