@@ -16,7 +16,7 @@ public final class WindTemperatureUtil {
 
 	// Configuration
 
-	private static final double WIND_RAY_TURBULENCE = Math.toRadians(25);
+	private static final double WIND_RAY_TURBULENCE = Math.toRadians(35);
 
 	// State
 
