@@ -276,7 +276,7 @@ public class ModConfig implements ConfigData {
 
 	@ConfigEntry.Category("wind")
 	@Comment("The factor for how much wind exposure affects ambient temperature. (Default: 1.25)")
-	public double windChillFactor = 1.25;
+	public double windChillFactor = -1.25;
 
 	@ConfigEntry.Category("wind")
 	@Comment("Number of rays used in wind calculation. Increase for more precise wind simulation. (Default: 6)")
