@@ -7,9 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 
 public class ColdResistanceStatusEffect extends StatusEffect {
 	public ColdResistanceStatusEffect() {
-		super(
-				StatusEffectCategory.NEUTRAL,
-				0x6bb0ff);
+		super(StatusEffectCategory.NEUTRAL, 0x6bb0ff);
 	}
 
 	@Override

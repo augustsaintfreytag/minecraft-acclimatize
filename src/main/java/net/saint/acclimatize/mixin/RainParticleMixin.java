@@ -14,8 +14,7 @@ import net.saint.acclimatize.mixinlogic.RainParticleMixinLogic;
 import pigcart.particlerain.particle.RainParticle;
 import pigcart.particlerain.particle.WeatherParticle;
 
-@Environment(EnvType.CLIENT)
-@Mixin(RainParticle.class)
+@Environment(EnvType.CLIENT) @Mixin(RainParticle.class)
 public abstract class RainParticleMixin extends WeatherParticle implements RainParticleMixinLogic {
 
 	// Init
@@ -27,8 +26,7 @@ public abstract class RainParticleMixin extends WeatherParticle implements RainP
 	// Injections
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void mixinInit(ClientWorld world, double x, double y, double z,
-			CallbackInfo callbackInfo) {
+	private void mixinInit(ClientWorld world, double x, double y, double z, CallbackInfo callbackInfo) {
 		var accessor = (ParticleAccessor) this;
 		var velocity = new Vec3d(accessor.getVelocityX(), accessor.getVelocityY(), accessor.getVelocityZ());
 		var values = windAffectedVelocityForParticle((RainParticle) (Object) this, velocity);

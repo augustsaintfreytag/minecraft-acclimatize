@@ -13,8 +13,7 @@ import net.minecraft.client.particle.SpriteBillboardParticle;
 import net.minecraft.client.world.ClientWorld;
 import randommcsomethin.fallingleaves.particle.FallingLeafParticle;
 
-@Environment(EnvType.CLIENT)
-@Mixin(FallingLeafParticle.class)
+@Environment(EnvType.CLIENT) @Mixin(FallingLeafParticle.class)
 public abstract class FallingLeafParticleMixin extends SpriteBillboardParticle {
 
 	// Properties

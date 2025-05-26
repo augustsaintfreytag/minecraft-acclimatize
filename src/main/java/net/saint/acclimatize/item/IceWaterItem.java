@@ -42,8 +42,8 @@ public class IceWaterItem extends Item {
 			playerEntity.getStackInHand(hand).setCount(playerEntity.getStackInHand(hand).getCount() - 1);
 			playerEntity.getInventory().insertStack(new ItemStack(Items.GLASS_BOTTLE));
 
-			playerEntity.addStatusEffect(new StatusEffectInstance(ModStatusEffects.COLD_RESISTANCE,
-					Mod.CONFIG.iceWaterEffectDuration, 0, false, true));
+			playerEntity.addStatusEffect(
+					new StatusEffectInstance(ModStatusEffects.COLD_RESISTANCE, Mod.CONFIG.iceWaterEffectDuration, 0, false, true));
 		}
 
 		return super.finishUsing(stack, world, user);

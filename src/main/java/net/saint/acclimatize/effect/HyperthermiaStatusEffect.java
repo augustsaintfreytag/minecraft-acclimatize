@@ -24,12 +24,10 @@ public class HyperthermiaStatusEffect extends StatusEffect {
 	public HyperthermiaStatusEffect() {
 		super(StatusEffectCategory.HARMFUL, color);
 
-		this.addAttributeModifier(EntityAttributes.GENERIC_MOVEMENT_SPEED, movementSpeedEffectId.toString(),
-				movementSpeedIntensity,
+		this.addAttributeModifier(EntityAttributes.GENERIC_MOVEMENT_SPEED, movementSpeedEffectId.toString(), movementSpeedIntensity,
 				Operation.MULTIPLY_TOTAL);
 
-		this.addAttributeModifier(EntityAttributes.GENERIC_ATTACK_DAMAGE, attackWeaknessEffectId.toString(),
-				attackWeakIntensity,
+		this.addAttributeModifier(EntityAttributes.GENERIC_ATTACK_DAMAGE, attackWeaknessEffectId.toString(), attackWeakIntensity,
 				Operation.ADDITION);
 	}
 
