@@ -1,4 +1,4 @@
-package net.saint.acclimatize.util;
+package net.saint.acclimatize.data.wind;
 
 import net.minecraft.server.world.ServerWorld;
 import net.saint.acclimatize.Mod;

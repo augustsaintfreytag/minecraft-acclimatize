@@ -1,9 +1,16 @@
-package net.saint.acclimatize.util;
+package net.saint.acclimatize.data.player;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.saint.acclimatize.Mod;
+import net.saint.acclimatize.data.biome.BiomeTemperatureUtil;
+import net.saint.acclimatize.data.block.BlockTemperatureUtil;
+import net.saint.acclimatize.data.item.ItemTemperatureUtil;
+import net.saint.acclimatize.data.space.SpaceUtil;
+import net.saint.acclimatize.data.statuseffect.StatusEffectsTemperatureUtil;
+import net.saint.acclimatize.data.wind.WindTemperatureUtil;
 import net.saint.acclimatize.player.PlayerState;
 import net.saint.acclimatize.server.ServerState;
+import net.saint.acclimatize.util.MathUtil;
 
 public class PlayerTemperatureUtil {
 

@@ -1,4 +1,4 @@
-package net.saint.acclimatize.util;
+package net.saint.acclimatize.data.space;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +12,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import net.saint.acclimatize.Mod;
+import net.saint.acclimatize.util.MathUtil;
 
 public final class SpaceUtil {
 
@@ -82,11 +83,8 @@ public final class SpaceUtil {
 		var direction = new Vec3d(0, 1, 0);
 		var target = origin.add(direction.multiply(rayLength));
 
-		var hitResult = world.raycast(new RaycastContext(
-				origin, target,
-				RaycastContext.ShapeType.COLLIDER,
-				RaycastContext.FluidHandling.NONE,
-				player));
+		var hitResult = world
+				.raycast(new RaycastContext(origin, target, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, player));
 
 		return !raycastResultHitVoid(world, hitResult);
 	}
@@ -128,17 +126,11 @@ public final class SpaceUtil {
 	private static boolean performSingleSpaceRaycast(World world, ServerPlayerEntity player, int offset) {
 		var origin = player.getPos();
 		var theta = 2 * Math.PI * offset / Mod.CONFIG.spaceNumberOfRays;
-		var direction = new Vec3d(
-				BASE_SIN_ANGLE * MathUtil.cos(theta),
-				BASE_COS_ANGLE,
-				BASE_SIN_ANGLE * MathUtil.sin(theta));
+		var direction = new Vec3d(BASE_SIN_ANGLE * MathUtil.cos(theta), BASE_COS_ANGLE, BASE_SIN_ANGLE * MathUtil.sin(theta));
 		var target = origin.add(direction.multiply(Mod.CONFIG.spaceRayLength));
 
-		var hitResult = world.raycast(new RaycastContext(
-				origin, target,
-				RaycastContext.ShapeType.COLLIDER,
-				RaycastContext.FluidHandling.NONE,
-				player));
+		var hitResult = world
+				.raycast(new RaycastContext(origin, target, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, player));
 
 		return raycastResultHitVoid(world, hitResult);
 	}
@@ -153,8 +145,7 @@ public final class SpaceUtil {
 		var hitBlockId = Registries.BLOCK.getId(hitBlock).toString();
 
 		// Check if hit block is leaves or other outdoors block.
-		if (hitBlockId.contains("leaves") || hitBlockId.contains("grass")
-				|| hitBlockId.contains("crop") || hitBlockId.contains("sugar")) {
+		if (hitBlockId.contains("leaves") || hitBlockId.contains("grass") || hitBlockId.contains("crop") || hitBlockId.contains("sugar")) {
 			// Hit a block that is outdoors, return true (presume hit sky)
 			return true;
 		}

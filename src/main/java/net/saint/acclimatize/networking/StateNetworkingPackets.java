@@ -11,7 +11,7 @@ import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.ModClient;
 import net.saint.acclimatize.player.PlayerState;
 import net.saint.acclimatize.server.ServerState;
-import net.saint.acclimatize.util.ServerStateUtil;
+import net.saint.acclimatize.server.ServerStateUtil;
 
 public class StateNetworkingPackets {
 

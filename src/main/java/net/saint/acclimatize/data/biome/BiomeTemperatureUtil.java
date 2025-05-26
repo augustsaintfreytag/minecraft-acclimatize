@@ -1,4 +1,4 @@
-package net.saint.acclimatize.util;
+package net.saint.acclimatize.data.biome;
 
 import java.util.HashMap;
 
@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.saint.acclimatize.Mod;
+import net.saint.acclimatize.util.MathUtil;
 
 public final class BiomeTemperatureUtil {
 

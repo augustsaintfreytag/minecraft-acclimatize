@@ -1,4 +1,4 @@
-package net.saint.acclimatize.util;
+package net.saint.acclimatize.hud;
 
 import java.awt.Point;
 import java.util.HashMap;
@@ -8,6 +8,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.ModClient;
+import net.saint.acclimatize.data.player.PlayerTemperatureUtil;
 
 public final class TemperatureHudUtil {
 
@@ -38,8 +39,7 @@ public final class TemperatureHudUtil {
 	private static final Identifier THERMOMETER_GAUGE_TEXTURE = textureIdentifierForGaugeStyle("thermometer_gauge.png");
 	private static final Identifier THERMOMETER_HAND_TEXTURE = textureIdentifierForGaugeStyle("thermometer_hand.png");
 
-	private static final Identifier THERMOMETER_SNOWFLAKE_TEXTURE = textureIdentifierForThermometer(
-			"snowflake_icon_8x8.png");
+	private static final Identifier THERMOMETER_SNOWFLAKE_TEXTURE = textureIdentifierForThermometer("snowflake_icon_8x8.png");
 	private static final Identifier THERMOMETER_FLAME_TEXTURE = textureIdentifierForThermometer("flame_icon_8x8.png");
 	private static final Identifier THERMOMETER_STILL_TEXTURE = textureIdentifierForThermometer("temperate_icon.png");
 
@@ -59,13 +59,11 @@ public final class TemperatureHudUtil {
 
 	private static final HashMap<TEMPERATURE_CHANGE_INDICATOR, Identifier> THERMOMETER_OUTLINE_TEXTURES = new HashMap<>() {
 		{
-			put(TEMPERATURE_CHANGE_INDICATOR.EXTREME_COOLING,
-					textureIdentifierForGlassStyle("outline_extreme_cooling.png"));
+			put(TEMPERATURE_CHANGE_INDICATOR.EXTREME_COOLING, textureIdentifierForGlassStyle("outline_extreme_cooling.png"));
 			put(TEMPERATURE_CHANGE_INDICATOR.REGULAR_COOLING, textureIdentifierForGlassStyle("outline_cooling.png"));
 			put(TEMPERATURE_CHANGE_INDICATOR.NEUTRAL, textureIdentifierForGlassStyle("outline_neutral.png"));
 			put(TEMPERATURE_CHANGE_INDICATOR.REGULAR_HEATING, textureIdentifierForGlassStyle("outline_heating.png"));
-			put(TEMPERATURE_CHANGE_INDICATOR.EXTREME_HEATING,
-					textureIdentifierForGlassStyle("outline_extreme_heating.png"));
+			put(TEMPERATURE_CHANGE_INDICATOR.EXTREME_HEATING, textureIdentifierForGlassStyle("outline_extreme_heating.png"));
 		}
 	};
 
@@ -92,8 +90,7 @@ public final class TemperatureHudUtil {
 		if (!client.player.isSpectator() && !client.player.isCreative()) {
 			var offset = applyGlassShakeForRender(bodyTemperature);
 			var glassTexture = selectGlassThermometerFillTexture(bodyTemperature);
-			var outlineTexture = selectGlassThermometerOutlineTexture(bodyTemperature, ambientTemperature,
-					acclimatizationRate);
+			var outlineTexture = selectGlassThermometerOutlineTexture(bodyTemperature, ambientTemperature, acclimatizationRate);
 
 			var positionX = x + offset.x;
 			var positionY = y + offset.y;
@@ -191,12 +188,10 @@ public final class TemperatureHudUtil {
 		// Temperature difference is positive if warming up.
 		var temperatureDifference = ambientTemperature - bodyTemperature;
 		var temperatureThresholdMargin = 2;
-		var acclimatizationRateThreshold = PlayerTemperatureUtil
-				.applicableAcclimatizationRate(Mod.CONFIG.acclimatizationRate) * 1.5;
+		var acclimatizationRateThreshold = PlayerTemperatureUtil.applicableAcclimatizationRate(Mod.CONFIG.acclimatizationRate) * 1.5;
 
 		// If body temperature is decreasing at a regular rate, render minor cooling.
-		if (acclimatizationRate <= acclimatizationRateThreshold
-				&& temperatureDifference < -temperatureThresholdMargin) {
+		if (acclimatizationRate <= acclimatizationRateThreshold && temperatureDifference < -temperatureThresholdMargin) {
 			return THERMOMETER_OUTLINE_TEXTURES.get(TEMPERATURE_CHANGE_INDICATOR.REGULAR_COOLING);
 		}
 
@@ -243,26 +238,22 @@ public final class TemperatureHudUtil {
 		var temperatureFraction = calculateTemperatureFraction(temperature, spacingFactor);
 
 		context.drawTexture(THERMOMETER_GAUGE_TEXTURE, centerX - ((44 + 149) - Math.round(2 * spacingFactor)),
-				centerY - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1), 0, 0,
-				Math.round(40 * spacingFactor),
+				centerY - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1), 0, 0, Math.round(40 * spacingFactor),
 				Math.round(9 * spacingFactor), Math.round(40 * spacingFactor), Math.round(9 * spacingFactor));
 
-		context.drawTexture(THERMOMETER_HAND_TEXTURE,
-				centerX - (int) (((44 + 149) - Math.round(2 * spacingFactor)) - temperatureFraction),
+		context.drawTexture(THERMOMETER_HAND_TEXTURE, centerX - (int) (((44 + 149) - Math.round(2 * spacingFactor)) - temperatureFraction),
 				centerY - (Math.round(8 * spacingFactor) + Math.round(3 * spacingFactor) + 1), 0, 0, Math.round(1),
-				Math.round(9 * spacingFactor),
-				Math.round(1), Math.round(9 * spacingFactor));
+				Math.round(9 * spacingFactor), Math.round(1), Math.round(9 * spacingFactor));
 
 		var frameY = centerY - (Math.round(13 * spacingFactor) + 1);
-		context.drawTexture(THERMOMETER_FRAME_TEXTURE, centerX - (44 + 149), frameY, 0, 0,
-				Math.round(44 * spacingFactor), Math.round(13 * spacingFactor),
-				Math.round(44 * spacingFactor), Math.round(13 * spacingFactor));
+		context.drawTexture(THERMOMETER_FRAME_TEXTURE, centerX - (44 + 149), frameY, 0, 0, Math.round(44 * spacingFactor),
+				Math.round(13 * spacingFactor), Math.round(44 * spacingFactor), Math.round(13 * spacingFactor));
 
 		var indicatorTexture = selectIndicatorTexture(temperatureDifference);
 		if (indicatorTexture != null) {
-			context.drawTexture(indicatorTexture, centerX - (17 + 149), centerY - (Math.round(22 * spacingFactor)), 0,
-					0, Math.round(8 * spacingFactor),
-					Math.round(8 * spacingFactor), Math.round(8 * spacingFactor), Math.round(8 * spacingFactor));
+			context.drawTexture(indicatorTexture, centerX - (17 + 149), centerY - (Math.round(22 * spacingFactor)), 0, 0,
+					Math.round(8 * spacingFactor), Math.round(8 * spacingFactor), Math.round(8 * spacingFactor),
+					Math.round(8 * spacingFactor));
 		}
 	}
 
@@ -312,12 +303,12 @@ public final class TemperatureHudUtil {
 
 	private static String textureGroupForThermometerStyle(THERMOMETER_STYLE style) {
 		switch (style) {
-			case GLASS:
-				return "glass_thermometer";
-			case GAUGE:
-				return "thermometer";
-			default:
-				throw new IllegalArgumentException("Invalid thermometer style: " + style);
+		case GLASS:
+			return "glass_thermometer";
+		case GAUGE:
+			return "thermometer";
+		default:
+			throw new IllegalArgumentException("Invalid thermometer style: " + style);
 		}
 	}
 }

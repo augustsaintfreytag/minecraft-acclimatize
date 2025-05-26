@@ -5,15 +5,15 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.saint.acclimatize.data.player.PlayerEffectsUtil;
+import net.saint.acclimatize.data.player.PlayerTemperatureUtil;
+import net.saint.acclimatize.data.space.SpaceUtil;
+import net.saint.acclimatize.data.wind.WindTemperatureUtil;
+import net.saint.acclimatize.data.wind.WindUtil;
 import net.saint.acclimatize.networking.StateNetworkingPackets;
 import net.saint.acclimatize.player.PlayerState;
 import net.saint.acclimatize.server.ServerState;
-import net.saint.acclimatize.util.PlayerEffectsUtil;
-import net.saint.acclimatize.util.PlayerTemperatureUtil;
-import net.saint.acclimatize.util.ServerStateUtil;
-import net.saint.acclimatize.util.SpaceUtil;
-import net.saint.acclimatize.util.WindTemperatureUtil;
-import net.saint.acclimatize.util.WindUtil;
+import net.saint.acclimatize.server.ServerStateUtil;
 
 public final class ModServerEvents {
 
