@@ -54,10 +54,6 @@ public class ModConfig implements ConfigData {
 	@Comment("When enabled, holding a thermometer will show the exact measured ambient temperature. (Default: false)")
 	public boolean enableThermometerTemperatureDisplay = false;
 
-	@ConfigEntry.Category("hud")
-	@Comment("Enables debug logging and performance profiling to the console. (Default: false)")
-	public boolean enableLogging = false;
-
 	// Player
 
 	@ConfigEntry.Category("player")
@@ -338,5 +334,15 @@ public class ModConfig implements ConfigData {
 	@ConfigEntry.Category("particles")
 	@Comment("Toggles complex wind simulation to allow particles to be funelled through gaps in obstacles. (Performance impact: high) (Default: false)")
 	public boolean enableParticleFunneling = false;
+
+	// Developer
+
+	@ConfigEntry.Category("developer")
+	@Comment("Enables debug logging and performance profiling to the console. (Default: false)")
+	public boolean enableLogging = false;
+
+	@ConfigEntry.Category("developer")
+	@Comment("Enables temperature ticking and HUD display for players in creative mode. Useful for debugging. (Default: false)")
+	public boolean enableCreativeModeTemperature = false;
 
 }
