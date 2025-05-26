@@ -144,7 +144,7 @@ public final class BiomeTemperatureUtil {
 	// Altitude
 
 	private static double temperatureDeltaForAltitude(double altitude) {
-		var scalingFactor = -0.02; // Scaling factor: α
+		var scalingFactor = -0.015; // Scaling factor: α
 		var growthFactor = 1.5; // Growth factor: γ
 		var softeningFactor = 15.0; // Softening factor: σ
 
@@ -153,9 +153,9 @@ public final class BiomeTemperatureUtil {
 
 		var altitudeAnchor = (double) Mod.CONFIG.altitudeZeroingAnchor; // Altitude anchor: h_n
 
-		// Formula: ΔT_alt = α * (sgn(h - h_n) * |h - h_n|^γ - α * σ^γ) - 1
+		// Formula: ΔT_alt = α * (sgn(h - h_n) * |h - h_n|^γ - α * σ^γ) - ae
 		var delta = scalingFactor * Math.signum(altitude - altitudeAnchor) * Math.pow(Math.abs(altitude - altitudeAnchor), growthFactor)
-				- scalingFactor * Math.pow(softeningFactor, growthFactor) - 1;
+				- scalingFactor * Math.pow(softeningFactor, growthFactor) - 0.65;
 
 		return MathUtil.clamp(delta, lowerBound, upperBound);
 	}
