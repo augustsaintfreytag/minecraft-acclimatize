@@ -99,7 +99,7 @@ public class ModConfig implements ConfigData {
 	public int altitudeZeroingAnchor = 62;
 
 	@ConfigEntry.Category("world")
-	@Comment("The final applied coefficient for altitude-based temperature deltas. At 1.0, y64 → y0 would be 8 units warmer, y64 → y128 would be 8 units colder. (Default: 1.0)")
+	@Comment("The final applied coefficient for altitude-based temperature deltas. At 1.0, y64 -> y0 would be 8 units warmer, y64 -> y128 would be 8 units colder. (Default: 1.0)")
 	public double altitudeTemperatureFactor = 1.0;
 
 	@ConfigEntry.Category("world")
