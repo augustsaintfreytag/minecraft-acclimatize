@@ -13,9 +13,4 @@ public final class PlayerStateNBTKeys {
 	public static final String itemTemperature = "itemTemperature";
 	public static final String windTemperature = "windTemperature";
 
-	// Damage
-
-	public static final String damageTick = "damageTick";
-	public static final String damageTickDuration = "damageTickDuration";
-
 }

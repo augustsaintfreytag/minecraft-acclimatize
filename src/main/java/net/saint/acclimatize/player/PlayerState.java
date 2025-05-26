@@ -18,9 +18,6 @@ public class PlayerState extends PersistentState {
 	public double itemTemperature = 0;
 	public double windTemperature = 0;
 
-	public int damageTick = 0;
-	public int damageTickDuration = 10;
-
 	// NBT
 
 	@Override
@@ -33,9 +30,6 @@ public class PlayerState extends PersistentState {
 		nbt.putDouble(PlayerStateNBTKeys.blockTemperature, blockTemperature);
 		nbt.putDouble(PlayerStateNBTKeys.itemTemperature, itemTemperature);
 		nbt.putDouble(PlayerStateNBTKeys.windTemperature, windTemperature);
-
-		nbt.putInt(PlayerStateNBTKeys.damageTick, damageTick);
-		nbt.putInt(PlayerStateNBTKeys.damageTickDuration, damageTickDuration);
 
 		return nbt;
 	}
@@ -51,9 +45,6 @@ public class PlayerState extends PersistentState {
 		playerState.blockTemperature = nbt.getDouble(PlayerStateNBTKeys.blockTemperature);
 		playerState.itemTemperature = nbt.getDouble(PlayerStateNBTKeys.itemTemperature);
 		playerState.windTemperature = nbt.getDouble(PlayerStateNBTKeys.windTemperature);
-
-		playerState.damageTick = nbt.getInt(PlayerStateNBTKeys.damageTick);
-		playerState.damageTickDuration = nbt.getInt(PlayerStateNBTKeys.damageTickDuration);
 
 		return playerState;
 	}

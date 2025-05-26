@@ -2,6 +2,7 @@ package net.saint.acclimatize.data.player;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
@@ -11,8 +12,8 @@ import net.saint.acclimatize.player.PlayerState;
 
 public final class PlayerEffectsUtil {
 
-	private static final int EFFECT_DURATION = 320; // 15+1 seconds
-	private static final int EFFECT_TICK_INTERVAL = 10; // 10 seconds
+	private static final int EFFECT_DURATION = 420; // 20+1 seconds
+	private static final int EFFECT_TICK_INTERVAL = 10; // ticks per temperature tick
 
 	private static int effectTick = -1;
 
@@ -41,6 +42,10 @@ public final class PlayerEffectsUtil {
 	public static void tickPlayerEffectsInSchedule(ServerPlayerEntity player, PlayerState playerState) {
 		var world = player.getWorld();
 
+		if (player.isSpectator() || player.isCreative()) {
+			return;
+		}
+
 		if (world.getTime() % Mod.CONFIG.temperatureTickInterval != 0) {
 			return;
 		}
@@ -62,35 +67,53 @@ public final class PlayerEffectsUtil {
 			return;
 		}
 
+		effectTick = 0;
+
+		if (player.getHealth() <= 0.0) {
+			playerState.bodyTemperature = 50;
+			return;
+		}
+
 		if (temperatureDamageTuple.kind == TemperatureDamageKind.COLD) {
 			applyHypothermiaStatusEffects(player, temperatureDamageTuple.intensity);
 		} else if (temperatureDamageTuple.kind == TemperatureDamageKind.HEAT) {
 			applyHyperthermiaStatusEffects(player, temperatureDamageTuple.intensity);
 		}
-
-		if (player.getHealth() <= 0.0) {
-			playerState.bodyTemperature = 50;
-			playerState.damageTick = 0;
-		}
-
-		effectTick = 0;
 	}
 
 	private static void applyHypothermiaStatusEffects(ServerPlayerEntity player, TemperatureIntensityKind intensity) {
+		var playerHasHypothermia = player.hasStatusEffect(ModStatusEffects.HYPOTHERMIA);
+
 		if (intensity == TemperatureIntensityKind.MINOR) {
 			applyHypothermiaStatusEffect(player, 0);
+
+			if (playerHasHypothermia) {
+				applyHungerStatusEffect(player, 0);
+			}
 		} else {
 			applyHypothermiaStatusEffect(player, 1);
+
+			if (playerHasHypothermia) {
+				applyHungerStatusEffect(player, 1);
+			}
 		}
 	}
 
 	private static void applyHyperthermiaStatusEffects(ServerPlayerEntity player, TemperatureIntensityKind intensity) {
+		var playerHasHyperthermia = player.hasStatusEffect(ModStatusEffects.HYPERTHERMIA);
+
 		if (intensity == TemperatureIntensityKind.MINOR) {
 			applyHyperthermiaStatusEffect(player, 0);
-			applyThirstStatusEffect(player, 0);
+
+			if (playerHasHyperthermia) {
+				applyThirstStatusEffect(player, 0);
+			}
 		} else {
 			applyHyperthermiaStatusEffect(player, 1);
-			applyThirstStatusEffect(player, 1);
+
+			if (playerHasHyperthermia) {
+				applyThirstStatusEffect(player, 1);
+			}
 		}
 	}
 
@@ -102,6 +125,11 @@ public final class PlayerEffectsUtil {
 	private static void applyHyperthermiaStatusEffect(ServerPlayerEntity player, int amplifier) {
 		var hyperthermiaStatusEffect = new StatusEffectInstance(ModStatusEffects.HYPERTHERMIA, EFFECT_DURATION, amplifier);
 		player.addStatusEffect(hyperthermiaStatusEffect);
+	}
+
+	private static void applyHungerStatusEffect(ServerPlayerEntity player, int amplifier) {
+		var hungerStatusEffect = new StatusEffectInstance(StatusEffects.HUNGER, EFFECT_DURATION, amplifier);
+		player.addStatusEffect(hungerStatusEffect);
 	}
 
 	private static void applyThirstStatusEffect(ServerPlayerEntity player, int amplifier) {

@@ -54,10 +54,6 @@ public class ModConfig implements ConfigData {
 	@Comment("When enabled, holding a thermometer will show the exact measured ambient temperature. (Default: false)")
 	public boolean enableThermometerTemperatureDisplay = false;
 
-	@ConfigEntry.Category("hud")
-	@Comment("Enables debug logging and performance profiling to the console. (Default: false)")
-	public boolean enableLogging = false;
-
 	// Player
 
 	@ConfigEntry.Category("player")
@@ -103,11 +99,15 @@ public class ModConfig implements ConfigData {
 	public int altitudeZeroingAnchor = 62;
 
 	@ConfigEntry.Category("world")
-	@Comment("The temperature delta applied when the player is exposed to rainfall. (Default: -4.0)")
+	@Comment("The final applied coefficient for altitude-based temperature deltas. At 1.0, y64 -> y0 would be 5 units warmer, y64 -> y128 would be 5 units colder. (Default: 1.0)")
+	public double altitudeTemperatureFactor = 1.0;
+
+	@ConfigEntry.Category("world")
+	@Comment("The temperature delta applied to biome ambient temperature when it is raining. (Default: -4.0)")
 	public double rainTemperatureDelta = -4.0;
 
 	@ConfigEntry.Category("world")
-	@Comment("The temperature delta applied when the player is exposed to snowfall. (Default: -6.0)")
+	@Comment("The temperature delta applied to biome ambient temperature when it is snowing. (Default: -6.0)")
 	public double snowTemperatureDelta = -6.0;
 
 	@ConfigEntry.Category("world")
@@ -191,8 +191,8 @@ public class ModConfig implements ConfigData {
 
 	@ConfigEntry.Category("blocks")
 	@Comment("Blocks that will cool you down when near.")
-	public String coolingBlocks = String.join(", ", "minecraft:ice = -0.5", "minecraft:packed_ice = -1.0", "minecraft:blue_ice = -2.0",
-			"minecraft:snow_block = -0.5");
+	public String coolingBlocks = String.join(", ", "minecraft:ice = -0.1", "minecraft:packed_ice = -0.5", "minecraft:blue_ice = -0.75",
+			"minecraft:snow_block = -0.01");
 
 	@ConfigEntry.Category("blocks")
 	@Comment("Blocks that wind can pass through.")
@@ -226,7 +226,7 @@ public class ModConfig implements ConfigData {
 
 	@ConfigEntry.Category("items")
 	@Comment("Material temperature values used to auto-assign values to wearable items.")
-	public String materialAutoTemperature = String.join(", ", "leather = 3.0", "iron = 2.0", "gold = 2.0", "diamond = 1.0",
+	public String materialAutoTemperature = String.join(", ", "leather = 3.0", "iron = 2.0", "gold = 1.5", "diamond = 2.5",
 			"netherite = 3.0", "chainmail = 1.0", "aeternium = 2.0", "brass = 1.0", "bronze = 1.0", "cincinnasite = 2.0", "copper = 1.0",
 			"crystalite = 3.0", "flaming_ruby = 5.0", "nether_ruby = 4.0", "resonarium = 3.0", "rose_quartz = 2.0", "steel = 2.0",
 			"sturdy = 3.0", "terminite = 3.0", "thallasium = 2.0", "warden = 3.0", "turtle = 1.0");
@@ -334,5 +334,15 @@ public class ModConfig implements ConfigData {
 	@ConfigEntry.Category("particles")
 	@Comment("Toggles complex wind simulation to allow particles to be funelled through gaps in obstacles. (Performance impact: high) (Default: false)")
 	public boolean enableParticleFunneling = false;
+
+	// Developer
+
+	@ConfigEntry.Category("developer")
+	@Comment("Enables debug logging and performance profiling to the console. (Default: false)")
+	public boolean enableLogging = false;
+
+	@ConfigEntry.Category("developer")
+	@Comment("Enables temperature ticking and HUD display for players in creative mode. Useful for debugging. (Default: false)")
+	public boolean enableCreativeModeTemperature = false;
 
 }
