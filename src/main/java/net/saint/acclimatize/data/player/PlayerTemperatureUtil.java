@@ -6,6 +6,7 @@ import net.saint.acclimatize.data.biome.BiomeTemperatureUtil;
 import net.saint.acclimatize.data.block.BlockTemperatureUtil;
 import net.saint.acclimatize.data.item.ItemTemperatureUtil;
 import net.saint.acclimatize.data.space.SpaceUtil;
+import net.saint.acclimatize.data.space.SunShadeTemperatureUtil;
 import net.saint.acclimatize.data.statuseffect.StatusEffectsTemperatureUtil;
 import net.saint.acclimatize.data.wind.WindTemperatureUtil;
 import net.saint.acclimatize.player.PlayerState;
@@ -34,10 +35,10 @@ public class PlayerTemperatureUtil {
 		var biomeTemperature = BiomeTemperatureUtil.biomeTemperatureForPlayer(player, isInInterior);
 		var effectiveTemperature = biomeTemperature;
 
-		// Item Temperature (Wearables)
+		// Shade Temperature
 
-		var itemTemperatureDelta = ItemTemperatureUtil.temperatureDeltaForAllArmorItems(player);
-		effectiveTemperature += itemTemperatureDelta;
+		var sunShadeTemperature = SunShadeTemperatureUtil.sunShadeTemperatureDelta(player, isInInterior);
+		effectiveTemperature += sunShadeTemperature;
 
 		// Block Temperature (Heating & Cooling)
 
@@ -48,6 +49,11 @@ public class PlayerTemperatureUtil {
 
 		var windTemperatureDelta = WindTemperatureUtil.windTemperatureForEnvironment(serverState, player, isInInterior);
 		effectiveTemperature += windTemperatureDelta;
+
+		// Item Temperature (Wearables)
+
+		var itemTemperatureDelta = ItemTemperatureUtil.temperatureDeltaForAllArmorItems(player);
+		effectiveTemperature += itemTemperatureDelta;
 
 		// Effects
 
@@ -87,9 +93,10 @@ public class PlayerTemperatureUtil {
 		playerState.bodyTemperature = bodyTemperature;
 		playerState.ambientTemperature = effectiveTemperature;
 		playerState.biomeTemperature = biomeTemperature;
+		playerState.sunShadeTemperature = sunShadeTemperature;
+		playerState.windTemperature = windTemperatureDelta;
 		playerState.blockTemperature = blockTemperatureDelta;
 		playerState.itemTemperature = itemTemperatureDelta;
-		playerState.windTemperature = windTemperatureDelta;
 
 		playerState.markDirty();
 	}
