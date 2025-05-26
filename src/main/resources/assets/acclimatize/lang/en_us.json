@@ -35,6 +35,7 @@
 	"text.autoconfig.acclimatize.option.temperatureTickInterval": "Temperature Tick Interval",
 	"text.autoconfig.acclimatize.option.biomeTemperatureZeroingAnchor": "Biome Temperature Zeroing Anchor",
 	"text.autoconfig.acclimatize.option.altitudeZeroingAnchor": "Altitude Zeroing Anchor",
+	"text.autoconfig.acclimatize.option.altitudeTemperatureFactor": "Altitude Temperature Factor",
 	"text.autoconfig.acclimatize.option.rainTemperatureDelta": "Rain Temperature Delta",
 	"text.autoconfig.acclimatize.option.snowTemperatureDelta": "Snow Temperature Delta",
 	"text.autoconfig.acclimatize.option.nightTemperatureDelta": "Night Temperature Delta",
