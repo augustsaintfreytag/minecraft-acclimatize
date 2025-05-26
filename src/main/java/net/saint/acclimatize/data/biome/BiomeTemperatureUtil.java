@@ -148,7 +148,7 @@ public final class BiomeTemperatureUtil {
 		var growthFactor = 1.5; // Growth factor: γ
 		var softeningFactor = 15.0; // Softening factor: σ
 
-		var lowerBound = -20.0; // Lower bound: L
+		var lowerBound = -15.0; // Lower bound: L
 		var upperBound = 15.0; // Upper bound: U
 
 		var altitudeAnchor = (double) Mod.CONFIG.altitudeZeroingAnchor; // Altitude anchor: h_n
