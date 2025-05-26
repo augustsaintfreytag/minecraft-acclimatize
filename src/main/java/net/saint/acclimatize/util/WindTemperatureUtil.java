@@ -73,7 +73,7 @@ public final class WindTemperatureUtil {
 			}
 		}
 
-		return 0.0;
+		return 1.0;
 	}
 
 	private static int getUnblockedWindRaysForPlayer(ServerState serverState, ServerPlayerEntity player) {
