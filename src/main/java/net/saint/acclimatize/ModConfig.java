@@ -107,8 +107,8 @@ public class ModConfig implements ConfigData {
 	public boolean enableSunShadeCheck = true;
 
 	@ConfigEntry.Category("world")
-	@Comment("The temperature delta applied when the player is in shade from the sun. (Default: -5.0)")
-	public double sunShadeTemperatureDelta = -5.0;
+	@Comment("The temperature delta applied when the player is in shade from the sun. (Default: -6.0)")
+	public double sunShadeTemperatureDelta = -6.0;
 
 	@ConfigEntry.Category("world")
 	@Comment("The temperature delta applied to biome ambient temperature when it is raining. (Default: -4.0)")
