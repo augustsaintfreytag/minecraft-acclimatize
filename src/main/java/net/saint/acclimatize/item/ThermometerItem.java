@@ -3,7 +3,6 @@ package net.saint.acclimatize.item;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -20,25 +19,21 @@ public class ThermometerItem extends Item {
 	}
 
 	@Override
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-		var itemStack = user.getStackInHand(hand);
+	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+		var itemStack = player.getStackInHand(hand);
 
 		if (world.isClient()) {
 			return TypedActionResult.success(itemStack);
 		}
 
-		if (!(user instanceof PlayerEntity)) {
-			return TypedActionResult.pass(itemStack);
-		}
-
-		var player = (ServerPlayerEntity) user;
 		var server = world.getServer();
 		var playerState = ServerStateUtil.getPlayerState(player);
 		var serverState = ServerStateUtil.getServerState(server);
 
-		var dayNightProgression = BiomeTemperatureUtil.phaseValueForAsymmetricTime(world.getTimeOfDay()) / 2 * Math.PI;
+		var skyAngle = world.getSkyAngle(0.0f);
+		var dayNightProgression = BiomeTemperatureUtil.phaseValueFromSkyAngle(skyAngle) / (2 * Math.PI);
 
-		user.sendMessage(Text.of("♜ Body: " + formattedValue(playerState.bodyTemperature) + " (↕ Acclim "
+		player.sendMessage(Text.of("♜ Body: " + formattedValue(playerState.bodyTemperature) + " (↕ Acclim "
 				+ formattedValue(playerState.acclimatizationRate) + ", "
 				+ TemperatureEstimationUtil.estimateTicksToExtremeTemperatureForPlayer(playerState).description() + ") \n(♯ Ambient "
 				+ formattedValue(playerState.ambientTemperature) + " at " + formattedValue(dayNightProgression) + " day/night"
