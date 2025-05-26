@@ -12,6 +12,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.saint.acclimatize.Mod;
+import net.saint.acclimatize.config.MapConfigCodingUtil;
 
 public final class BlockTemperatureUtil {
 
@@ -52,10 +53,8 @@ public final class BlockTemperatureUtil {
 			}
 		}
 
-		aggregateTemperatureDelta = Math.max(Mod.CONFIG.blockTemperatureAbsoluteMinimum,
-				aggregateTemperatureDelta);
-		aggregateTemperatureDelta = Math.min(Mod.CONFIG.blockTemperatureAbsoluteMaximum,
-				aggregateTemperatureDelta);
+		aggregateTemperatureDelta = Math.max(Mod.CONFIG.blockTemperatureAbsoluteMinimum, aggregateTemperatureDelta);
+		aggregateTemperatureDelta = Math.min(Mod.CONFIG.blockTemperatureAbsoluteMaximum, aggregateTemperatureDelta);
 
 		aggregateTemperatureDelta += waterDeltaForPlayer(player);
 
@@ -74,8 +73,7 @@ public final class BlockTemperatureUtil {
 		return 0.0;
 	}
 
-	private static double temperatureDeltaForBlock(World world, BlockPos position, BlockState blockState,
-			String blockId) {
+	private static double temperatureDeltaForBlock(World world, BlockPos position, BlockState blockState, String blockId) {
 		var blockTemperature = rawBlockTemperatureForId(blockId);
 
 		if (blockTemperature == 0) {
@@ -84,8 +82,7 @@ public final class BlockTemperatureUtil {
 
 		// Block-specific exceptions
 
-		if ((blockState.isOf(Blocks.CAMPFIRE) || blockState.isOf(Blocks.SOUL_CAMPFIRE))
-				&& !blockState.get(CampfireBlock.LIT)) {
+		if ((blockState.isOf(Blocks.CAMPFIRE) || blockState.isOf(Blocks.SOUL_CAMPFIRE)) && !blockState.get(CampfireBlock.LIT)) {
 			return 0.0;
 		}
 
@@ -117,8 +114,8 @@ public final class BlockTemperatureUtil {
 	private static HashMap<String, Double> allBlockTemperatureById() {
 		var allBlocks = new HashMap<String, Double>();
 
-		allBlocks.putAll(ConfigCodingUtil.decodeDoubleValueMapFromRaw(Mod.CONFIG.heatingBlocks));
-		allBlocks.putAll(ConfigCodingUtil.decodeDoubleValueMapFromRaw(Mod.CONFIG.coolingBlocks));
+		allBlocks.putAll(MapConfigCodingUtil.decodeDoubleValueMapFromRaw(Mod.CONFIG.heatingBlocks));
+		allBlocks.putAll(MapConfigCodingUtil.decodeDoubleValueMapFromRaw(Mod.CONFIG.coolingBlocks));
 
 		return allBlocks;
 	}
