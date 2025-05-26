@@ -7,7 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.ModBlocks;
-import net.saint.acclimatize.util.BiomeTemperatureUtil;
+import net.saint.acclimatize.data.biome.BiomeTemperatureUtil;
 
 public class IceBoxFreezingBlock extends Block {
 

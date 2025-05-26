@@ -1,4 +1,4 @@
-package net.saint.acclimatize.util;
+package net.saint.acclimatize.data.item;
 
 import java.util.HashMap;
 

@@ -1,4 +1,4 @@
-package net.saint.acclimatize.util;
+package net.saint.acclimatize.data.wind;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.particle.ParticleTypes;

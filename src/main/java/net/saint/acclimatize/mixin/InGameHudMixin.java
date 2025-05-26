@@ -12,8 +12,8 @@ import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.entity.Entity;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.ModClient;
-import net.saint.acclimatize.util.TemperatureHudOverlayUtil;
-import net.saint.acclimatize.util.TemperatureHudUtil;
+import net.saint.acclimatize.hud.TemperatureHudOverlayUtil;
+import net.saint.acclimatize.hud.TemperatureHudUtil;
 
 @Environment(EnvType.CLIENT) @Mixin(InGameHud.class)
 public abstract class InGameHudMixin {

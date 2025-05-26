@@ -1,4 +1,4 @@
-package net.saint.acclimatize.util;
+package net.saint.acclimatize.data.player;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.effect.StatusEffectInstance;

@@ -1,4 +1,4 @@
-package net.saint.acclimatize.util;
+package net.saint.acclimatize.data.wind;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,6 +17,7 @@ import net.minecraft.world.biome.Biome;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.config.SetConfigCodingUtil;
 import net.saint.acclimatize.server.ServerState;
+import net.saint.acclimatize.util.MathUtil;
 
 public final class WindTemperatureUtil {
 

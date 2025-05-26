@@ -14,7 +14,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.ModBlocks;
-import net.saint.acclimatize.util.BiomeTemperatureUtil;
+import net.saint.acclimatize.data.biome.BiomeTemperatureUtil;
 
 public class IceBoxFrozenBlock extends Block {
 
@@ -23,8 +23,7 @@ public class IceBoxFrozenBlock extends Block {
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
-			BlockHitResult hit) {
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 
 		if (!world.isClient) {
 			world.setBlockState(pos, ModBlocks.ICE_BOX_EMPTY_BLOCK.getDefaultState());

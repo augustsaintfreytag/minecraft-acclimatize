@@ -11,11 +11,11 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.Text;
+import net.saint.acclimatize.data.item.ItemTemperatureUtil;
+import net.saint.acclimatize.data.wind.WindParticleUtil;
 import net.saint.acclimatize.networking.StateNetworkingPackets;
 import net.saint.acclimatize.networking.StateNetworkingPackets.TemperaturePacketTuple;
-import net.saint.acclimatize.util.ItemTemperatureUtil;
 import net.saint.acclimatize.util.MathUtil;
-import net.saint.acclimatize.util.WindParticleUtil;
 
 public class ModClient implements ClientModInitializer {
 

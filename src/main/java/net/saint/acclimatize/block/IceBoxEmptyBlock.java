@@ -19,8 +19,7 @@ public class IceBoxEmptyBlock extends Block {
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
-			BlockHitResult hit) {
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 
 		if (!world.isClient) {
 			ItemStack stack = player.getStackInHand(hand);

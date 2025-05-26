@@ -16,15 +16,15 @@ import net.minecraft.recipe.SpecialRecipeSerializer;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
+import net.saint.acclimatize.data.block.BlockTemperatureUtil;
+import net.saint.acclimatize.data.item.ItemTemperatureUtil;
+import net.saint.acclimatize.data.wind.WindTemperatureUtil;
 import net.saint.acclimatize.item.GoldSweetBerriesItem;
 import net.saint.acclimatize.item.IceWaterItem;
 import net.saint.acclimatize.item.ThermometerItem;
 import net.saint.acclimatize.item.WoolClothItem;
 import net.saint.acclimatize.profiler.Profiler;
 import net.saint.acclimatize.recipe.LeatherArmorWoolRecipe;
-import net.saint.acclimatize.util.BlockTemperatureUtil;
-import net.saint.acclimatize.util.ItemTemperatureUtil;
-import net.saint.acclimatize.util.WindTemperatureUtil;
 
 public class Mod implements ModInitializer {
 	// Metadata

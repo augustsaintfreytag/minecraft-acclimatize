@@ -1,4 +1,4 @@
-package net.saint.acclimatize.util;
+package net.saint.acclimatize.data.statuseffect;
 
 import java.util.HashSet;
 
@@ -35,8 +35,7 @@ public final class StatusEffectsUtil {
 	}
 
 	public static boolean entityHasAnyTemperatureStatusEffects(PlayerEntity player) {
-		if (player.hasStatusEffect(ModStatusEffects.HYPOTHERMIA)
-				|| player.hasStatusEffect(ModStatusEffects.HYPERTHERMIA)) {
+		if (player.hasStatusEffect(ModStatusEffects.HYPOTHERMIA) || player.hasStatusEffect(ModStatusEffects.HYPERTHERMIA)) {
 			return true;
 		}
 

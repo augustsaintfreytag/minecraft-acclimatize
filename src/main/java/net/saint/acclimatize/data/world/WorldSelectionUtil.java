@@ -1,4 +1,4 @@
-package net.saint.acclimatize.util;
+package net.saint.acclimatize.data.world;
 
 import java.util.ArrayList;
 
@@ -8,8 +8,7 @@ import net.saint.acclimatize.library.BlockStatePositionTuple;
 
 public class WorldSelectionUtil {
 
-	public static ArrayList<BlockStatePositionTuple> getBlockBox(World world, int x1, int y1, int z1, int x2, int y2,
-			int z2) {
+	public static ArrayList<BlockStatePositionTuple> getBlockBox(World world, int x1, int y1, int z1, int x2, int y2, int z2) {
 
 		ArrayList<BlockStatePositionTuple> arr = new ArrayList<>();
 

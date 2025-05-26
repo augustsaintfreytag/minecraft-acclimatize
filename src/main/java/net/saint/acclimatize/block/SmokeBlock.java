@@ -17,8 +17,8 @@ public class SmokeBlock extends Block {
 	@Override
 	public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
 
-		world.addParticle(ParticleTypes.HAPPY_VILLAGER, (double) pos.getX() + 0.5, (double) pos.getY(),
-				(double) pos.getZ() + 0.5, 0.0, 0.0, 0.0);
+		world.addParticle(ParticleTypes.HAPPY_VILLAGER, (double) pos.getX() + 0.5, (double) pos.getY(), (double) pos.getZ() + 0.5, 0.0, 0.0,
+				0.0);
 
 		super.randomDisplayTick(state, world, pos, random);
 	}

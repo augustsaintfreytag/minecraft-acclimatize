@@ -1,4 +1,4 @@
-package net.saint.acclimatize.util;
+package net.saint.acclimatize.hud;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -8,8 +8,7 @@ import net.saint.acclimatize.ModClient;
 
 public class TemperatureItemHudUtil {
 
-	private static final Identifier THERMOMETER_DISPLAY_TEXTURE = new Identifier(Mod.modId,
-			"textures/thermometer/thermometer_display.png");
+	private static final Identifier THERMOMETER_DISPLAY_TEXTURE = new Identifier(Mod.modId, "textures/thermometer/thermometer_display.png");
 
 	public static void renderTemperatureItemHud(DrawContext context) {
 		var client = MinecraftClient.getInstance();
@@ -41,15 +40,11 @@ public class TemperatureItemHudUtil {
 		float spacingFactor = 1.75f;
 		int tFrameY = ty - (Math.round(textHeight * spacingFactor) + 1);
 
-		context.drawTexture(THERMOMETER_DISPLAY_TEXTURE, (tx - (tx - textWidth)) + xOffset,
-				tFrameY + yOffset, 0, 0, Math.round(textWidth * spacingFactor),
-				Math.round(textHeight * spacingFactor), Math.round(textWidth *
-						spacingFactor),
+		context.drawTexture(THERMOMETER_DISPLAY_TEXTURE, (tx - (tx - textWidth)) + xOffset, tFrameY + yOffset, 0, 0,
+				Math.round(textWidth * spacingFactor), Math.round(textHeight * spacingFactor), Math.round(textWidth * spacingFactor),
 				Math.round(textHeight * spacingFactor));
 
-		context.drawText(client.textRenderer, text,
-				((tx - (tx - textWidth)) + 6) + xOffset,
-				(tFrameY + 7) + yOffset, 16777215, true);
+		context.drawText(client.textRenderer, text, ((tx - (tx - textWidth)) + 6) + xOffset, (tFrameY + 7) + yOffset, 16777215, true);
 	}
 
 }

@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.saint.acclimatize.util.StatusEffectsUtil;
+import net.saint.acclimatize.data.statuseffect.StatusEffectsUtil;
 
 @Mixin(LivingEntity.class)
 public abstract class PlayerStatusEffectsMixin extends Entity {
@@ -41,9 +41,8 @@ public abstract class PlayerStatusEffectsMixin extends Entity {
 	protected abstract void clearPotionSwirls();
 
 	/**
-	 * Right after vanilla resets potion‑swirl visibility, if the
-	 * entity has Hypothermia we zero out the colour so tickStatusEffects()
-	 * never spawns any particles.
+	 * Right after vanilla resets potion‑swirl visibility, if the entity has Hypothermia we zero out
+	 * the colour so tickStatusEffects() never spawns any particles.
 	 */
 	@Inject(method = "updatePotionVisibility", at = @At("TAIL"))
 	private void mixinUpdatePotionVisibility(CallbackInfo ci) {
