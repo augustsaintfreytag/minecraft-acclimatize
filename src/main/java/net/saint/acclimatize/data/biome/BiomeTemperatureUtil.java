@@ -66,8 +66,8 @@ public final class BiomeTemperatureUtil {
 
 		// Daylight/Nighttime
 
-		var dayTick = world.getTimeOfDay();
-		var dayNightTemperatureDelta = temperatureDeltaForDayNightTime(dayTick);
+		var skyFraction = world.getSkyAngle(0.0f);
+		var dayNightTemperatureDelta = temperatureDeltaForDayNightTime(skyFraction);
 
 		biomeTemperature += dayNightTemperatureDelta;
 
@@ -163,10 +163,10 @@ public final class BiomeTemperatureUtil {
 
 	// Day/Night
 
-	private static double temperatureDeltaForDayNightTime(long tick) {
-		var phaseValue = phaseValueForAsymmetricTime(tick); // Phase value: φ
+	private static double temperatureDeltaForDayNightTime(float skyAngle) {
+		var phaseValue = phaseValueFromSkyAngle(skyAngle); // Phase value: φ
 		var plateau = 1.8; // Plateau: p
-		var offset = 1.65 * Math.PI; // Offset: ε
+		var offset = 1.6 * Math.PI; // Offset: ε
 
 		// Formula: ΔT_{dn} = ((1 + cos(φ - ε)) / 2) ^ p
 		var dropFactor = Math.pow(((1 + MathUtil.cos(phaseValue - offset)) / 2), plateau);
@@ -176,6 +176,21 @@ public final class BiomeTemperatureUtil {
 	}
 
 	// Phase
+
+	public static double phaseValueFromSkyAngle(float skyFraction) {
+		// Minecraft sky angle mapping:
+		// 0.784 = sunrise, 0.000 = noon, 0.216 = sunset, 0.500 = midnight
+
+		if (skyFraction <= 0.216) {
+			return skyFraction <= 0.000 ? Math.PI * 0.5 + (skyFraction / 0.216) * Math.PI * 0.5 : Math.PI * 0.5;
+		} else if (skyFraction <= 0.500) {
+			return Math.PI + ((skyFraction - 0.216) / (0.500 - 0.216)) * Math.PI * 0.5;
+		} else if (skyFraction <= 0.784) {
+			return Math.PI * 1.5 + ((skyFraction - 0.500) / (0.784 - 0.500)) * Math.PI * 0.5;
+		} else {
+			return ((skyFraction - 0.784) / (1.000 - 0.784)) * Math.PI * 0.5;
+		}
+	}
 
 	public static double phaseValueForAsymmetricTime(long tick) {
 		// Value that wraps around day/night cycle.
@@ -201,14 +216,12 @@ public final class BiomeTemperatureUtil {
 
 		var phiAngle = 0.0;
 
-		if (normalizedTime < nightFraction) {
-			// Night: φ ∈ [0, π)
-			// Avoid division by zero if nightFraction is 0 (i.e., nightLength is 0)
-			phiAngle = (nightFraction == 0) ? 0 : (Math.PI * (normalizedTime / nightFraction));
+		if (normalizedTime < dayFraction) {
+			// Day: φ ∈ [0, π)
+			phiAngle = (dayFraction == 0) ? 0 : (Math.PI * (normalizedTime / dayFraction));
 		} else {
-			// Day: φ ∈ [π, 2π)
-			// Avoid division by zero if dayFraction is 0 (i.e., dayLength is 0)
-			phiAngle = (dayFraction == 0) ? Math.PI : (Math.PI + Math.PI * ((normalizedTime - nightFraction) / dayFraction));
+			// Night: φ ∈ [π, 2π)
+			phiAngle = (nightFraction == 0) ? Math.PI : (Math.PI + Math.PI * ((normalizedTime - dayFraction) / nightFraction));
 		}
 
 		return phiAngle;
