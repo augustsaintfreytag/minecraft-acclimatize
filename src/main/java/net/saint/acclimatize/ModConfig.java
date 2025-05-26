@@ -194,6 +194,17 @@ public class ModConfig implements ConfigData {
 	public String coolingBlocks = String.join(", ", "minecraft:ice = -0.5", "minecraft:packed_ice = -1.0", "minecraft:blue_ice = -2.0",
 			"minecraft:snow_block = -0.5");
 
+	@ConfigEntry.Category("blocks")
+	@Comment("Blocks that wind can pass through.")
+	public String windPermeableBlocks = String.join(", ", "minecraft:oak_leaves", "minecraft:spruce_leaves", "minecraft:birch_leaves",
+			"minecraft:jungle_leaves", "minecraft:acacia_leaves", "minecraft:dark_oak_leaves", "minecraft:mangrove_leaves",
+			"minecraft:cherry_leaves", "minecraft:azalea_leaves", "minecraft:flowering_azalea_leaves", "minecraft:vine",
+			"minecraft:waterlily", "minecraft:tall_grass", "minecraft:dead_bush", "minecraft:fern", "minecraft:dandelion",
+			"minecraft:poppy", "minecraft:blue_orchid", "minecraft:allium", "minecraft:azure_bluet", "minecraft:red_tulip",
+			"minecraft:orange_tulip", "minecraft:white_tulip", "minecraft:pink_tulip", "minecraft:oxeye_daisy", "minecraft:cornflower",
+			"minecraft:lily_of_the_valley", "minecraft:wither_rose", "minecraft:sunflower", "minecraft:lilac", "minecraft:rose_bush",
+			"minecraft:peony");
+
 	// Items
 
 	@ConfigEntry.Category("items")
