@@ -191,8 +191,8 @@ public class ModConfig implements ConfigData {
 
 	@ConfigEntry.Category("blocks")
 	@Comment("Blocks that will cool you down when near.")
-	public String coolingBlocks = String.join(", ", "minecraft:ice = -0.5", "minecraft:packed_ice = -1.0", "minecraft:blue_ice = -2.0",
-			"minecraft:snow_block = -0.5");
+	public String coolingBlocks = String.join(", ", "minecraft:ice = -0.1", "minecraft:packed_ice = -0.5", "minecraft:blue_ice = -0.75",
+			"minecraft:snow_block = -0.01");
 
 	@ConfigEntry.Category("blocks")
 	@Comment("Blocks that wind can pass through.")
@@ -226,7 +226,7 @@ public class ModConfig implements ConfigData {
 
 	@ConfigEntry.Category("items")
 	@Comment("Material temperature values used to auto-assign values to wearable items.")
-	public String materialAutoTemperature = String.join(", ", "leather = 3.0", "iron = 2.0", "gold = 2.0", "diamond = 1.0",
+	public String materialAutoTemperature = String.join(", ", "leather = 3.0", "iron = 2.0", "gold = 1.5", "diamond = 2.5",
 			"netherite = 3.0", "chainmail = 1.0", "aeternium = 2.0", "brass = 1.0", "bronze = 1.0", "cincinnasite = 2.0", "copper = 1.0",
 			"crystalite = 3.0", "flaming_ruby = 5.0", "nether_ruby = 4.0", "resonarium = 3.0", "rose_quartz = 2.0", "steel = 2.0",
 			"sturdy = 3.0", "terminite = 3.0", "thallasium = 2.0", "warden = 3.0", "turtle = 1.0");
