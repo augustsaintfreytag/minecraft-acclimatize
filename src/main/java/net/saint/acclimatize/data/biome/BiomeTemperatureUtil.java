@@ -157,7 +157,7 @@ public final class BiomeTemperatureUtil {
 		var delta = scalingFactor * Math.signum(altitude - altitudeAnchor) * Math.pow(Math.abs(altitude - altitudeAnchor), growthFactor)
 				- scalingFactor * Math.pow(softeningFactor, growthFactor) - 0.65;
 
-		return MathUtil.clamp(delta, lowerBound, upperBound);
+		return MathUtil.clamp(delta, lowerBound, upperBound) * Mod.CONFIG.altitudeTemperatureFactor;
 	}
 
 	// Day/Night
