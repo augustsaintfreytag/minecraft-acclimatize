@@ -6,6 +6,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import net.saint.acclimatize.Mod;
+import net.saint.acclimatize.data.biome.BiomeTemperatureUtil;
 
 public final class SunShadeTemperatureUtil {
 
@@ -15,7 +16,12 @@ public final class SunShadeTemperatureUtil {
 			return 0.0;
 		}
 
-		return Mod.CONFIG.sunShadeTemperatureDelta;
+		var world = player.getWorld();
+		var biomeBaseTemperature = BiomeTemperatureUtil.baseTemperatureForBiomeAtPosition(world, player.getBlockPos());
+		var biomeTemperatureFactor = (1 + biomeBaseTemperature / 100) * Mod.CONFIG.sunShadeBiomeTemperatureFactor;
+		var sunShadeTemperatureDelta = Mod.CONFIG.sunShadeTemperatureDelta * biomeTemperatureFactor;
+
+		return sunShadeTemperatureDelta;
 	}
 
 	public static boolean playerIsExposedToSun(ServerPlayerEntity player) {
