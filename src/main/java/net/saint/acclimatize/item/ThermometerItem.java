@@ -9,6 +9,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
+import net.saint.acclimatize.data.biome.BiomeTemperatureUtil;
 import net.saint.acclimatize.data.player.TemperatureEstimationUtil;
 import net.saint.acclimatize.server.ServerStateUtil;
 
@@ -35,13 +36,17 @@ public class ThermometerItem extends Item {
 		var playerState = ServerStateUtil.getPlayerState(player);
 		var serverState = ServerStateUtil.getServerState(server);
 
+		var dayNightProgression = BiomeTemperatureUtil.phaseValueForAsymmetricTime(world.getTimeOfDay()) / 2 * Math.PI;
+
 		user.sendMessage(Text.of("♜ Body: " + formattedValue(playerState.bodyTemperature) + " (↕ Acclim "
 				+ formattedValue(playerState.acclimatizationRate) + ", "
-				+ TemperatureEstimationUtil.estimateTicksToExtremeTemperatureForPlayer(playerState).description() + ") \n(☼ Ambient "
-				+ formattedValue(playerState.ambientTemperature) + ", ♣ Biome " + formattedValue(playerState.biomeTemperature) + ", ☰ Wind "
-				+ formattedValue(playerState.windTemperature) + " from " + Math.floor(Math.toDegrees(serverState.windDirection)) + "° at "
-				+ formattedValue(serverState.windIntensity) + ", ♢ Blocks " + formattedValue(playerState.blockTemperature) + ", ☍ Items "
-				+ formattedValue(playerState.itemTemperature) + ", ☈ Interior " + formattedValue(playerState.isInInterior) + ")"));
+				+ TemperatureEstimationUtil.estimateTicksToExtremeTemperatureForPlayer(playerState).description() + ") \n(♯ Ambient "
+				+ formattedValue(playerState.ambientTemperature) + " at " + formattedValue(dayNightProgression) + " day/night"
+				+ ", ♣ Biome " + formattedValue(playerState.biomeTemperature) + ", ☼ Sun/Shade "
+				+ formattedValue(playerState.sunShadeTemperature) + ", ☰ Wind " + formattedValue(playerState.windTemperature) + " from "
+				+ Math.floor(Math.toDegrees(serverState.windDirection)) + "° at " + formattedValue(serverState.windIntensity)
+				+ ", ♢ Blocks " + formattedValue(playerState.blockTemperature) + ", ☍ Items " + formattedValue(playerState.itemTemperature)
+				+ ", ☈ Interior " + formattedValue(playerState.isInInterior) + ")"));
 
 		return TypedActionResult.success(itemStack);
 	}

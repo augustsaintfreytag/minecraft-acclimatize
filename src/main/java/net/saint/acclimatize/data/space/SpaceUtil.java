@@ -36,11 +36,11 @@ public final class SpaceUtil {
 		var world = player.getWorld();
 
 		// Pre-check by raycasting once straight up from player position.
-		var lastPreCheckResult = playerLastSpacePreCheck.computeIfAbsent(playerId, k -> false).booleanValue();
-		var preCheckResult = performStandaloneRaycastForPositionInInterior(world, player);
-		playerLastSpacePreCheck.put(playerId, preCheckResult);
+		var lastPreCheckResultWasInInterior = playerLastSpacePreCheck.computeIfAbsent(playerId, k -> false).booleanValue();
+		var preCheckIsInInterior = performStandaloneRaycastForPositionInInterior(world, player);
+		playerLastSpacePreCheck.put(playerId, preCheckIsInInterior);
 
-		if (!preCheckResult) {
+		if (!preCheckIsInInterior) {
 			// Pre-check raycast hit did not hit blocks, assume exterior.
 			// Having a single block above your head does not make an interior
 			// but having no block above your head definitively makes an exterior.
@@ -52,10 +52,6 @@ public final class SpaceUtil {
 			}
 
 			return false;
-		}
-
-		if (lastPreCheckResult) {
-			cleanUpPlayerData(player);
 		}
 
 		if (!performAccumulativeRaycastForPositionInInterior(world, player)) {

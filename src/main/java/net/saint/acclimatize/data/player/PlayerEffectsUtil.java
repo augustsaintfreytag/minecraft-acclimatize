@@ -88,13 +88,13 @@ public final class PlayerEffectsUtil {
 			applyHypothermiaStatusEffect(player, 0);
 
 			if (playerHasHypothermia) {
-				applyHungerStatusEffect(player, 0);
+				applyHungerStatusEffect(player, 2);
 			}
 		} else {
 			applyHypothermiaStatusEffect(player, 1);
 
 			if (playerHasHypothermia) {
-				applyHungerStatusEffect(player, 1);
+				applyHungerStatusEffect(player, 4);
 			}
 		}
 	}

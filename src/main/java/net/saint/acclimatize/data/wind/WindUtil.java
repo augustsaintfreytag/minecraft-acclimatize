@@ -74,7 +74,7 @@ public final class WindUtil {
 			windIntensity *= 1.65;
 		}
 
-		serverState.windIntensity = windIntensity;
+		serverState.windIntensity = Math.max(0, windIntensity);
 		serverState.markDirty();
 	}
 }

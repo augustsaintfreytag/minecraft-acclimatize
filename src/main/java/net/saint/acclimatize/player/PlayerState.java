@@ -14,22 +14,26 @@ public class PlayerState extends PersistentState {
 	public double ambientTemperature = 0;
 
 	public double biomeTemperature = 0;
+	public double sunShadeTemperature = 0;
+	public double windTemperature = 0;
 	public double blockTemperature = 0;
 	public double itemTemperature = 0;
-	public double windTemperature = 0;
 
 	// NBT
 
 	@Override
 	public NbtCompound writeNbt(NbtCompound nbt) {
 		nbt.putBoolean(PlayerStateNBTKeys.isInInterior, isInInterior);
+
 		nbt.putDouble(PlayerStateNBTKeys.bodyTemperature, bodyTemperature);
 		nbt.putDouble(PlayerStateNBTKeys.acclimatizationRate, acclimatizationRate);
 		nbt.putDouble(PlayerStateNBTKeys.ambientTemperature, ambientTemperature);
+
 		nbt.putDouble(PlayerStateNBTKeys.biomeTemperature, biomeTemperature);
+		nbt.putDouble(PlayerStateNBTKeys.sunShadeTemperature, sunShadeTemperature);
+		nbt.putDouble(PlayerStateNBTKeys.windTemperature, windTemperature);
 		nbt.putDouble(PlayerStateNBTKeys.blockTemperature, blockTemperature);
 		nbt.putDouble(PlayerStateNBTKeys.itemTemperature, itemTemperature);
-		nbt.putDouble(PlayerStateNBTKeys.windTemperature, windTemperature);
 
 		return nbt;
 	}
@@ -38,13 +42,16 @@ public class PlayerState extends PersistentState {
 		PlayerState playerState = new PlayerState();
 
 		playerState.isInInterior = nbt.getBoolean(PlayerStateNBTKeys.isInInterior);
+
 		playerState.bodyTemperature = nbt.getDouble(PlayerStateNBTKeys.bodyTemperature);
 		playerState.acclimatizationRate = nbt.getDouble(PlayerStateNBTKeys.acclimatizationRate);
 		playerState.ambientTemperature = nbt.getDouble(PlayerStateNBTKeys.ambientTemperature);
+
 		playerState.biomeTemperature = nbt.getDouble(PlayerStateNBTKeys.biomeTemperature);
+		playerState.sunShadeTemperature = nbt.getDouble(PlayerStateNBTKeys.sunShadeTemperature);
+		playerState.windTemperature = nbt.getDouble(PlayerStateNBTKeys.windTemperature);
 		playerState.blockTemperature = nbt.getDouble(PlayerStateNBTKeys.blockTemperature);
 		playerState.itemTemperature = nbt.getDouble(PlayerStateNBTKeys.itemTemperature);
-		playerState.windTemperature = nbt.getDouble(PlayerStateNBTKeys.windTemperature);
 
 		return playerState;
 	}

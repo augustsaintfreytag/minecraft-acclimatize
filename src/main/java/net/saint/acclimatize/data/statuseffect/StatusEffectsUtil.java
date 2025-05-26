@@ -17,7 +17,6 @@ public final class StatusEffectsUtil {
 		blacklistedPotionEffects.add(Registries.STATUS_EFFECT.getId(ModStatusEffects.HYPOTHERMIA));
 		blacklistedPotionEffects.add(Registries.STATUS_EFFECT.getId(ModStatusEffects.HYPERTHERMIA));
 		blacklistedPotionEffects.add(Registries.STATUS_EFFECT.getId(ModStatusEffects.COLD_RESISTANCE));
-		blacklistedPotionEffects.add(new Identifier("dehydration", "thirst_effect"));
 	}
 
 	// Analysis
