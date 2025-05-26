@@ -38,6 +38,7 @@
 	"text.autoconfig.acclimatize.option.altitudeTemperatureFactor": "Altitude Temperature Factor",
 	"text.autoconfig.acclimatize.option.enableSunShadeCheck": "Enable Sun Shade Check",
 	"text.autoconfig.acclimatize.option.sunShadeTemperatureDelta": "Sun Shade Temperature Delta",
+	"text.autoconfig.acclimatize.option.sunShadeBiomeTemperatureFactor": "Sun Shade Biome Temperature Factor",
 	"text.autoconfig.acclimatize.option.rainTemperatureDelta": "Rain Temperature Delta",
 	"text.autoconfig.acclimatize.option.snowTemperatureDelta": "Snow Temperature Delta",
 	"text.autoconfig.acclimatize.option.nightTemperatureDelta": "Night Temperature Delta",

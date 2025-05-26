@@ -111,6 +111,10 @@ public class ModConfig implements ConfigData {
 	public double sunShadeTemperatureDelta = -6.0;
 
 	@ConfigEntry.Category("world")
+	@Comment("The factor of biome base temperature applied to the sun shade temperature delta. 0.0 means all biomes are equal. 0.0-1.0+ means hotter biomes provide stronger shade. (Default: 0.75)")
+	public double sunShadeBiomeTemperatureFactor = 0.75;
+
+	@ConfigEntry.Category("world")
 	@Comment("The temperature delta applied to biome ambient temperature when it is raining. (Default: -4.0)")
 	public double rainTemperatureDelta = -4.0;
 
