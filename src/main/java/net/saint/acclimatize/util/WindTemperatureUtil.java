@@ -38,17 +38,12 @@ public final class WindTemperatureUtil {
 
 		// Base Wind Temperature
 
-		var windTemperature = serverState.windIntensity * -1.0;
+		var windTemperature = serverState.windIntensity * Mod.CONFIG.windChillFactor;
 
 		// Precipitation Wind Chill
 
 		var precipitationWindFactor = precipitationTemperatureFactorForPlayer(serverState, player);
 		windTemperature *= precipitationWindFactor;
-
-		// Configurable Wind Chill
-
-		var flatWindChillFactor = Mod.CONFIG.windChillFactor;
-		windTemperature *= flatWindChillFactor;
 
 		// Wind Raycast Hit Factor
 
