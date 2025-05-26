@@ -1,15 +1,21 @@
 package net.saint.acclimatize.util;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
+import net.minecraft.block.Block;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.biome.Biome;
 import net.saint.acclimatize.Mod;
+import net.saint.acclimatize.config.SetConfigCodingUtil;
 import net.saint.acclimatize.server.ServerState;
 
 public final class WindTemperatureUtil {
@@ -24,6 +30,14 @@ public final class WindTemperatureUtil {
 
 	private static final Map<UUID, boolean[]> playerWindBuffers = new HashMap<>();
 	private static final Map<UUID, Integer> playerBufferIndices = new HashMap<>();
+
+	private static Set<String> windPermeableBlocks = new HashSet<String>();
+
+	// Init
+
+	public static void reloadBlocks() {
+		windPermeableBlocks = SetConfigCodingUtil.decodeStringValueSetFromRaw(Mod.CONFIG.windPermeableBlocks);
+	}
 
 	// Wind Effects
 
@@ -132,7 +146,19 @@ public final class WindTemperatureUtil {
 				new RaycastContext(startVector, endVector, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, player));
 
 		// Return true if ray is unblocked (missed all blocks)
-		return hitResult.getType() == HitResult.Type.MISS;
+		if (hitResult.getType() == HitResult.Type.MISS) {
+			return true;
+		}
+
+		var blockPosition = BlockPos.ofFloored(hitResult.getPos());
+		var block = world.getBlockState(blockPosition).getBlock();
+
+		return blockIsWindPermeable(block);
+	}
+
+	private static boolean blockIsWindPermeable(Block block) {
+		var blockId = Registries.BLOCK.getId(block).toString();
+		return windPermeableBlocks.contains(blockId);
 	}
 
 	// Buffer
