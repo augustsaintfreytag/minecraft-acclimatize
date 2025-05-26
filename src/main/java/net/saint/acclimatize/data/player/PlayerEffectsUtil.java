@@ -41,6 +41,10 @@ public final class PlayerEffectsUtil {
 	public static void tickPlayerEffectsInSchedule(ServerPlayerEntity player, PlayerState playerState) {
 		var world = player.getWorld();
 
+		if (player.isSpectator() || player.isCreative()) {
+			return;
+		}
+
 		if (world.getTime() % Mod.CONFIG.temperatureTickInterval != 0) {
 			return;
 		}

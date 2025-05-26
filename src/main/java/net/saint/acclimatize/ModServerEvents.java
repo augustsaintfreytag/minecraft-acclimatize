@@ -77,7 +77,11 @@ public final class ModServerEvents {
 	}
 
 	private static void tickPlayerInSchedule(ServerState serverState, PlayerState playerState, ServerPlayerEntity player) {
-		if (player.isCreative() || player.isSpectator()) {
+		if (player.isSpectator()) {
+			return;
+		}
+
+		if (player.isCreative() && !Mod.CONFIG.enableCreativeModeTemperature) {
 			return;
 		}
 
