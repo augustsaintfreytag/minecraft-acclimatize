@@ -31,6 +31,7 @@ public final class BiomeTemperatureUtil {
 			put("minecraft:mangrove_swamp", 0.8);
 
 			// Hot Biomes
+			put("minecraft:beach", 1.0);
 			put("minecraft:savanna", 1.2);
 			put("minecraft:savanna_plateau", 1.18);
 			put("minecraft:windswept_savanna", 1.15);
@@ -116,7 +117,7 @@ public final class BiomeTemperatureUtil {
 	}
 
 	private static double rawTemperatureOverrideForBiome(RegistryEntry<Biome> biomeEntry, double baseTemperature) {
-		var biomeId = biomeEntry.getKey().get().toString();
+		var biomeId = biomeEntry.getKey().get().getValue().toString();
 
 		if (!biomeRawTemperatureOverrides.containsKey(biomeId)) {
 			return baseTemperature;
