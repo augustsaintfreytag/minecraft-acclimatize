@@ -103,6 +103,14 @@ public class ModConfig implements ConfigData {
 	public double altitudeTemperatureFactor = 1.0;
 
 	@ConfigEntry.Category("world")
+	@Comment("Enables a raycast to check if the player is exposed to the sun or in shade. (Default: true)")
+	public boolean enableSunShadeCheck = true;
+
+	@ConfigEntry.Category("world")
+	@Comment("The temperature delta applied when the player is in shade from the sun. (Default: -5.0)")
+	public double sunShadeTemperatureDelta = -5.0;
+
+	@ConfigEntry.Category("world")
 	@Comment("The temperature delta applied to biome ambient temperature when it is raining. (Default: -4.0)")
 	public double rainTemperatureDelta = -4.0;
 
@@ -344,5 +352,9 @@ public class ModConfig implements ConfigData {
 	@ConfigEntry.Category("developer")
 	@Comment("Enables temperature ticking and HUD display for players in creative mode. Useful for debugging. (Default: false)")
 	public boolean enableCreativeModeTemperature = false;
+
+	@ConfigEntry.Category("developer")
+	@Comment("Enables debug visualization of sun vectors showing the raycast direction from player to sun. (Default: false)")
+	public boolean enableSunVectorDebug = false;
 
 }

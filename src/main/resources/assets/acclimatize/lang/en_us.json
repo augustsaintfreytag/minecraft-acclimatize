@@ -21,8 +21,6 @@
 	"text.autoconfig.acclimatize.category.wind": "Wind",
 	"text.autoconfig.acclimatize.category.particles": "Particles",
 	"text.autoconfig.acclimatize.category.developer": "Developer",
-	"text.autoconfig.acclimatize.option.enableLogging": "Enable Logging",
-	"text.autoconfig.acclimatize.option.enableCreativeModeTemperature": "Enable Temperature in Creative Mode",
 	"text.autoconfig.acclimatize.option.temperatureXOffset": "Temperature HUD X Offset",
 	"text.autoconfig.acclimatize.option.temperatureYOffset": "Temperature HUD Y Offset",
 	"text.autoconfig.acclimatize.option.thermometerXOffset": "Thermometer X Offset",
@@ -38,6 +36,8 @@
 	"text.autoconfig.acclimatize.option.biomeTemperatureZeroingAnchor": "Biome Temperature Zeroing Anchor",
 	"text.autoconfig.acclimatize.option.altitudeZeroingAnchor": "Altitude Zeroing Anchor",
 	"text.autoconfig.acclimatize.option.altitudeTemperatureFactor": "Altitude Temperature Factor",
+	"text.autoconfig.acclimatize.option.enableSunShadeCheck": "Enable Sun Shade Check",
+	"text.autoconfig.acclimatize.option.sunShadeTemperatureDelta": "Sun Shade Temperature Delta",
 	"text.autoconfig.acclimatize.option.rainTemperatureDelta": "Rain Temperature Delta",
 	"text.autoconfig.acclimatize.option.snowTemperatureDelta": "Snow Temperature Delta",
 	"text.autoconfig.acclimatize.option.nightTemperatureDelta": "Night Temperature Delta",
@@ -96,5 +96,8 @@
 	"text.autoconfig.acclimatize.option.enableParticleBlockChecks": "Enable Particle Block Checks",
 	"text.autoconfig.acclimatize.option.enableParticleFluidBlockChecks": "Enable Particle Fluid Block Checks",
 	"text.autoconfig.acclimatize.option.enableParticleComplexInteractions": "Enable Particle Complex Interactions",
-	"text.autoconfig.acclimatize.option.enableParticleFunneling": "Enable Particle Funneling"
+	"text.autoconfig.acclimatize.option.enableParticleFunneling": "Enable Particle Funneling",
+	"text.autoconfig.acclimatize.option.enableLogging": "Enable Logging",
+	"text.autoconfig.acclimatize.option.enableCreativeModeTemperature": "Enable Temperature in Creative Mode",
+	"text.autoconfig.acclimatize.option.enableSunVectorDebug": "Enable Sun Vector Debug"
 }
