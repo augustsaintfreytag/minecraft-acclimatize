@@ -9,6 +9,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.ModClient;
+import net.saint.acclimatize.ModDebugRenderer;
 import net.saint.acclimatize.player.PlayerState;
 import net.saint.acclimatize.server.ServerState;
 import net.saint.acclimatize.server.ServerStateUtil;
@@ -67,6 +68,12 @@ public class StateNetworkingPackets {
 
 			client.execute(() -> {
 				ModClient.updateTemperatureValues(receivedValues);
+
+				// Debugging
+
+				if (Mod.CONFIG.enableSunVectorDebug) {
+					ModDebugRenderer.renderSunVectorDebug(client);
+				}
 			});
 		});
 	}
