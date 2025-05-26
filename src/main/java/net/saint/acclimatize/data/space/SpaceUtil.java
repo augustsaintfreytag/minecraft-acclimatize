@@ -54,10 +54,6 @@ public final class SpaceUtil {
 			return false;
 		}
 
-		if (lastPreCheckResult) {
-			cleanUpPlayerData(player);
-		}
-
 		if (!performAccumulativeRaycastForPositionInInterior(world, player)) {
 			// Rays in ring buffer did not hit blocks, assume exterior.
 			profile.end();
