@@ -163,32 +163,33 @@ public final class BiomeTemperatureUtil {
 	// Day/Night
 
 	private static double temperatureDeltaForDayNightTime(long tick) {
-		// phaseValue now holds the calculated phiAngle from phaseValueForAsymmetricTime
-		var phaseValue = phaseValueForAsymmetricTime(tick);
-
+		var phaseValue = phaseValueForAsymmetricTime(tick); // Phase value: φ
 		var plateau = 1.8; // Plateau: p
 		var offset = 1.65 * Math.PI; // Offset: ε
 
 		// Formula: ΔT_{dn} = ((1 + cos(φ - ε)) / 2) ^ p
-		// Use the phaseValue (which is phiAngle) directly
 		var dropFactor = Math.pow(((1 + MathUtil.cos(phaseValue - offset)) / 2), plateau);
 		var temperatureDelta = Mod.CONFIG.nightTemperatureDelta * dropFactor;
 
 		return temperatureDelta;
 	}
 
-	private static double phaseValueForAsymmetricTime(long tick) {
-		// Wrap around day/night cycle
+	// Phase
+
+	public static double phaseValueForAsymmetricTime(long tick) {
+		// Value that wraps around day/night cycle.
 		var dayLength = Mod.CONFIG.daylightTicks;
 		var nightLength = Mod.CONFIG.nighttimeTicks;
 		var cycleLength = dayLength + nightLength;
 
-		// Get "tick within this cycle" in [0 … cycleLength)
+		// Get "tick within this cycle" in [0 … cycleLength].
 		var cycleTick = tick % cycleLength;
-		if (cycleTick < 0)
-			cycleTick += cycleLength; // just in case time < 0
 
-		// Normalize ticks into [0 … 1)
+		if (cycleTick < 0) {
+			cycleTick += cycleLength;
+		}
+
+		// Normalize ticks into [0 … 1]
 		// If cycleLength is 0, this would be division by zero. Assume cycleLength > 0.
 		var normalizedTime = (cycleLength == 0) ? 0 : (cycleTick / (double) cycleLength);
 
@@ -197,7 +198,8 @@ public final class BiomeTemperatureUtil {
 		var nightFraction = (cycleLength == 0) ? 0 : (nightLength / (double) cycleLength);
 		var dayFraction = (cycleLength == 0) ? 0 : (dayLength / (double) cycleLength);
 
-		double phiAngle;
+		var phiAngle = 0.0;
+
 		if (normalizedTime < nightFraction) {
 			// Night: φ ∈ [0, π)
 			// Avoid division by zero if nightFraction is 0 (i.e., nightLength is 0)
@@ -208,7 +210,6 @@ public final class BiomeTemperatureUtil {
 			phiAngle = (dayFraction == 0) ? Math.PI : (Math.PI + Math.PI * ((normalizedTime - nightFraction) / dayFraction));
 		}
 
-		// Return the calculated angle phiAngle
 		return phiAngle;
 	}
 
