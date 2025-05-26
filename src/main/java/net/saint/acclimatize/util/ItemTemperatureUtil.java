@@ -5,6 +5,7 @@ import java.util.HashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.saint.acclimatize.Mod;
+import net.saint.acclimatize.config.MapConfigCodingUtil;
 import net.saint.acclimatize.library.WearableKind;
 
 public final class ItemTemperatureUtil {
@@ -150,11 +151,11 @@ public final class ItemTemperatureUtil {
 	// Config Access
 
 	private static HashMap<String, Double> allArmorItemsFromConfig() {
-		return ConfigCodingUtil.decodeTemperatureMapFromRaw(Mod.CONFIG.wornTemperatureItems);
+		return MapConfigCodingUtil.decodeDoubleValueMapFromRaw(Mod.CONFIG.wornTemperatureItems);
 	}
 
 	private static HashMap<String, Double> allMaterialsFromConfig() {
-		return ConfigCodingUtil.decodeTemperatureMapFromRaw(Mod.CONFIG.materialAutoTemperature);
+		return MapConfigCodingUtil.decodeDoubleValueMapFromRaw(Mod.CONFIG.materialAutoTemperature);
 	}
 
 }

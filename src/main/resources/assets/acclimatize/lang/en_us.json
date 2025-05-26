@@ -76,9 +76,10 @@
 	"text.autoconfig.acclimatize.option.blockTemperatureDistanceFalloffFactor": "Block Temperature Distance Falloff Factor",
 	"text.autoconfig.acclimatize.option.blockAcclimatizationBoostFactor": "Block Acclimatization Boost Factor",
 	"text.autoconfig.acclimatize.option.blockTemperatureAcclimatizationBoostThreshold": "Block Temperature Acclimatization Boost Threshold",
+	"text.autoconfig.acclimatize.option.waterBlockTemperature": "Water Block Temperature",
     "text.autoconfig.acclimatize.option.heatingBlocks": "Heating Blocks",
     "text.autoconfig.acclimatize.option.coolingBlocks": "Cooling Blocks",
-	"text.autoconfig.acclimatize.option.waterBlockTemperature": "Water Block Temperature",
+	"text.autoconfig.acclimatize.option.windPermeableBlocks": "Wind Permeable Blocks",
     
     "text.autoconfig.acclimatize.option.enableWind": "Enable Wind",
     "text.autoconfig.acclimatize.option.enableWindParticleEffects": "Enable Wind Particle Effects",

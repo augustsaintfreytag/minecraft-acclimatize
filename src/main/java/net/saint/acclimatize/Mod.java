@@ -24,6 +24,7 @@ import net.saint.acclimatize.profiler.Profiler;
 import net.saint.acclimatize.recipe.LeatherArmorWoolRecipe;
 import net.saint.acclimatize.util.BlockTemperatureUtil;
 import net.saint.acclimatize.util.ItemTemperatureUtil;
+import net.saint.acclimatize.util.WindTemperatureUtil;
 
 public class Mod implements ModInitializer {
 	// Metadata
@@ -79,6 +80,8 @@ public class Mod implements ModInitializer {
 		AutoConfig.getConfigHolder(ModConfig.class).registerSaveListener((config, data) -> {
 			ItemTemperatureUtil.reloadItems();
 			BlockTemperatureUtil.reloadBlocks();
+			WindTemperatureUtil.reloadBlocks();
+
 			return null;
 		});
 
@@ -86,6 +89,7 @@ public class Mod implements ModInitializer {
 
 		ItemTemperatureUtil.reloadItems();
 		BlockTemperatureUtil.reloadBlocks();
+		WindTemperatureUtil.reloadBlocks();
 
 		// Registration
 
