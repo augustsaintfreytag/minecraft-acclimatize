@@ -178,17 +178,39 @@ public final class BiomeTemperatureUtil {
 	// Phase
 
 	public static double phaseValueFromSkyAngle(float skyFraction) {
-		// Minecraft sky angle mapping:
-		// 0.784 = sunrise, 0.000 = noon, 0.216 = sunset, 0.500 = midnight
+		// Minecraft sky angle mapping to phase values (in radians):
+		// 0.000 (noon) -> π/2, 0.216 (sunset) -> π, 0.500 (midnight)
+		// 0.500 (midnight) -> 3π/2, 0.784 (sunrise) -> 2π/0
 
-		if (skyFraction <= 0.216) {
-			return skyFraction <= 0.000 ? Math.PI * 0.5 + (skyFraction / 0.216) * Math.PI * 0.5 : Math.PI * 0.5;
-		} else if (skyFraction <= 0.500) {
-			return Math.PI + ((skyFraction - 0.216) / (0.500 - 0.216)) * Math.PI * 0.5;
-		} else if (skyFraction <= 0.784) {
-			return Math.PI * 1.5 + ((skyFraction - 0.500) / (0.784 - 0.500)) * Math.PI * 0.5;
+		// Define key time points
+		final var noon = 0.000;
+		final var sunset = 0.216;
+		final var midnight = 0.500;
+		final var sunrise = 0.784;
+
+		// Define corresponding phase values
+		final var noonPhase = Math.PI * 0.5; // π/2
+		final var sunsetPhase = Math.PI; // π
+		final var midnightPhase = Math.PI * 1.5; // 3π/2
+		final var sunrisePhase = Math.PI * 2.0; // 2π
+
+		// Map sky fraction to phase value using linear interpolation between key points
+		if (skyFraction <= sunset) {
+			// Noon to sunset: π/2 to π
+			var progress = skyFraction / sunset;
+			return noonPhase + progress * (sunsetPhase - noonPhase);
+		} else if (skyFraction <= midnight) {
+			// Sunset to midnight: π to 3π/2
+			var progress = (skyFraction - sunset) / (midnight - sunset);
+			return sunsetPhase + progress * (midnightPhase - sunsetPhase);
+		} else if (skyFraction <= sunrise) {
+			// Midnight to sunrise: 3π/2 to 2π
+			var progress = (skyFraction - midnight) / (sunrise - midnight);
+			return midnightPhase + progress * (sunrisePhase - midnightPhase);
 		} else {
-			return ((skyFraction - 0.784) / (1.000 - 0.784)) * Math.PI * 0.5;
+			// Sunrise to noon (next day): 2π/0 to π/2
+			var progress = (skyFraction - sunrise) / (1.0 - sunrise);
+			return progress * noonPhase; // Wraps from 2π back to 0, then to π/2
 		}
 	}
 
