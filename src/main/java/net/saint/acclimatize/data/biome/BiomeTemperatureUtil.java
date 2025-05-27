@@ -214,39 +214,4 @@ public final class BiomeTemperatureUtil {
 		}
 	}
 
-	public static double phaseValueForAsymmetricTime(long tick) {
-		// Value that wraps around day/night cycle.
-		var dayLength = Mod.CONFIG.daylightTicks;
-		var nightLength = Mod.CONFIG.nighttimeTicks;
-		var cycleLength = dayLength + nightLength;
-
-		// Get "tick within this cycle" in [0 … cycleLength].
-		var cycleTick = tick % cycleLength;
-
-		if (cycleTick < 0) {
-			cycleTick += cycleLength;
-		}
-
-		// Normalize ticks into [0 … 1]
-		// If cycleLength is 0, this would be division by zero. Assume cycleLength > 0.
-		var normalizedTime = (cycleLength == 0) ? 0 : (cycleTick / (double) cycleLength);
-
-		// Calculate phiAngle based on normalizedTime and day/night fractions
-		// Assuming cycleLength > 0, ensured by Mod.CONFIG validation ideally
-		var nightFraction = (cycleLength == 0) ? 0 : (nightLength / (double) cycleLength);
-		var dayFraction = (cycleLength == 0) ? 0 : (dayLength / (double) cycleLength);
-
-		var phiAngle = 0.0;
-
-		if (normalizedTime < dayFraction) {
-			// Day: φ ∈ [0, π)
-			phiAngle = (dayFraction == 0) ? 0 : (Math.PI * (normalizedTime / dayFraction));
-		} else {
-			// Night: φ ∈ [π, 2π)
-			phiAngle = (nightFraction == 0) ? Math.PI : (Math.PI + Math.PI * ((normalizedTime - dayFraction) / nightFraction));
-		}
-
-		return phiAngle;
-	}
-
 }
