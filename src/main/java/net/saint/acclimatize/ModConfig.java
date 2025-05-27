@@ -57,8 +57,8 @@ public class ModConfig implements ConfigData {
 	// Player
 
 	@ConfigEntry.Category("player")
-	@Comment("The rate by which body temperature adapts to ambient temperatures. (Default: 0.1)")
-	public double acclimatizationRate = 0.1;
+	@Comment("The rate by which body temperature adapts to ambient temperatures. (Default: 0.01)")
+	public double acclimatizationRate = 0.01;
 
 	@ConfigEntry.Category("player")
 	@Comment("The lowest possible value for player acclimatization after all factors have been applied. (Default: 0.001)")
@@ -131,7 +131,7 @@ public class ModConfig implements ConfigData {
 	public double netherBiomeTemperature = 1.8;
 
 	@ConfigEntry.Category("world")
-	@Comment("The raw biome temperature value of all end biomes. (Between -2.0 and +2.0) (Default: 0.5)")
+	@Comment("The raw biome temperature value of all end biomes. (Between -2.0 and +2.0) (Default: -0.7)")
 	public double endBiomeTemperature = -0.7;
 
 	@ConfigEntry.Category("world")
@@ -141,14 +141,6 @@ public class ModConfig implements ConfigData {
 	@ConfigEntry.Category("world")
 	@Comment("The length of the rays cast around the player to check for an interior space. Higher means more coverage but higher cost. (Default: 32)")
 	public int spaceRayLength = 32;
-
-	@ConfigEntry.Category("world")
-	@Comment("The number of ticks in a single day that the sun is out (dawn to dusk). Default is vanilla. (Default: 12000)")
-	public int daylightTicks = 12000;
-
-	@ConfigEntry.Category("world")
-	@Comment("The number of ticks in a single day that the moon is out (dusk to dawn). Default is vanilla. (Default: 12000)")
-	public int nighttimeTicks = 12000;
 
 	// Blocks
 
@@ -264,7 +256,7 @@ public class ModConfig implements ConfigData {
 	public double itemTemperatureFactor = 0.35;
 
 	@ConfigEntry.Category("items")
-	@Comment("Factor for how much player acclimatization is affected by the temperature value of worn items. (Default: -0.1)")
+	@Comment("Factor for how much player acclimatization is affected by the temperature value of worn items. (Default: -0.15)")
 	public double itemAcclimatizationRateFactor = -0.15;
 
 	@ConfigEntry.Category("items")
@@ -298,12 +290,12 @@ public class ModConfig implements ConfigData {
 	public double windIntensityMax = 3.5;
 
 	@ConfigEntry.Category("wind")
-	@Comment("The factor for how much wind exposure affects ambient temperature. (Default: 1.25)")
+	@Comment("The factor for how much wind affects ambient temperature when fully exposed. (Default: -1.25)")
 	public double windChillFactor = -1.25;
 
 	@ConfigEntry.Category("wind")
-	@Comment("Number of rays used in wind calculation. Increase for more precise wind simulation. (Default: 6)")
-	public int windRayCount = 6;
+	@Comment("Number of rays used in wind calculation. Increase for more precise wind simulation. (Default: 8)")
+	public int windRayCount = 8;
 
 	@ConfigEntry.Category("wind")
 	@Comment("How many blocks long wind rays are. Increase for larger spaces. (Default: 8)")
@@ -324,7 +316,7 @@ public class ModConfig implements ConfigData {
 	public double particleWeatherEffectFactor = 0.1;
 
 	@ConfigEntry.Category("particles")
-	@Comment("The maximum angle a rain particle can get skewed by wind intensity and angle, in degrees. (Default: 30)")
+	@Comment("The maximum angle a rain particle can get skewed by wind intensity and angle, in degrees. (Default: 30.0)")
 	public double particleRainMaxAngle = 30.0;
 
 	@ConfigEntry.Category("particles")

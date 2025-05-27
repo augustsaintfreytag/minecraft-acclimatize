@@ -66,8 +66,8 @@ public final class BiomeTemperatureUtil {
 
 		// Daylight/Nighttime
 
-		var dayTick = world.getTimeOfDay();
-		var dayNightTemperatureDelta = temperatureDeltaForDayNightTime(dayTick);
+		var skyFraction = world.getSkyAngle(0.0f);
+		var dayNightTemperatureDelta = temperatureDeltaForDayNightTime(skyFraction);
 
 		biomeTemperature += dayNightTemperatureDelta;
 
@@ -163,10 +163,10 @@ public final class BiomeTemperatureUtil {
 
 	// Day/Night
 
-	private static double temperatureDeltaForDayNightTime(long tick) {
-		var phaseValue = phaseValueForAsymmetricTime(tick); // Phase value: φ
+	private static double temperatureDeltaForDayNightTime(float skyAngle) {
+		var phaseValue = phaseValueFromSkyAngle(skyAngle); // Phase value: φ
 		var plateau = 1.8; // Plateau: p
-		var offset = 1.65 * Math.PI; // Offset: ε
+		var offset = 1.6 * Math.PI; // Offset: ε
 
 		// Formula: ΔT_{dn} = ((1 + cos(φ - ε)) / 2) ^ p
 		var dropFactor = Math.pow(((1 + MathUtil.cos(phaseValue - offset)) / 2), plateau);
@@ -176,6 +176,43 @@ public final class BiomeTemperatureUtil {
 	}
 
 	// Phase
+
+	public static double phaseValueFromSkyAngle(float skyFraction) {
+		// Minecraft sky angle mapping to phase values (in radians):
+		// 0.000 (noon) -> π/2, 0.216 (sunset) -> π, 0.500 (midnight)
+		// 0.500 (midnight) -> 3π/2, 0.784 (sunrise) -> 2π/0
+
+		// Define key time points
+		final var noon = 0.000;
+		final var sunset = 0.216;
+		final var midnight = 0.500;
+		final var sunrise = 0.784;
+
+		// Define corresponding phase values
+		final var noonPhase = Math.PI * 0.5; // π/2
+		final var sunsetPhase = Math.PI; // π
+		final var midnightPhase = Math.PI * 1.5; // 3π/2
+		final var sunrisePhase = Math.PI * 2.0; // 2π
+
+		// Map sky fraction to phase value using linear interpolation between key points
+		if (skyFraction <= sunset) {
+			// Noon to sunset: π/2 to π
+			var progress = skyFraction / sunset;
+			return noonPhase + progress * (sunsetPhase - noonPhase);
+		} else if (skyFraction <= midnight) {
+			// Sunset to midnight: π to 3π/2
+			var progress = (skyFraction - sunset) / (midnight - sunset);
+			return sunsetPhase + progress * (midnightPhase - sunsetPhase);
+		} else if (skyFraction <= sunrise) {
+			// Midnight to sunrise: 3π/2 to 2π
+			var progress = (skyFraction - midnight) / (sunrise - midnight);
+			return midnightPhase + progress * (sunrisePhase - midnightPhase);
+		} else {
+			// Sunrise to noon (next day): 2π/0 to π/2
+			var progress = (skyFraction - sunrise) / (1.0 - sunrise);
+			return progress * noonPhase; // Wraps from 2π back to 0, then to π/2
+		}
+	}
 
 	public static double phaseValueForAsymmetricTime(long tick) {
 		// Value that wraps around day/night cycle.
@@ -201,14 +238,12 @@ public final class BiomeTemperatureUtil {
 
 		var phiAngle = 0.0;
 
-		if (normalizedTime < nightFraction) {
-			// Night: φ ∈ [0, π)
-			// Avoid division by zero if nightFraction is 0 (i.e., nightLength is 0)
-			phiAngle = (nightFraction == 0) ? 0 : (Math.PI * (normalizedTime / nightFraction));
+		if (normalizedTime < dayFraction) {
+			// Day: φ ∈ [0, π)
+			phiAngle = (dayFraction == 0) ? 0 : (Math.PI * (normalizedTime / dayFraction));
 		} else {
-			// Day: φ ∈ [π, 2π)
-			// Avoid division by zero if dayFraction is 0 (i.e., dayLength is 0)
-			phiAngle = (dayFraction == 0) ? Math.PI : (Math.PI + Math.PI * ((normalizedTime - nightFraction) / dayFraction));
+			// Night: φ ∈ [π, 2π)
+			phiAngle = (nightFraction == 0) ? Math.PI : (Math.PI + Math.PI * ((normalizedTime - dayFraction) / nightFraction));
 		}
 
 		return phiAngle;

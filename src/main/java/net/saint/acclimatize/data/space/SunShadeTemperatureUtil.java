@@ -26,10 +26,9 @@ public final class SunShadeTemperatureUtil {
 
 	public static boolean playerIsExposedToSun(ServerPlayerEntity player) {
 		var world = player.getWorld();
-		var tick = world.getTimeOfDay();
 
 		// Check if it's daytime (between 250 and number of ticks in daylight).
-		if (tick < 250 || tick > Mod.CONFIG.daylightTicks) {
+		if (!world.isDay()) {
 			return false;
 		}
 
@@ -50,14 +49,14 @@ public final class SunShadeTemperatureUtil {
 
 	public static Vec3d sunPositionFromWorld(World world) {
 		// 1) fraction [0..1) around full day
-		float skyFraction = world.getSkyAngle(0.0f);
+		var skyFraction = world.getSkyAngle(0.0f);
 
 		// 2) map into [0..2π), shift so 0→–π/2 (sun below horizon)
-		double angleRad = skyFraction * 2.0 * Math.PI - Math.PI * 0.5;
+		var angleRad = skyFraction * 2.0 * Math.PI - Math.PI * 0.5;
 
 		// 3) compute in east–west (X) / vertical (Y) plane
-		double x = Math.cos(angleRad);
-		double y = Math.sin(angleRad);
+		var x = Math.cos(angleRad);
+		var y = Math.sin(angleRad);
 
 		// 4) THIS VECTOR POINTS AT THE MOON, so invert for the sun:
 		return new Vec3d(-x, -y, 0.0).normalize();
