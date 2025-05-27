@@ -104,7 +104,7 @@ public class PlayerTemperatureUtil {
 	// Utility
 
 	public static double applicableAcclimatizationRate(double acclimatizationRate) {
-		return MathUtil.clamp(acclimatizationRate / 10.0, Mod.CONFIG.acclimatizationRateMinimum, 1.0);
+		return MathUtil.clamp(acclimatizationRate, Mod.CONFIG.acclimatizationRateMinimum, 1.0);
 	}
 
 }

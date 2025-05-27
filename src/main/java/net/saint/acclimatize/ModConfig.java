@@ -57,8 +57,8 @@ public class ModConfig implements ConfigData {
 	// Player
 
 	@ConfigEntry.Category("player")
-	@Comment("The rate by which body temperature adapts to ambient temperatures. (Default: 0.1)")
-	public double acclimatizationRate = 0.1;
+	@Comment("The rate by which body temperature adapts to ambient temperatures. (Default: 0.01)")
+	public double acclimatizationRate = 0.01;
 
 	@ConfigEntry.Category("player")
 	@Comment("The lowest possible value for player acclimatization after all factors have been applied. (Default: 0.001)")
