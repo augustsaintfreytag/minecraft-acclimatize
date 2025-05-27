@@ -256,8 +256,8 @@ public class ModConfig implements ConfigData {
 	public double itemTemperatureFactor = 0.35;
 
 	@ConfigEntry.Category("items")
-	@Comment("Factor for how much player acclimatization is affected by the temperature value of worn items. (Default: -0.15)")
-	public double itemAcclimatizationRateFactor = -0.15;
+	@Comment("Factor for how much player acclimatization is affected by the temperature value of worn items. (Default: -0.0125)")
+	public double itemAcclimatizationRateFactor = -0.0125;
 
 	@ConfigEntry.Category("items")
 	@Comment("Duration of the cooling effect of ice water drinks in ticks. (Default: 6000)")
