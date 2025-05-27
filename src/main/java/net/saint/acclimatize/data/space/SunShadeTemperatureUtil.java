@@ -12,7 +12,7 @@ public final class SunShadeTemperatureUtil {
 
 	public static double sunShadeTemperatureDelta(ServerPlayerEntity player, boolean isInInterior) {
 		// If player is in interior or not exposed to sun, return 0.
-		if (isInInterior || playerIsExposedToSun(player)) {
+		if (!isInInterior && playerIsExposedToSun(player)) {
 			return 0.0;
 		}
 
