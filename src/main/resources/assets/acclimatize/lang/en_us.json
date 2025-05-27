@@ -46,8 +46,6 @@
 	"text.autoconfig.acclimatize.option.endBiomeTemperature": "End Biome Temperature",
 	"text.autoconfig.acclimatize.option.spaceNumberOfRays": "Space Number of Rays",
 	"text.autoconfig.acclimatize.option.spaceRayLength": "Space Ray Length",
-	"text.autoconfig.acclimatize.option.daylightTicks": "Daylight Ticks",
-	"text.autoconfig.acclimatize.option.nighttimeTicks": "Nighttime Ticks",
 	"text.autoconfig.acclimatize.option.acclimatizationRate": "Acclimatization Rate",
 	"text.autoconfig.acclimatize.option.acclimatizationRateMinimum": "Acclimatization Rate Minimum",
 	"text.autoconfig.acclimatize.option.wetAcclimatizationRateBoostFactor": "Wetness Acclimatization Rate Boost Factor",

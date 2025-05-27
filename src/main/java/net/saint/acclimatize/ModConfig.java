@@ -142,14 +142,6 @@ public class ModConfig implements ConfigData {
 	@Comment("The length of the rays cast around the player to check for an interior space. Higher means more coverage but higher cost. (Default: 32)")
 	public int spaceRayLength = 32;
 
-	@ConfigEntry.Category("world")
-	@Comment("The number of ticks in a single day that the sun is out (dawn to dusk). Default is vanilla. (Default: 12000)")
-	public int daylightTicks = 12000;
-
-	@ConfigEntry.Category("world")
-	@Comment("The number of ticks in a single day that the moon is out (dusk to dawn). Default is vanilla. (Default: 12000)")
-	public int nighttimeTicks = 12000;
-
 	// Blocks
 
 	@ConfigEntry.Category("blocks")
