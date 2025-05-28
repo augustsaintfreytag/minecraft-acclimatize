@@ -212,14 +212,6 @@ public class ModConfig implements ConfigData {
 	// Items
 
 	@ConfigEntry.Category("items")
-	@Comment("Multiplier for how much each level of fire protection cools you (Default: -5.0)")
-	public double fireProtectionCoolingFactor = -5.0;
-
-	@ConfigEntry.Category("items")
-	@Comment("Multiplier for how much each level of cold protection warms you (Default: 5.0)")
-	public double coldProtectionCoolingFactor = 5.0;
-
-	@ConfigEntry.Category("items")
 	@Comment("Item temperature values that add to body temperature calculation when actively held.")
 	public String heldTemperatureItems = String.join(", ", "minecraft:torch = 2.0", "minecraft:lava_bucket = 1.0",
 			"hardcore_torches:lit_torch = 2.0", "hardcore_torches:lit_lantern = 1.0");
@@ -260,8 +252,16 @@ public class ModConfig implements ConfigData {
 	public double itemAcclimatizationRateFactor = -0.0125;
 
 	@ConfigEntry.Category("items")
-	@Comment("Duration of the cooling effect of ice water drinks in ticks. (Default: 6000)")
-	public int iceWaterEffectDuration = 6000;
+	@Comment("Duration of the cooling effect of ice water drinks in ticks. (Default: 4800)")
+	public int iceWaterEffectDuration = 4800;
+
+	@ConfigEntry.Category("items")
+	@Comment("The ambient temperature offset while the ice water heat dissipation effect is active. (Default: -10.0)")
+	public double iceWaterCoolingFactor = -10.0;
+
+	@ConfigEntry.Category("items")
+	@Comment("Multiplier for how much each level of fire protection cools you (Default: -2.5)")
+	public double fireProtectionCoolingFactor = -2.5;
 
 	// Wind
 
