@@ -1,4 +1,4 @@
-package net.saint.acclimatize.data.statuseffect;
+package net.saint.acclimatize.data.player;
 
 import java.util.HashSet;
 
@@ -7,7 +7,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.saint.acclimatize.ModStatusEffects;
 
-public final class StatusEffectsUtil {
+public final class PlayerStatusEffectsUtil {
 
 	// Configuration
 
@@ -16,7 +16,7 @@ public final class StatusEffectsUtil {
 	static {
 		blacklistedPotionEffects.add(Registries.STATUS_EFFECT.getId(ModStatusEffects.HYPOTHERMIA));
 		blacklistedPotionEffects.add(Registries.STATUS_EFFECT.getId(ModStatusEffects.HYPERTHERMIA));
-		blacklistedPotionEffects.add(Registries.STATUS_EFFECT.getId(ModStatusEffects.COLD_RESISTANCE));
+		blacklistedPotionEffects.add(Registries.STATUS_EFFECT.getId(ModStatusEffects.HEAT_DISSIPATION));
 	}
 
 	// Analysis
