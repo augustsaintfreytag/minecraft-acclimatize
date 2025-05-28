@@ -11,7 +11,7 @@
 	"block.acclimatize.fireplace": "Brick Fireplace",
 	"effect.acclimatize.hypothermia": "Hypothermia",
 	"effect.acclimatize.hyperthermia": "Hyperthermia",
-	"effect.acclimatize.cold_resistance": "Cold Resistance",
+	"effect.acclimatize.heat_dissipation": "Heat Dissipation",
 	"text.autoconfig.acclimatize.title": "Acclimatize",
 	"text.autoconfig.acclimatize.category.hud": "HUD",
 	"text.autoconfig.acclimatize.category.player": "Player",
