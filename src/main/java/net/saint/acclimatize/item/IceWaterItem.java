@@ -43,7 +43,7 @@ public class IceWaterItem extends Item {
 			playerEntity.getInventory().insertStack(new ItemStack(Items.GLASS_BOTTLE));
 
 			playerEntity.addStatusEffect(
-					new StatusEffectInstance(ModStatusEffects.COLD_RESISTANCE, Mod.CONFIG.iceWaterEffectDuration, 0, false, true));
+					new StatusEffectInstance(ModStatusEffects.HEAT_DISSIPATION, Mod.CONFIG.iceWaterEffectDuration, 0, false, true));
 		}
 
 		return super.finishUsing(stack, world, user);

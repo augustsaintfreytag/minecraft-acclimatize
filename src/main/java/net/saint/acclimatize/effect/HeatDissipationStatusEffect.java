@@ -3,10 +3,9 @@ package net.saint.acclimatize.effect;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
-import net.minecraft.entity.player.PlayerEntity;
 
-public class ColdResistanceStatusEffect extends StatusEffect {
-	public ColdResistanceStatusEffect() {
+public class HeatDissipationStatusEffect extends StatusEffect {
+	public HeatDissipationStatusEffect() {
 		super(StatusEffectCategory.NEUTRAL, 0x6bb0ff);
 	}
 
@@ -17,8 +16,6 @@ public class ColdResistanceStatusEffect extends StatusEffect {
 
 	@Override
 	public void applyUpdateEffect(LivingEntity entity, int amplifier) {
-		if (entity instanceof PlayerEntity) {
-		}
 	}
 
 }
