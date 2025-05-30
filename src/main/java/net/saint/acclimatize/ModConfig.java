@@ -5,7 +5,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
-@Config(name = Mod.modId) @Config.Gui.Background("minecraft:textures/block/ice.png")
+@Config(name = Mod.MOD_ID) @Config.Gui.Background("minecraft:textures/block/ice.png")
 public class ModConfig implements ConfigData {
 
 	// HUD
@@ -101,6 +101,10 @@ public class ModConfig implements ConfigData {
 	@ConfigEntry.Category("world")
 	@Comment("The final applied coefficient for altitude-based temperature deltas. At 1.0, y64 -> y0 would be 5 units warmer, y64 -> y128 would be 5 units colder. (Default: 1.0)")
 	public double altitudeTemperatureFactor = 1.0;
+
+	@ConfigEntry.Category("world")
+	@Comment("The distance in blocks from the player to sample biomes to determine climate zones. Use higher distances for larger biomes. (Default: 192)")
+	public int biomeSamplingRadius = 192;
 
 	@ConfigEntry.Category("world")
 	@Comment("Enables a raycast to check if the player is exposed to the sun or in shade. (Default: true)")
