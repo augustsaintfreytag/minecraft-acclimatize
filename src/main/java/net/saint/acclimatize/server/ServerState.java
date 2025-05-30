@@ -12,7 +12,7 @@ public class ServerState extends PersistentState {
 
 	// World Metadata
 
-	public String worldVersion = Mod.modVersion;
+	public String worldVersion = Mod.MOD_VERSION;
 
 	// Wind
 
