@@ -81,6 +81,7 @@ public class Mod implements ModInitializer {
 			ItemTemperatureUtil.reloadItems();
 			BlockTemperatureUtil.reloadBlocks();
 			WindTemperatureUtil.reloadBlocks();
+			WindTemperatureUtil.cleanUpAllPlayerData();
 
 			return null;
 		});
