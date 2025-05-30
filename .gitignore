@@ -18,6 +18,10 @@ bin/
 .classpath
 .project
 
+# Project
+
+run/
+
 # Java
 
 hs_err_*.log

@@ -7,6 +7,7 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
+	mavenCentral()
 	maven { url = uri("https://jitpack.io") }
 	maven { url = uri("https://maven.fabricmc.net") }
 	maven { url = uri("https://maven.terraformersmc.com") }
@@ -16,10 +17,27 @@ repositories {
 	maven { url = uri("https://api.modrinth.com/maven") }
 }
 
+configurations.all {
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == 'org.lwjgl') {
+            details.useVersion project.lwjgl_version
+        }
+    }
+}
+
 loom {
 	mods {
 		"acclimatize" {
 			sourceSet sourceSets.main
+		}
+	}
+
+	runs {
+		client {
+			vmArgs.add("-XX:+AllowEnhancedClassRedefinition")
+		}
+		server {
+			vmArgs.add("-XX:+AllowEnhancedClassRedefinition")
 		}
 	}
 }
