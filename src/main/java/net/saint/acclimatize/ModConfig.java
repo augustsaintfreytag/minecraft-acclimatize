@@ -127,12 +127,12 @@ public class ModConfig implements ConfigData {
 	public double nightTemperatureDelta = -10.0;
 
 	@ConfigEntry.Category("world")
-	@Comment("The raw biome temperature value of all nether biomes. (Between -2.0 and +2.0) (Default: 1.8)")
-	public double netherBiomeTemperature = 1.8;
+	@Comment("The default temperature value of all nether biomes. (Between 0 and 100) (Default: 75)")
+	public double netherBiomeTemperature = 75;
 
 	@ConfigEntry.Category("world")
-	@Comment("The raw biome temperature value of all end biomes. (Between -2.0 and +2.0) (Default: -0.7)")
-	public double endBiomeTemperature = -0.7;
+	@Comment("The default temperature value of all end biomes. (Between 0 and 100) (Default: 10)")
+	public double endBiomeTemperature = 10;
 
 	@ConfigEntry.Category("world")
 	@Comment("The number of rays cast in a cone shape around the player to check for an interior space. Higher number means more precision but higher cost. (Default: 12)")
