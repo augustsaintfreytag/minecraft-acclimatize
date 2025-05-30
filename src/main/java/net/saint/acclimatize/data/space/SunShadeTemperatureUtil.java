@@ -17,7 +17,7 @@ public final class SunShadeTemperatureUtil {
 		}
 
 		var world = player.getWorld();
-		var biomeBaseTemperature = BiomeTemperatureUtil.baseTemperatureForBiomeAtPosition(world, player.getBlockPos());
+		var biomeBaseTemperature = BiomeTemperatureUtil.baseTemperatureForPosition(world, player.getBlockPos());
 		var biomeTemperatureFactor = (1 + biomeBaseTemperature / 100) * Mod.CONFIG.sunShadeBiomeTemperatureFactor;
 		var sunShadeTemperatureDelta = Mod.CONFIG.sunShadeTemperatureDelta * biomeTemperatureFactor;
 

@@ -49,7 +49,7 @@ public final class BiomeTemperatureUtil {
 		var position = player.getBlockPos();
 		var dimension = world.getDimension();
 
-		var biomeTemperature = baseTemperatureForBiomeAtPosition(world, position);
+		var biomeTemperature = baseTemperatureForPosition(world, position);
 
 		// Nether & End
 
@@ -83,7 +83,7 @@ public final class BiomeTemperatureUtil {
 
 	// Base Temperature
 
-	public static double baseTemperatureForBiomeAtPosition(World world, BlockPos position) {
+	public static double baseTemperatureForPosition(World world, BlockPos position) {
 		var dimensionKey = world.getRegistryKey();
 
 		if (dimensionKey == World.NETHER) {
