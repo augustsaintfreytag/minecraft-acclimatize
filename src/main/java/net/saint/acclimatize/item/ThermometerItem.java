@@ -9,7 +9,7 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
 import net.saint.acclimatize.data.biome.BiomeTemperatureUtil;
-import net.saint.acclimatize.data.player.TemperatureEstimationUtil;
+import net.saint.acclimatize.data.world.TemperatureEstimationUtil;
 import net.saint.acclimatize.server.ServerStateUtil;
 
 public class ThermometerItem extends Item {
