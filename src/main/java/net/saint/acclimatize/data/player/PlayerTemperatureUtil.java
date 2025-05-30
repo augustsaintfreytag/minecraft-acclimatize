@@ -7,7 +7,6 @@ import net.saint.acclimatize.data.block.BlockTemperatureUtil;
 import net.saint.acclimatize.data.item.ItemTemperatureUtil;
 import net.saint.acclimatize.data.space.SpaceUtil;
 import net.saint.acclimatize.data.space.SunShadeTemperatureUtil;
-import net.saint.acclimatize.data.statuseffect.StatusEffectsTemperatureUtil;
 import net.saint.acclimatize.data.wind.WindTemperatureUtil;
 import net.saint.acclimatize.player.PlayerState;
 import net.saint.acclimatize.server.ServerState;
@@ -57,7 +56,8 @@ public class PlayerTemperatureUtil {
 
 		// Effects
 
-		var effectsTemperatureDelta = StatusEffectsTemperatureUtil.temperatureDeltaForItemsAndStatusEffects(player);
+		var effectsTemperatureDelta = PlayerStatusEffectsTemperatureUtil.temperatureDeltaForItemsAndStatusEffects(player,
+				effectiveTemperature);
 		effectiveTemperature += effectsTemperatureDelta;
 
 		// Acclimatization Rate

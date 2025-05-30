@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.saint.acclimatize.data.statuseffect.StatusEffectsUtil;
+import net.saint.acclimatize.data.player.PlayerStatusEffectsUtil;
 
 @Mixin(LivingEntity.class)
 public abstract class PlayerStatusEffectsMixin extends Entity {
@@ -28,7 +28,7 @@ public abstract class PlayerStatusEffectsMixin extends Entity {
 	private void setSprintingMixin(boolean sprinting, CallbackInfo callbackInfo) {
 		withPlayerEntity(player -> {
 			// Check for extreme body temperature status effects and disable sprinting.
-			if (!StatusEffectsUtil.entityHasAnyTemperatureStatusEffects(player)) {
+			if (!PlayerStatusEffectsUtil.entityHasAnyTemperatureStatusEffects(player)) {
 				return;
 			}
 
@@ -47,7 +47,7 @@ public abstract class PlayerStatusEffectsMixin extends Entity {
 	@Inject(method = "updatePotionVisibility", at = @At("TAIL"))
 	private void mixinUpdatePotionVisibility(CallbackInfo ci) {
 		withPlayerEntity(player -> {
-			if (StatusEffectsUtil.entityHasOnlyBlacklistedStatusEffects(player)) {
+			if (PlayerStatusEffectsUtil.entityHasOnlyBlacklistedStatusEffects(player)) {
 				clearPotionSwirls();
 			}
 		});

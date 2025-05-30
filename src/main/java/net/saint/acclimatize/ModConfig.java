@@ -178,16 +178,17 @@ public class ModConfig implements ConfigData {
 
 	@ConfigEntry.Category("blocks")
 	@Comment("Blocks that will heat you up when near.")
-	public String heatingBlocks = String.join(", ", "minecraft:fire = 5.0", "minecraft:lava = 8.0", "minecraft:campfire = 18.0",
-			"minecraft:torch = 4.0", "minecraft:wall_torch = 4.0", "minecraft:redstone_torch = 1.0", "minecraft:redstone_wall_torch = 1.0",
-			"minecraft:soul_torch = 4.0", "minecraft:soul_wall_torch = 4.0", "minecraft:soul_campfire = 18.0",
-			"minecraft:lava_cauldron = 5.0", "minecraft:furnace = 10.0", "minecraft:blast_furnace = 10.0", "minecraft:smoker = 10.0",
-			"minecraft:redstone_lamp = 2.0", "minecraft:ochre_froglight = 3.0", "minecraft:pearlescent_froglight = 3.0",
-			"minecraft:verdant_froglight = 3.0", "minecraft:end_rod = 2.0", "hardcore_torches:lit_torch = 4.0",
-			"hardcore_torches:lit_wall_torch = 4.0", "hardcore_torches:lit_lantern = 2.0", "farmersdelight:stove = 18.0",
-			"refurbished_furniture:light_ceiling_light = 10.0", "refurbished_furniture:dark_ceiling_light = 10.0",
-			"refurbished_furniture:black_lamp = 10.0", "refurbished_furniture:blue_lamp = 10.0", "refurbished_furniture:brown_lamp = 10.0",
-			"refurbished_furniture:cyan_lamp = 10.0", "refurbished_furniture:gray_lamp = 10.0", "refurbished_furniture:green_lamp = 10.0",
+	public String heatingBlocks = String.join(", ", "minecraft:fire = 5.0", "minecraft:lava = 2.0", "minecraft:magma = 1.0",
+			"minecraft:campfire = 18.0", "minecraft:torch = 4.0", "minecraft:wall_torch = 4.0", "minecraft:redstone_torch = 1.0",
+			"minecraft:redstone_wall_torch = 1.0", "minecraft:soul_torch = 4.0", "minecraft:soul_wall_torch = 4.0",
+			"minecraft:soul_campfire = 18.0", "minecraft:lava_cauldron = 5.0", "minecraft:furnace = 10.0", "minecraft:blast_furnace = 10.0",
+			"minecraft:smoker = 10.0", "minecraft:redstone_lamp = 2.0", "minecraft:ochre_froglight = 3.0",
+			"minecraft:pearlescent_froglight = 3.0", "minecraft:verdant_froglight = 3.0", "minecraft:end_rod = 2.0",
+			"hardcore_torches:lit_torch = 4.0", "hardcore_torches:lit_wall_torch = 4.0", "hardcore_torches:lit_lantern = 2.0",
+			"farmersdelight:stove = 18.0", "refurbished_furniture:light_ceiling_light = 10.0",
+			"refurbished_furniture:dark_ceiling_light = 10.0", "refurbished_furniture:black_lamp = 10.0",
+			"refurbished_furniture:blue_lamp = 10.0", "refurbished_furniture:brown_lamp = 10.0", "refurbished_furniture:cyan_lamp = 10.0",
+			"refurbished_furniture:gray_lamp = 10.0", "refurbished_furniture:green_lamp = 10.0",
 			"refurbished_furniture:light_blue_lamp = 10.0", "refurbished_furniture:light_gray_lamp = 10.0",
 			"refurbished_furniture:lime_lamp = 10.0", "refurbished_furniture:magenta_lamp = 10.0",
 			"refurbished_furniture:orange_lamp = 10.0", "refurbished_furniture:pink_lamp = 10.0", "refurbished_furniture:red_lamp = 10.0",
@@ -210,14 +211,6 @@ public class ModConfig implements ConfigData {
 			"minecraft:peony");
 
 	// Items
-
-	@ConfigEntry.Category("items")
-	@Comment("Multiplier for how much each level of fire protection cools you (Default: -5.0)")
-	public double fireProtectionCoolingFactor = -5.0;
-
-	@ConfigEntry.Category("items")
-	@Comment("Multiplier for how much each level of cold protection warms you (Default: 5.0)")
-	public double coldProtectionCoolingFactor = 5.0;
 
 	@ConfigEntry.Category("items")
 	@Comment("Item temperature values that add to body temperature calculation when actively held.")
@@ -260,8 +253,16 @@ public class ModConfig implements ConfigData {
 	public double itemAcclimatizationRateFactor = -0.0125;
 
 	@ConfigEntry.Category("items")
-	@Comment("Duration of the cooling effect of ice water drinks in ticks. (Default: 6000)")
-	public int iceWaterEffectDuration = 6000;
+	@Comment("Duration of the cooling effect of ice water drinks in ticks. (Default: 4800)")
+	public int iceWaterEffectDuration = 4800;
+
+	@ConfigEntry.Category("items")
+	@Comment("The ambient temperature offset while the ice water heat dissipation effect is active. (Default: -10.0)")
+	public double iceWaterCoolingFactor = -10.0;
+
+	@ConfigEntry.Category("items")
+	@Comment("Multiplier for how much each level of fire protection cools you (Default: -2.5)")
+	public double fireProtectionCoolingFactor = -2.5;
 
 	// Wind
 
