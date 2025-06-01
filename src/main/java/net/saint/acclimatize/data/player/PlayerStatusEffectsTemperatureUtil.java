@@ -55,11 +55,11 @@ public final class PlayerStatusEffectsTemperatureUtil {
 			var statusEffectId = statusEffect.getTranslationKey();
 
 			if (statusEffectId.equals(StatusEffects.FIRE_RESISTANCE.getTranslationKey())) {
-				fireProtectionLevels += statusEffect.getAmplifier();
+				fireProtectionLevels += statusEffect.getAmplifier() + 1;
 			}
 
 			if (statusEffectId.equals(ModStatusEffects.HEAT_DISSIPATION.getTranslationKey())) {
-				heatDissipationLevels += statusEffect.getAmplifier();
+				heatDissipationLevels += statusEffect.getAmplifier() + 1;
 			}
 		}
 
