@@ -6,6 +6,10 @@ plugins {
 version = project.mod_version
 group = project.maven_group
 
+base {
+    archivesBaseName = 'acclimatize'
+}
+
 repositories {
 	mavenCentral()
 	maven { url = uri("https://jitpack.io") }
@@ -98,6 +102,10 @@ java {
 }
 
 jar {
+	archiveBaseName.set(project.archivesBaseName)
+    archiveVersion.set(project.version)
+    archiveClassifier.set('')
+
 	inputs.property "archivesName", project.base.archivesName
 
 	from("LICENSE") {
