@@ -170,4 +170,9 @@ public final class WindTemperatureUtil {
 		playerBufferIndices.remove(playerId);
 	}
 
+	public static void cleanUpAllPlayerData() {
+		playerWindBuffers.clear();
+		playerBufferIndices.clear();
+	}
+
 }

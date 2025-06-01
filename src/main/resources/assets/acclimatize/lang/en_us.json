@@ -36,6 +36,7 @@
 	"text.autoconfig.acclimatize.option.biomeTemperatureZeroingAnchor": "Biome Temperature Zeroing Anchor",
 	"text.autoconfig.acclimatize.option.altitudeZeroingAnchor": "Altitude Zeroing Anchor",
 	"text.autoconfig.acclimatize.option.altitudeTemperatureFactor": "Altitude Temperature Factor",
+	"text.autoconfig.acclimatize.option.biomeSamplingRadius": "Biome Sampling Radius",
 	"text.autoconfig.acclimatize.option.enableSunShadeCheck": "Enable Sun Shade Check",
 	"text.autoconfig.acclimatize.option.sunShadeTemperatureDelta": "Sun Shade Temperature Delta",
 	"text.autoconfig.acclimatize.option.sunShadeBiomeTemperatureFactor": "Sun Shade Biome Temperature Factor",

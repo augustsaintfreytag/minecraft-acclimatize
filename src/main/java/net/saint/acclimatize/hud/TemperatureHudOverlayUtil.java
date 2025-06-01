@@ -16,7 +16,7 @@ public final class TemperatureHudOverlayUtil {
 
 	// Configuration (Rendering)
 
-	public static final Identifier TEMPERATURE_OVERLAY = new Identifier(Mod.modId, "textures/overlay/temperature_overlay.png");
+	public static final Identifier TEMPERATURE_OVERLAY = new Identifier(Mod.MOD_ID, "textures/overlay/temperature_overlay.png");
 
 	private static final RGBAColor HYPOTHERMIA_COLOR = new RGBAColor(0.6f, 0.75f, 1.0f, 1.0f);
 	private static final RGBAColor HYPERTHERMIA_COLOR = new RGBAColor(0.8f, 0.3f, 0.15f, 1.0f);

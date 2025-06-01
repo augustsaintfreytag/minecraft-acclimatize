@@ -58,7 +58,7 @@ public class StateNetworkingPackets {
 
 	// Packets
 
-	public static final Identifier PLAYER_S2C_PACKET_ID = new Identifier(Mod.modId, "player_s2c_packet");
+	public static final Identifier PLAYER_S2C_PACKET_ID = new Identifier(Mod.MOD_ID, "player_s2c_packet");
 
 	// Reception
 

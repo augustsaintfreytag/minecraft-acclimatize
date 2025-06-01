@@ -5,7 +5,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
-@Config(name = Mod.modId) @Config.Gui.Background("minecraft:textures/block/ice.png")
+@Config(name = Mod.MOD_ID) @Config.Gui.Background("minecraft:textures/block/ice.png")
 public class ModConfig implements ConfigData {
 
 	// HUD
@@ -103,6 +103,10 @@ public class ModConfig implements ConfigData {
 	public double altitudeTemperatureFactor = 1.0;
 
 	@ConfigEntry.Category("world")
+	@Comment("The distance in blocks from the player to sample biomes to determine climate zones. Use higher distances for larger biomes. (Default: 192)")
+	public int biomeSamplingRadius = 192;
+
+	@ConfigEntry.Category("world")
 	@Comment("Enables a raycast to check if the player is exposed to the sun or in shade. (Default: true)")
 	public boolean enableSunShadeCheck = true;
 
@@ -127,12 +131,12 @@ public class ModConfig implements ConfigData {
 	public double nightTemperatureDelta = -10.0;
 
 	@ConfigEntry.Category("world")
-	@Comment("The raw biome temperature value of all nether biomes. (Between -2.0 and +2.0) (Default: 1.8)")
-	public double netherBiomeTemperature = 1.8;
+	@Comment("The default temperature value of all nether biomes. (Between 0 and 100) (Default: 75)")
+	public double netherBiomeTemperature = 75;
 
 	@ConfigEntry.Category("world")
-	@Comment("The raw biome temperature value of all end biomes. (Between -2.0 and +2.0) (Default: -0.7)")
-	public double endBiomeTemperature = -0.7;
+	@Comment("The default temperature value of all end biomes. (Between 0 and 100) (Default: 10)")
+	public double endBiomeTemperature = 10;
 
 	@ConfigEntry.Category("world")
 	@Comment("The number of rays cast in a cone shape around the player to check for an interior space. Higher number means more precision but higher cost. (Default: 12)")

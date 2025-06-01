@@ -21,8 +21,8 @@ public final class ModServerEvents {
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			var serverState = ServerStateUtil.getServerState(server);
 
-			if (!Mod.modVersion.equals(serverState.worldVersion)) {
-				serverState.worldVersion = Mod.modVersion;
+			if (!Mod.MOD_VERSION.equals(serverState.worldVersion)) {
+				serverState.worldVersion = Mod.MOD_VERSION;
 				serverState.markDirty();
 			}
 

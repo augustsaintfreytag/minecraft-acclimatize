@@ -29,9 +29,9 @@ import net.saint.acclimatize.recipe.LeatherArmorWoolRecipe;
 public class Mod implements ModInitializer {
 	// Metadata
 
-	public static final String modId = "acclimatize";
+	public static final String MOD_ID = "acclimatize";
 
-	public static String modVersion;
+	public static String MOD_VERSION;
 
 	// Config
 
@@ -57,8 +57,8 @@ public class Mod implements ModInitializer {
 
 	// Modules
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(modId);
-	public static final Profiler PROFILER = Profiler.getProfiler(modId);
+	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static final Profiler PROFILER = Profiler.getProfiler(MOD_ID);
 
 	// Init
 
@@ -68,8 +68,8 @@ public class Mod implements ModInitializer {
 
 		var fabricLoader = FabricLoader.getInstance();
 
-		fabricLoader.getModContainer(modId).ifPresent(modContainer -> {
-			modVersion = modContainer.getMetadata().getVersion().getFriendlyString();
+		fabricLoader.getModContainer(MOD_ID).ifPresent(modContainer -> {
+			MOD_VERSION = modContainer.getMetadata().getVersion().getFriendlyString();
 		});
 
 		// Config
@@ -81,6 +81,7 @@ public class Mod implements ModInitializer {
 			ItemTemperatureUtil.reloadItems();
 			BlockTemperatureUtil.reloadBlocks();
 			WindTemperatureUtil.reloadBlocks();
+			WindTemperatureUtil.cleanUpAllPlayerData();
 
 			return null;
 		});
@@ -102,18 +103,18 @@ public class Mod implements ModInitializer {
 	}
 
 	private static void registerStatusEffects() {
-		Registry.register(Registries.STATUS_EFFECT, new Identifier(modId, "heat_dissipation"), ModStatusEffects.HEAT_DISSIPATION);
-		Registry.register(Registries.STATUS_EFFECT, new Identifier(modId, "hypothermia"), ModStatusEffects.HYPOTHERMIA);
-		Registry.register(Registries.STATUS_EFFECT, new Identifier(modId, "hyperthermia"), ModStatusEffects.HYPERTHERMIA);
+		Registry.register(Registries.STATUS_EFFECT, new Identifier(MOD_ID, "heat_dissipation"), ModStatusEffects.HEAT_DISSIPATION);
+		Registry.register(Registries.STATUS_EFFECT, new Identifier(MOD_ID, "hypothermia"), ModStatusEffects.HYPOTHERMIA);
+		Registry.register(Registries.STATUS_EFFECT, new Identifier(MOD_ID, "hyperthermia"), ModStatusEffects.HYPERTHERMIA);
 	}
 
 	private static void registerItems() {
 		// Items
 
-		Registry.register(Registries.ITEM, new Identifier(modId, "thermometer"), THERMOMETER_ITEM);
-		Registry.register(Registries.ITEM, new Identifier(modId, "golden_sweet_berries"), GOLDEN_SWEET_BERRIES_ITEM);
-		Registry.register(Registries.ITEM, new Identifier(modId, "ice_water"), ICE_WATER_ITEM);
-		Registry.register(Registries.ITEM, new Identifier(modId, "wool_cloth"), WOOL_CLOTH_ITEM);
+		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "thermometer"), THERMOMETER_ITEM);
+		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "golden_sweet_berries"), GOLDEN_SWEET_BERRIES_ITEM);
+		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "ice_water"), ICE_WATER_ITEM);
+		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "wool_cloth"), WOOL_CLOTH_ITEM);
 
 		// Item Groups
 
@@ -135,16 +136,16 @@ public class Mod implements ModInitializer {
 	private static void registerBlocks() {
 		// Blocks
 
-		Registry.register(Registries.BLOCK, new Identifier(modId, "ice_box_empty"), ModBlocks.ICE_BOX_EMPTY_BLOCK);
-		Registry.register(Registries.BLOCK, new Identifier(modId, "ice_box_freezing"), ModBlocks.ICE_BOX_FREEZING_BLOCK);
-		Registry.register(Registries.BLOCK, new Identifier(modId, "ice_box_frozen"), ModBlocks.ICE_BOX_FROZEN_BLOCK);
-		Registry.register(Registries.BLOCK, new Identifier(modId, "smoke"), ModBlocks.SMOKE_BLOCK);
+		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "ice_box_empty"), ModBlocks.ICE_BOX_EMPTY_BLOCK);
+		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "ice_box_freezing"), ModBlocks.ICE_BOX_FREEZING_BLOCK);
+		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "ice_box_frozen"), ModBlocks.ICE_BOX_FROZEN_BLOCK);
+		Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "smoke"), ModBlocks.SMOKE_BLOCK);
 
 		// Block Item Registry
 
-		Registry.register(Registries.ITEM, new Identifier(modId, "ice_box_empty_item"), ICE_BOX_EMPTY_ITEM);
-		Registry.register(Registries.ITEM, new Identifier(modId, "ice_box_freezing_item"), ICE_BOX_FREEZING_ITEM);
-		Registry.register(Registries.ITEM, new Identifier(modId, "ice_box_frozen_item"), ICE_BOX_FROZEN_ITEM);
+		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "ice_box_empty_item"), ICE_BOX_EMPTY_ITEM);
+		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "ice_box_freezing_item"), ICE_BOX_FREEZING_ITEM);
+		Registry.register(Registries.ITEM, new Identifier(MOD_ID, "ice_box_frozen_item"), ICE_BOX_FROZEN_ITEM);
 	}
 
 	private static void registerServerEvents() {

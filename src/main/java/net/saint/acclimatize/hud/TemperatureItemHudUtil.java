@@ -8,7 +8,8 @@ import net.saint.acclimatize.ModClient;
 
 public class TemperatureItemHudUtil {
 
-	private static final Identifier THERMOMETER_DISPLAY_TEXTURE = new Identifier(Mod.modId, "textures/thermometer/thermometer_display.png");
+	private static final Identifier THERMOMETER_DISPLAY_TEXTURE = new Identifier(Mod.MOD_ID,
+			"textures/thermometer/thermometer_display.png");
 
 	public static void renderTemperatureItemHud(DrawContext context) {
 		var client = MinecraftClient.getInstance();

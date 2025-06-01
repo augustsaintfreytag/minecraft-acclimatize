@@ -13,7 +13,7 @@ public class ServerStateUtil {
 
 	public static ServerState getServerState(MinecraftServer server) {
 		PersistentStateManager manager = server.getWorld(World.OVERWORLD).getPersistentStateManager();
-		return manager.getOrCreate(ServerState::createFromNbt, ServerState::new, Mod.modId);
+		return manager.getOrCreate(ServerState::createFromNbt, ServerState::new, Mod.MOD_ID);
 	}
 
 	public static PlayerState getPlayerState(LivingEntity player) {

@@ -5,12 +5,18 @@ import java.util.HashMap;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.util.MathUtil;
 
 public final class BiomeTemperatureUtil {
+
+	private static final Vec3i NORTH_VECTOR = new Vec3i(0, 0, -1);
+	private static final Vec3i SOUTH_VECTOR = new Vec3i(0, 0, 1);
+	private static final Vec3i EAST_VECTOR = new Vec3i(1, 0, 0);
+	private static final Vec3i WEST_VECTOR = new Vec3i(-1, 0, 0);
 
 	// Configuration
 
@@ -49,7 +55,7 @@ public final class BiomeTemperatureUtil {
 		var position = player.getBlockPos();
 		var dimension = world.getDimension();
 
-		var biomeTemperature = baseTemperatureForBiomeAtPosition(world, position);
+		var biomeTemperature = baseTemperatureForPosition(world, position);
 
 		// Nether & End
 
@@ -83,7 +89,7 @@ public final class BiomeTemperatureUtil {
 
 	// Base Temperature
 
-	public static double baseTemperatureForBiomeAtPosition(World world, BlockPos position) {
+	public static double baseTemperatureForPosition(World world, BlockPos position) {
 		var dimensionKey = world.getRegistryKey();
 
 		if (dimensionKey == World.NETHER) {
@@ -94,13 +100,42 @@ public final class BiomeTemperatureUtil {
 			return Mod.CONFIG.endBiomeTemperature;
 		}
 
-		var biomeEntry = world.getBiome(position);
-		var biomeTemperature = baseTemperatureForBiome(biomeEntry);
+		var naiveBiomeTemperature = baseTemperatureForBiomeAtPosition(world, position);
+		var averagedBiomeTemperature = baseTemperatureForBiomeInEnvirons(world, position);
 
-		return biomeTemperature;
+		if (Mod.CONFIG.enableLogging) {
+			Mod.LOGGER.info("Determined averaged biome temperature " + averagedBiomeTemperature + " vs. naive temperature "
+					+ naiveBiomeTemperature + ".");
+		}
+
+		return averagedBiomeTemperature;
 	}
 
-	private static double baseTemperatureForBiome(RegistryEntry<Biome> biomeEntry) {
+	private static double baseTemperatureForBiomeInEnvirons(World world, BlockPos position) {
+		var samplingRadius = Mod.CONFIG.biomeSamplingRadius;
+		var temperatureSum = 0.0;
+
+		// Sample one biome in each cardinal direction at the given radius from the player.
+		var northPosition = position.add(NORTH_VECTOR.multiply(samplingRadius));
+		var southPosition = position.add(SOUTH_VECTOR.multiply(samplingRadius));
+		var eastPosition = position.add(EAST_VECTOR.multiply(samplingRadius));
+		var westPosition = position.add(WEST_VECTOR.multiply(samplingRadius));
+
+		temperatureSum += baseTemperatureForBiomeAtPosition(world, position);
+		temperatureSum += baseTemperatureForBiomeAtPosition(world, northPosition);
+		temperatureSum += baseTemperatureForBiomeAtPosition(world, southPosition);
+		temperatureSum += baseTemperatureForBiomeAtPosition(world, eastPosition);
+		temperatureSum += baseTemperatureForBiomeAtPosition(world, westPosition);
+
+		return temperatureSum / 5;
+	}
+
+	private static double baseTemperatureForBiomeAtPosition(World world, BlockPos position) {
+		var biomeEntry = world.getBiome(position);
+		return baseTemperatureForBiomeEntry(biomeEntry);
+	}
+
+	private static double baseTemperatureForBiomeEntry(RegistryEntry<Biome> biomeEntry) {
 		var rawBiomeTemperature = rawTemperatureForBiome(biomeEntry);
 		var baseTemperature = ((rawBiomeTemperature + Mod.CONFIG.biomeTemperatureZeroingAnchor) / 3) * 100;
 

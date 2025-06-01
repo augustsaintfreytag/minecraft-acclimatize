@@ -1,4 +1,4 @@
-package net.saint.acclimatize.data.player;
+package net.saint.acclimatize.data.world;
 
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.player.PlayerState;
