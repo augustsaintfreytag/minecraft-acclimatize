@@ -13,8 +13,9 @@ import net.saint.acclimatize.server.ServerStateUtil;
 public final class ModCommands {
 
 	public static void registerCommands() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("acclimatize:reset_temperature").requires(source -> source.hasPermissionLevel(4))
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("acclimatize")
+				// Reset temperature
+				.then(literal("resetTemperature").requires(source -> source.hasPermissionLevel(4))
 						.then(argument("player", EntityArgumentType.player()).executes(context -> {
 							var player = EntityArgumentType.getPlayer(context, "player");
 							var playerState = ServerStateUtil.getPlayerState(player);
@@ -23,10 +24,10 @@ public final class ModCommands {
 							playerState.markDirty();
 
 							return 1;
-						}))));
+						})))
 
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("acclimatize:randomize_wind").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
+				// Randomize wind
+				.then(literal("randomizeWind").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
 					var server = context.getSource().getServer();
 					var serverWorld = server.getOverworld();
 
@@ -38,10 +39,10 @@ public final class ModCommands {
 					context.getSource().sendMessage(Text.literal("Wind Intensity: " + serverState.windIntensity));
 
 					return 1;
-				})));
+				}))
 
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("acclimatize:force_north_wind").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
+				// Force north wind for debugging
+				.then(literal("debugForceNorthWind").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
 					var server = context.getSource().getServer();
 					var serverState = ServerStateUtil.getServerState(server);
 
@@ -52,10 +53,10 @@ public final class ModCommands {
 					context.getSource().sendMessage(Text.literal("Wind Intensity: " + serverState.windIntensity));
 
 					return 1;
-				})));
+				}))
 
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher
-				.register(literal("acclimatize:log_wind_info").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
+				// Print wind info
+				.then(literal("printWind").requires(source -> source.hasPermissionLevel(4)).executes(context -> {
 
 					ServerState serverState = ServerStateUtil.getServerState(context.getSource().getServer());
 
@@ -64,7 +65,7 @@ public final class ModCommands {
 					context.getSource().sendMessage(Text.literal("§eWind Temperature Modifier: §6" + serverState.windIntensity));
 
 					return 1;
-				})));
+				}))));
 	}
 
 }
