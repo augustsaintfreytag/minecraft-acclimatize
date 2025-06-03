@@ -227,10 +227,13 @@ public class ModConfig implements ConfigData {
 
 	@ConfigEntry.Category("items")
 	@Comment("Material temperature values used to auto-assign values to wearable items.")
-	public String materialAutoTemperature = String.join(", ", "leather = 3.0", "iron = 2.0", "gold = 1.5", "diamond = 2.5",
-			"netherite = 3.0", "chainmail = 1.0", "aeternium = 2.0", "brass = 1.0", "bronze = 1.0", "cincinnasite = 2.0", "copper = 1.0",
-			"crystalite = 3.0", "flaming_ruby = 5.0", "nether_ruby = 4.0", "resonarium = 3.0", "rose_quartz = 2.0", "steel = 2.0",
-			"sturdy = 3.0", "terminite = 3.0", "thallasium = 2.0", "warden = 3.0", "turtle = 1.0");
+	public String materialAutoTemperature = String.join(", ", "leather = 1.25", "iron = 1.75", "gold = 0.5", "diamond = 2.0",
+			"netherite = -1.0", "chainmail = 0.5", "aeternium = 1.85", "brass = 1.0", "bronze = 1.0", "cincinnasite = -1.0", "copper = 1.0",
+			"crystalite = 3.5", "flaming_ruby = 2.5", "nether_ruby = -1.25", "resonarium = -1.75", "rose_quartz = 2.0", "steel = 2.0",
+			"sterling = 1.5", "sturdy = 2.25", "terminite = 3.0", "thallasium = 2.1", "warden = 2.5", "turtle = 0.85", "death_knight = 1.5",
+			"netherite_fire = -3.0", "netherite_ranger = -1.65", "ranger = 1.65", "netherite_rogue = -1.65", "rogue = 1.65",
+			"netherite_assassin = -1.65", "assassin = 1.65", "archer = 1.65", "netherite_archer = -1.65", "netherite_frost = -2.75",
+			"frost = 2.75", "fire = -2.75", "wizard = 0.85", "arcane = 0.85");
 
 	@ConfigEntry.Category("items")
 	@Comment("Temperature factor for helmets with auto-assigned material-based values. (Default: 1.0)")

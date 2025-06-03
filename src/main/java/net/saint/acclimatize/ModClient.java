@@ -151,13 +151,16 @@ public class ModClient implements ClientModInitializer {
 				return;
 			}
 
-			var temperature = Math.round(ItemTemperatureUtil.temperatureValueForItem(stack));
+			var rawTemperature = ItemTemperatureUtil.temperatureValueForItem(stack);
 
-			if (temperature == 0) {
+			if (rawTemperature == 0) {
 				return;
 			}
 
-			tooltip.add(Text.literal("§9+" + temperature + " Temperature"));
+			var temperature = Math.round(rawTemperature * 10.0) / 10.0;
+			var prefix = temperature > 0 ? "§9+" : "§c";
+
+			tooltip.add(Text.literal(prefix + temperature + " Temperature"));
 		});
 	}
 

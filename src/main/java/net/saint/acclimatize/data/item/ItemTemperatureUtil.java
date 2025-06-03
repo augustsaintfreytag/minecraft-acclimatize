@@ -61,7 +61,7 @@ public final class ItemTemperatureUtil {
 	// Acclimatization Rate
 
 	public static double acclimatizationRateDeltaForItemTemperature(double temperatureDelta) {
-		return ((temperatureDelta / 10.0) * Mod.CONFIG.itemAcclimatizationRateFactor);
+		return ((Math.abs(temperatureDelta) / 10.0) * Mod.CONFIG.itemAcclimatizationRateFactor);
 	}
 
 	// Temperature (Auto-Assignment)
@@ -129,13 +129,13 @@ public final class ItemTemperatureUtil {
 	private static WearableKind wearableKindForItem(ItemStack itemStack) {
 		var itemId = itemStack.getTranslationKey();
 
-		if (itemId.contains("_boots")) {
+		if (itemId.contains("_boots") || itemId.contains("_feet")) {
 			return WearableKind.BOOTS;
-		} else if (itemId.contains("_leggings")) {
+		} else if (itemId.contains("_leggings") || itemId.contains("_legs") || itemId.contains("_pants")) {
 			return WearableKind.LEGGINGS;
-		} else if (itemId.contains("_chestplate")) {
+		} else if (itemId.contains("_chestplate") || itemId.contains("_chest") || itemId.contains("_tunic")) {
 			return WearableKind.CHESTPLATE;
-		} else if (itemId.contains("_helmet")) {
+		} else if (itemId.contains("_helmet") || itemId.contains("_head") || itemId.contains("_hood") || itemId.contains("_mask")) {
 			return WearableKind.HELMET;
 		}
 
