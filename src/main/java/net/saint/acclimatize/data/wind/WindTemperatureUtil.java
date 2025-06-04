@@ -28,10 +28,10 @@ public final class WindTemperatureUtil {
 
 	// State
 
-	private static final Map<UUID, RingBuffer<Boolean>> windSamplesByPlayer = new HashMap<>();
-	private static final Map<UUID, Integer> numberOfRaysFiredByPlayer = new HashMap<>();
-
 	private static Set<String> windPermeableBlocks = new HashSet<String>();
+
+	private static Map<UUID, RingBuffer<Boolean>> windSamplesByPlayer = new HashMap<>();
+	private static Map<UUID, Integer> numberOfRaysFiredByPlayer = new HashMap<>();
 
 	// Init
 
