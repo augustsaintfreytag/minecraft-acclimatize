@@ -1,11 +1,19 @@
 package net.saint.acclimatize.library.common;
 
-public class RingBuffer<T> {
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+public class RingBuffer<T> implements Iterable<T> {
+
+	// Properties
+
 	private final T[] buffer;
 	private final int capacity;
 	private int head;
 	private int tail;
 	private int size;
+
+	// Init
 
 	@SuppressWarnings("unchecked")
 	public RingBuffer(int capacity) {
@@ -19,6 +27,39 @@ public class RingBuffer<T> {
 		this.tail = 0;
 		this.size = 0;
 	}
+
+	// Iterator
+
+	@Override
+	public Iterator<T> iterator() {
+		return new RingBufferIterator();
+	}
+
+	private class RingBufferIterator implements Iterator<T> {
+		private int current = head;
+		private int count = 0;
+
+		@Override
+		public boolean hasNext() {
+			return this.count < RingBuffer.this.size;
+		}
+
+		@Override
+		public T next() {
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+
+			var item = buffer[current];
+
+			this.current = (current + 1) % capacity;
+			this.count++;
+
+			return item;
+		}
+	}
+
+	// Access
 
 	/**
 	 * Enqueue an item into the ring buffer.
