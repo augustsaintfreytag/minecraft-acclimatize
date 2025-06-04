@@ -16,6 +16,7 @@ import net.minecraft.world.RaycastContext;
 import net.minecraft.world.biome.Biome;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.config.SetConfigCodingUtil;
+import net.saint.acclimatize.library.common.RingBuffer;
 import net.saint.acclimatize.server.ServerState;
 import net.saint.acclimatize.util.MathUtil;
 
@@ -27,10 +28,8 @@ public final class WindTemperatureUtil {
 
 	// State
 
-	private static int numberOfRaysFired = 0;
-
-	private static final Map<UUID, boolean[]> playerWindBuffers = new HashMap<>();
-	private static final Map<UUID, Integer> playerBufferIndices = new HashMap<>();
+	private static final Map<UUID, RingBuffer<Boolean>> windSamplesByPlayer = new HashMap<>();
+	private static final Map<UUID, Integer> numberOfRaysFiredByPlayer = new HashMap<>();
 
 	private static Set<String> windPermeableBlocks = new HashSet<String>();
 
@@ -62,6 +61,7 @@ public final class WindTemperatureUtil {
 
 		// Wind Raycast Hit Factor
 
+		var numberOfRaysFired = numberOfRaysFiredByPlayer.getOrDefault(player.getUuid(), 0);
 		var numberOfUnblockedRays = getUnblockedWindRaysForPlayer(serverState, player);
 		var windHitTemperatureFactor = ((double) numberOfUnblockedRays / (double) numberOfRaysFired);
 
@@ -95,29 +95,23 @@ public final class WindTemperatureUtil {
 		var playerId = player.getUuid();
 
 		// Initialize buffer for this player if needed
-		if (!playerWindBuffers.containsKey(playerId)) {
-			playerWindBuffers.put(playerId, new boolean[Mod.CONFIG.windRayCount]);
-			playerBufferIndices.put(playerId, 0);
-		}
-
-		var buffer = playerWindBuffers.get(playerId);
-		var currentIndex = playerBufferIndices.get(playerId);
+		var windSampleBuffer = windSamplesByPlayer.getOrDefault(playerId, makeEmptyWindSampleBuffer());
 
 		// Profile Start Time
 		var profile = Mod.PROFILER.begin("wind");
 
 		// Perform only a single raycast and store the result
-		buffer[currentIndex] = performSingleWindRaycast(serverState, player);
-		numberOfRaysFired = Math.min(numberOfRaysFired + 1, Mod.CONFIG.windRayCount);
+		var windRaycastIsUnblocked = performSingleWindRaycast(serverState, player);
+		windSampleBuffer.enqueue(windRaycastIsUnblocked);
 
-		// Update index for next call
-		currentIndex = (currentIndex + 1) % Mod.CONFIG.windRayCount;
-		playerBufferIndices.put(playerId, currentIndex);
+		// Update number of rays fired
+		var numberOfRaysFired = Math.min(numberOfRaysFiredByPlayer.getOrDefault(playerId, 0) + 1, Mod.CONFIG.windRayCount);
+		numberOfRaysFiredByPlayer.put(playerId, numberOfRaysFired);
 
 		// Count unblocked rays in the buffer
 		var numberOfUnblockedRays = 0;
 
-		for (var isUnblocked : buffer) {
+		for (var isUnblocked : windSampleBuffer) {
 			if (isUnblocked) {
 				numberOfUnblockedRays++;
 			}
@@ -130,6 +124,15 @@ public final class WindTemperatureUtil {
 		}
 
 		return numberOfUnblockedRays;
+	}
+
+	private static RingBuffer<Boolean> makeEmptyWindSampleBuffer() {
+		var buffer = new RingBuffer<Boolean>(Mod.CONFIG.windRayCount);
+
+		// Fill with false to indicate all rays are blocked initially
+		buffer.fill(false);
+
+		return buffer;
 	}
 
 	private static boolean performSingleWindRaycast(ServerState serverState, ServerPlayerEntity player) {
@@ -166,13 +169,11 @@ public final class WindTemperatureUtil {
 
 	public static void cleanUpPlayerData(ServerPlayerEntity player) {
 		var playerId = player.getUuid();
-		playerWindBuffers.remove(playerId);
-		playerBufferIndices.remove(playerId);
+		windSamplesByPlayer.remove(playerId);
 	}
 
 	public static void cleanUpAllPlayerData() {
-		playerWindBuffers.clear();
-		playerBufferIndices.clear();
+		windSamplesByPlayer.clear();
 	}
 
 }
