@@ -9,7 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.ModClient;
-import net.saint.acclimatize.library.RGBAColor;
+import net.saint.acclimatize.library.color.RGBAColor;
 import net.saint.acclimatize.util.MathUtil;
 
 public final class TemperatureHudOverlayUtil {

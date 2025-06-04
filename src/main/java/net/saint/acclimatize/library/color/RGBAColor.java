@@ -1,4 +1,4 @@
-package net.saint.acclimatize.library;
+package net.saint.acclimatize.library.color;
 
 public final class RGBAColor {
 	// Properties

@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.saint.acclimatize.Mod;
 import net.saint.acclimatize.config.MapConfigCodingUtil;
-import net.saint.acclimatize.library.WearableKind;
+import net.saint.acclimatize.library.item.WearableItemKind;
 
 public final class ItemTemperatureUtil {
 
@@ -79,7 +79,7 @@ public final class ItemTemperatureUtil {
 		return Math.round(materialTemperature * itemKindTemperatureFactor * 10.0) / 10.0;
 	}
 
-	private static double temperatureFactorForItemKind(WearableKind itemKind) {
+	private static double temperatureFactorForItemKind(WearableItemKind itemKind) {
 		switch (itemKind) {
 		case BOOTS:
 			return Mod.CONFIG.bootsAutoTemperatureFactor;
@@ -126,17 +126,17 @@ public final class ItemTemperatureUtil {
 
 	// Item Analysis
 
-	private static WearableKind wearableKindForItem(ItemStack itemStack) {
+	private static WearableItemKind wearableKindForItem(ItemStack itemStack) {
 		var itemId = itemStack.getTranslationKey();
 
 		if (itemId.contains("_boots") || itemId.contains("_feet")) {
-			return WearableKind.BOOTS;
+			return WearableItemKind.BOOTS;
 		} else if (itemId.contains("_leggings") || itemId.contains("_legs") || itemId.contains("_pants")) {
-			return WearableKind.LEGGINGS;
+			return WearableItemKind.LEGGINGS;
 		} else if (itemId.contains("_chestplate") || itemId.contains("_chest") || itemId.contains("_tunic")) {
-			return WearableKind.CHESTPLATE;
+			return WearableItemKind.CHESTPLATE;
 		} else if (itemId.contains("_helmet") || itemId.contains("_head") || itemId.contains("_hood") || itemId.contains("_mask")) {
-			return WearableKind.HELMET;
+			return WearableItemKind.HELMET;
 		}
 
 		return null;

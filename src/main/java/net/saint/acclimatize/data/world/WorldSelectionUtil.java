@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.saint.acclimatize.library.BlockStatePositionTuple;
+import net.saint.acclimatize.library.block.BlockStatePositionTuple;
 
 public class WorldSelectionUtil {
 
