@@ -25,20 +25,16 @@ public final class SpaceUtil {
 	// State
 
 	private static final Map<UUID, boolean[]> playerSpaceBuffers = new HashMap<>();
-	private static final Map<UUID, Boolean> playerLastSpacePreCheck = new HashMap<>();
 	private static final Map<UUID, Integer> playerSpaceIndices = new HashMap<>();
 
 	// Checks
 
 	public static boolean checkPlayerIsInInterior(ServerPlayerEntity player) {
 		var profile = Mod.PROFILER.begin("space_check");
-		var playerId = player.getUuid();
 		var world = player.getWorld();
 
 		// Pre-check by raycasting once straight up from player position.
-		var lastPreCheckResultWasInInterior = playerLastSpacePreCheck.computeIfAbsent(playerId, k -> false).booleanValue();
 		var preCheckIsInInterior = performStandaloneRaycastForPositionInInterior(world, player);
-		playerLastSpacePreCheck.put(playerId, preCheckIsInInterior);
 
 		if (!preCheckIsInInterior) {
 			// Pre-check raycast hit did not hit blocks, assume exterior.
@@ -156,7 +152,6 @@ public final class SpaceUtil {
 
 		playerSpaceBuffers.remove(playerId);
 		playerSpaceIndices.remove(playerId);
-		playerLastSpacePreCheck.remove(playerId);
 	}
 
 }
