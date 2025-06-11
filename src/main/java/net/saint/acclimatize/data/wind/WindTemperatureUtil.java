@@ -61,8 +61,8 @@ public final class WindTemperatureUtil {
 
 		// Wind Raycast Hit Factor
 
-		var numberOfRaysFired = numberOfRaysFiredByPlayer.getOrDefault(player.getUuid(), 0);
 		var numberOfUnblockedRays = getUnblockedWindRaysForPlayer(serverState, player);
+		var numberOfRaysFired = numberOfRaysFiredByPlayer.getOrDefault(player.getUuid(), 1);
 		var windHitTemperatureFactor = ((double) numberOfUnblockedRays / (double) numberOfRaysFired);
 
 		windTemperature *= windHitTemperatureFactor;
