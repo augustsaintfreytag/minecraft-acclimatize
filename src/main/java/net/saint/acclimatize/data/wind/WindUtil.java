@@ -57,10 +57,12 @@ public final class WindUtil {
 	}
 
 	private static void tickWindDirection(ServerWorld world, ServerState serverState) {
-		var random = world.getRandom();
-		var randomWindDirection = Math.toRadians(random.nextDouble() * 360);
+		var currentWindDirection = serverState.windDirection;
 
-		serverState.windDirection = randomWindDirection;
+		var random = world.getRandom();
+		var randomWindOffset = Math.toRadians(random.nextDouble() * 110.0 - 55.0);
+
+		serverState.windDirection = currentWindDirection + randomWindOffset;
 		serverState.markDirty();
 	}
 
