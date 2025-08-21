@@ -21,7 +21,7 @@ public final class WindUtil {
 
 	public static void tickWindInSchedule(ServerWorld world, ServerState serverState) {
 		var random = world.getRandom();
-		var serverTick = world.getTime();
+		var serverTick = world.getTimeOfDay();
 
 		if (serverTick > serverState.nextWindIntensityTick) {
 			tickWindIntensity(world, serverState);

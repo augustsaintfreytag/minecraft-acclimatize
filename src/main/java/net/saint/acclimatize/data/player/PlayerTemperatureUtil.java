@@ -17,7 +17,7 @@ public class PlayerTemperatureUtil {
 	public static void tickPlayerTemperatureInSchedule(ServerPlayerEntity player, ServerState serverState, PlayerState playerState) {
 		var world = player.getWorld();
 
-		if (world.getTime() % Mod.CONFIG.temperatureTickInterval != 0) {
+		if (world.getTimeOfDay() % Mod.CONFIG.temperatureTickInterval != 0) {
 			return;
 		}
 

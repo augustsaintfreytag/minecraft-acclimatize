@@ -46,7 +46,7 @@ public final class PlayerEffectsUtil {
 			return;
 		}
 
-		if (world.getTime() % Mod.CONFIG.temperatureTickInterval != 0) {
+		if (world.getTimeOfDay() % Mod.CONFIG.temperatureTickInterval != 0) {
 			return;
 		}
 
