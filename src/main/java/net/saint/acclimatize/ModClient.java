@@ -54,7 +54,7 @@ public class ModClient implements ClientModInitializer {
 
 	public static void updateTemperatureValues(TemperaturePacketTuple values) {
 		var world = MinecraftClient.getInstance().world;
-		var serverTick = world.getTime();
+		var serverTick = world.getTimeOfDay();
 		var previousValues = cachedTemperatureValues;
 		cachedTemperatureValues = values;
 
@@ -95,7 +95,7 @@ public class ModClient implements ClientModInitializer {
 	}
 
 	private static double windInterpolationValue() {
-		var serverTick = getWorld().getTime();
+		var serverTick = getWorld().getTimeOfDay();
 		var deltaTime = serverTick - lastWindUpdateTick;
 		var transitionFactor = (double) deltaTime / (double) Mod.CONFIG.windTransitionInterval;
 

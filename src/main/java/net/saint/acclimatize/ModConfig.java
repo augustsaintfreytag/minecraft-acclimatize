@@ -282,20 +282,20 @@ public class ModConfig implements ConfigData {
 	public int windDirectionUpdateInterval = 6000;
 
 	@ConfigEntry.Category("wind")
-	@Comment("The base number of ticks until wind intensity is updated, plus randomization. (Default: 400)")
-	public int windIntensityUpdateInterval = 400;
+	@Comment("The base number of ticks until wind intensity is updated, plus randomization. (Default: 1200)")
+	public int windIntensityUpdateInterval = 1200;
 
 	@ConfigEntry.Category("wind")
 	@Comment("The number of ticks to transition from one wind intensity or direction to a new value. (Default: 200)")
 	public int windTransitionInterval = 200;
 
 	@ConfigEntry.Category("wind")
-	@Comment("The minimum intensity wind can be transitioned to in random tick assignment. (Default: 0.25)")
-	public double windIntensityMin = 0.25;
+	@Comment("The minimum intensity wind can be transitioned to in random tick assignment. (Default: 0.15)")
+	public double windIntensityMin = 0.15;
 
 	@ConfigEntry.Category("wind")
-	@Comment("The maximum intensity wind can be transitioned to in random tick assignment. (Default: 3.5)")
-	public double windIntensityMax = 3.5;
+	@Comment("The maximum intensity wind can be transitioned to in random tick assignment. (Default: 4.0)")
+	public double windIntensityMax = 4.0;
 
 	@ConfigEntry.Category("wind")
 	@Comment("The factor for how much wind affects ambient temperature when fully exposed. (Default: -1.25)")

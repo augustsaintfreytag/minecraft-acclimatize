@@ -17,7 +17,7 @@ public class PlayerTemperatureUtil {
 	public static void tickPlayerTemperatureInSchedule(ServerPlayerEntity player, ServerState serverState, PlayerState playerState) {
 		var world = player.getWorld();
 
-		if (world.getTime() % Mod.CONFIG.temperatureTickInterval != 0) {
+		if (world.getTimeOfDay() % Mod.CONFIG.temperatureTickInterval != 0) {
 			return;
 		}
 
@@ -84,7 +84,9 @@ public class PlayerTemperatureUtil {
 		acclimatizationRate = applicableAcclimatizationRate(acclimatizationRate);
 
 		var bodyTemperature = playerState.bodyTemperature;
-		bodyTemperature += (effectiveTemperature - bodyTemperature) * acclimatizationRate;
+
+		bodyTemperature = bodyTemperature + ((effectiveTemperature - bodyTemperature) * acclimatizationRate);
+		bodyTemperature = MathUtil.clamp(bodyTemperature, 0, 100);
 
 		// State
 

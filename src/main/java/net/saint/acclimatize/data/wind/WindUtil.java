@@ -21,7 +21,7 @@ public final class WindUtil {
 
 	public static void tickWindInSchedule(ServerWorld world, ServerState serverState) {
 		var random = world.getRandom();
-		var serverTick = world.getTime();
+		var serverTick = world.getTimeOfDay();
 
 		if (serverTick > serverState.nextWindIntensityTick) {
 			tickWindIntensity(world, serverState);
@@ -57,10 +57,12 @@ public final class WindUtil {
 	}
 
 	private static void tickWindDirection(ServerWorld world, ServerState serverState) {
-		var random = world.getRandom();
-		var randomWindDirection = Math.toRadians(random.nextDouble() * 360);
+		var currentWindDirection = serverState.windDirection;
 
-		serverState.windDirection = randomWindDirection;
+		var random = world.getRandom();
+		var randomWindOffset = Math.toRadians(random.nextDouble() * 110.0 - 55.0);
+
+		serverState.windDirection = currentWindDirection + randomWindOffset;
 		serverState.markDirty();
 	}
 
